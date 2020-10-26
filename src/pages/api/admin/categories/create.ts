@@ -1,26 +1,29 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiResponse } from 'next';
+import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { createCategory } from '../../../../models/category';
 
 /**
  * To get all subcategories
  */
 async function createCategoryHandler(
-  req: NextApiRequest,
+  req: NextApiRequestWithUser,
   res: NextApiResponse
 ) {
   try {
-    const user = 0;
+    const user = req.user;
+    if (!user?.id) throw new Error('Unauthorized');
+
     const { title } = req.body;
-    const categories = await createCategory(user, title);
+    const categories = await createCategory(user.id, title);
     if (!categories[0].category_id) throw new Error('Not create!');
 
     return res.json({ error: false, categories: [...categories] });
   } catch (error) {
-    res.status(400).json({
+    res.status(401).json({
       error: true,
       message: error,
     });
   }
 }
 
-export default createCategoryHandler;
+export default withUser(createCategoryHandler);
