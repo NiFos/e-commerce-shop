@@ -87,6 +87,6 @@ export async function createSubcategory(
 export async function editSubcategory(subcategoryId: number, newTitle: string) {
   return await database()
     .update({ title: newTitle })
-    .where('category_id', '=', subcategoryId)
+    .where('subcategory_id', '=', subcategoryId)
     .from(subCategoriesTable);
 }
