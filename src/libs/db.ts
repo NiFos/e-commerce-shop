@@ -1,6 +1,6 @@
 import knex from 'knex';
 
-const connectionString = process.env.CONNECTION_STRING || '';
+const connectionString = process.env.PG_CONNECTION_STRING || '';
 let cachedConnection: knex;
 
 /**
