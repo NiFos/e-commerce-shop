@@ -6,7 +6,7 @@ export const userModel = {
    * Search users by username (limited 10 users)
    * @param username - Username to search
    */
-  async findUsers(username: string): Promise<any> {
+  async findUsers(username: number): Promise<any> {
     return await database()
       .select('*')
       .from(usersTable)

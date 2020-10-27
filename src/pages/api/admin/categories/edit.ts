@@ -13,7 +13,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
 
     const { categoryid, title } = req.body;
 
-    const categories = await categoryModel.editCategory(categoryid, title);
+    const categories = await categoryModel.editCategory(+categoryid, title);
     if (categories <= 0) throw new Error('not found!');
 
     return res.json({ error: false, category: { categoryid, title } });

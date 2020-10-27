@@ -11,9 +11,9 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
       throw new Error('Unauthorized');
 
-    const { productid } = req.body;
+    const { productid } = req.query;
 
-    const product = await productModel.deleteProduct(productid);
+    const product = await productModel.deleteProduct(+productid);
 
     if (product !== 1) throw new Error('Not found!');
 

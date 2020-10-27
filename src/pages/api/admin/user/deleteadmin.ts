@@ -15,15 +15,15 @@ async function deleteAdminHandler(
     if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
       throw new Error('Unauthorized');
 
-    const { userid } = req.body;
+    const { userid } = req.query;
 
-    const adminExist = await adminModel.checkIfAdminExist(userid);
+    const adminExist = await adminModel.checkIfAdminExist(+userid);
     if (!adminExist) throw new Error('Admin not exist');
 
-    const deletedAdmin = await adminModel.deleteAdmin(userid);
+    const deletedAdmin = await adminModel.deleteAdmin(+userid);
     if (deletedAdmin !== 1) throw new Error('Something went wrong!');
 
-    const userInfo = await userModel.findUserById(userid);
+    const userInfo = await userModel.findUserById(+userid);
     if (!userInfo[0].user_id) throw new Error('Cannot find user!');
 
     return res.json({

@@ -17,13 +17,13 @@ async function addAdminHandler(
 
     const { userid, fullaccess } = req.body;
 
-    const adminExist = await adminModel.checkIfAdminExist(userid);
+    const adminExist = await adminModel.checkIfAdminExist(+userid);
     if (adminExist) throw new Error('Admin exist');
 
-    const userInfo = await userModel.findUserById(userid);
+    const userInfo = await userModel.findUserById(+userid);
     if (!userInfo[0].user_id) throw new Error('Cannot find user');
 
-    const response = await adminModel.addUserToAdmins(userid, fullaccess);
+    const response = await adminModel.addUserToAdmins(+userid, fullaccess);
     if (!response[0].user_id) throw new Error('Something went wrong!');
 
     return res.json({

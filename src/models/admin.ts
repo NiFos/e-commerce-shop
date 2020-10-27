@@ -17,7 +17,7 @@ export const adminModel = {
    * Checking user for existing in admins list
    * @param userId - User id
    */
-  async checkIfAdminExist(userId: string): Promise<boolean> {
+  async checkIfAdminExist(userId: number): Promise<boolean> {
     const response = await database()
       .select('*')
       .from(adminsTable)

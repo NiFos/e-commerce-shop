@@ -17,16 +17,16 @@ async function editAdminHandler(
 
     const { userid, fullaccess } = req.body;
 
-    const adminExist = await adminModel.checkIfAdminExist(userid);
+    const adminExist = await adminModel.checkIfAdminExist(+userid);
     if (!adminExist) throw new Error('Admin not exist');
 
     const editedAdmin = await adminModel.editAdminAccessLevel(
-      userid,
+      +userid,
       fullaccess
     );
     if (editedAdmin <= 0) throw new Error('Something went wrong!');
 
-    const userInfo = await userModel.findUserById(userid);
+    const userInfo = await userModel.findUserById(+userid);
     if (!userInfo[0].user_id) throw new Error('Cannot find user!');
 
     return res.json({

@@ -13,9 +13,9 @@ async function searchUserHandler(
     const user = req.user;
     if (!user?.id || !user.admin?.isAdmin) throw new Error('Unauthorized');
 
-    const { username } = req.body;
+    const { username } = req.query;
 
-    const users = await userModel.findUsers(username);
+    const users = await userModel.findUsers(+username);
     return res.json({ users });
   } catch (error) {
     return res.status(400).json({
