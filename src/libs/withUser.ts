@@ -4,7 +4,10 @@ export interface NextApiRequestWithUser extends NextApiRequest {
   user?: {
     id?: number;
     username?: string;
-    isAdmin?: boolean;
+    admin?: {
+      isAdmin?: boolean;
+      fullAccess?: boolean;
+    };
   };
 }
 /**
@@ -14,7 +17,10 @@ export const withUser = (handler: any) => (
   req: NextApiRequestWithUser,
   res: NextApiResponse
 ) => {
-  const user = { id: 0, username: 'username', isAdmin: true };
-  req.user = user;
+  req.user = {
+    id: 0,
+    username: 'username',
+    admin: { isAdmin: true, fullAccess: true },
+  };
   return handler(req, res);
 };
