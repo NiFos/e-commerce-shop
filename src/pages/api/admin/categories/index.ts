@@ -1,12 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getAllCategories } from '../../../../models/category';
+import { categoryModel } from '../../../../models/category';
 
 /**
  * To get all subcategories
  */
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   try {
-    const categories = await getAllCategories();
+    const categories = await categoryModel.getAllCategories();
 
     return res.json({ error: false, categories });
   } catch (error) {

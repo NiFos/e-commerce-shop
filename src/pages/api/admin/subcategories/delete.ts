@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { deleteSubcategory } from '../../../../models/category';
+import { categoryModel } from '../../../../models/category';
 
 /**
  * To get all subcategories
@@ -11,7 +11,9 @@ async function deleteSubcategoryHandler(
   try {
     const { subcategoryid } = req.query;
 
-    const deletedCategories = await deleteSubcategory(+subcategoryid);
+    const deletedCategories = await categoryModel.deleteSubcategory(
+      +subcategoryid
+    );
     if (deletedCategories !== 1) throw new Error('not found!');
 
     return res.json({ error: false, deletedId: subcategoryid });

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { editCategory } from '../../../../models/category';
+import { categoryModel } from '../../../../models/category';
 
 /**
  * To get all subcategories
@@ -7,7 +7,7 @@ import { editCategory } from '../../../../models/category';
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   try {
     const { categoryid, title } = req.body;
-    const categories = await editCategory(categoryid, title);
+    const categories = await categoryModel.editCategory(categoryid, title);
     console.log(categories);
 
     if (categories <= 0) throw new Error('not found!');

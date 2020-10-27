@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getAllSubcategories } from '../../../../models/category';
+import { categoryModel } from '../../../../models/category';
 
 /**
  * To get all subcategories
@@ -7,7 +7,7 @@ import { getAllSubcategories } from '../../../../models/category';
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   try {
     const { categoryid } = req.query;
-    const subcategories = await getAllSubcategories(+categoryid);
+    const subcategories = await categoryModel.getAllSubcategories(+categoryid);
 
     return res.json({ error: false, subcategories });
   } catch (error) {

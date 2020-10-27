@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
-import { createSubcategory } from '../../../../models/category';
+import { categoryModel } from '../../../../models/category';
 
 /**
  * To get all subcategories
@@ -16,7 +16,11 @@ async function createSubcategoryHandler(
     const { categoryid, title } = req.body;
     console.log(categoryid, title);
 
-    const categories = await createSubcategory(user.id, categoryid, title);
+    const categories = await categoryModel.createSubcategory(
+      user.id,
+      categoryid,
+      title
+    );
 
     if (!categories[0].category_id) throw new Error('Not create!');
 
