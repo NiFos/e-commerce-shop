@@ -1,14 +1,19 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { categoryModel } from '../../../../models/category';
 
 /**
  * To get all subcategories
  */
 async function deleteCategoryHandler(
-  req: NextApiRequest,
+  req: NextApiRequestWithUser,
   res: NextApiResponse
 ) {
   try {
+    const user = req.user;
+    if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
+      throw new Error('Unauthorized');
+
     const { categoryid } = req.query;
 
     const deletedCategories = await categoryModel.deleteCategory(+categoryid);
@@ -23,4 +28,4 @@ async function deleteCategoryHandler(
   }
 }
 
-export default deleteCategoryHandler;
+export default withUser(deleteCategoryHandler);

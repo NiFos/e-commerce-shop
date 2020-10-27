@@ -11,10 +11,10 @@ async function createSubcategoryHandler(
 ) {
   try {
     const user = req.user;
-    if (!user?.id) throw new Error('Unauthorized');
+    if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
+      throw new Error('Unauthorized');
 
     const { categoryid, title } = req.body;
-    console.log(categoryid, title);
 
     const categories = await categoryModel.createSubcategory(
       user.id,
@@ -24,9 +24,9 @@ async function createSubcategoryHandler(
 
     if (!categories[0].category_id) throw new Error('Not create!');
 
-    return res.json({ error: false, categories: [...categories] });
+    return res.json({ error: false, categories });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       error: true,
       message: error,
     });

@@ -1,30 +1,33 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { categoryModel } from '../../../../models/category';
 
 /**
  * To get all subcategories
  */
 async function editSubcategoryHandler(
-  req: NextApiRequest,
+  req: NextApiRequestWithUser,
   res: NextApiResponse
 ) {
   try {
+    const user = req.user;
+    if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
+      throw new Error('Unauthorized');
+
     const { subcategoryid, title } = req.body;
     const categories = await categoryModel.editSubcategory(
       subcategoryid,
       title
     );
-    console.log(categories);
-
     if (categories <= 0) throw new Error('not found!');
 
     return res.json({ error: false, category: { subcategoryid, title } });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       error: true,
       message: error,
     });
   }
 }
 
-export default editSubcategoryHandler;
+export default withUser(editSubcategoryHandler);
