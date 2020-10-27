@@ -4,6 +4,7 @@ export interface NextApiRequestWithUser extends NextApiRequest {
   user?: {
     id?: number;
     username?: string;
+    isAdmin?: boolean;
   };
 }
 /**
@@ -13,7 +14,7 @@ export const withUser = (handler: any) => (
   req: NextApiRequestWithUser,
   res: NextApiResponse
 ) => {
-  const user = { id: 0, username: 'username' };
+  const user = { id: 0, username: 'username', isAdmin: true };
   req.user = user;
   return handler(req, res);
 };
