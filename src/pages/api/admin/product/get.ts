@@ -5,10 +5,7 @@ import { productModel } from '../../../../models/product';
 /**
  * Get product
  */
-async function getProductHandler(
-  req: NextApiRequestWithUser,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
     if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
@@ -29,4 +26,4 @@ async function getProductHandler(
   }
 }
 
-export default withUser(getProductHandler);
+export default withUser(handler);

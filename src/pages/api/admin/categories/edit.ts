@@ -5,10 +5,7 @@ import { categoryModel } from '../../../../models/category';
 /**
  * Edit category handler
  */
-async function editCategoriesHandler(
-  req: NextApiRequestWithUser,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
     if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
@@ -28,4 +25,4 @@ async function editCategoriesHandler(
   }
 }
 
-export default withUser(editCategoriesHandler);
+export default withUser(handler);

@@ -5,10 +5,7 @@ import { categoryModel } from '../../../../models/category';
 /**
  * Delete category handler
  */
-async function deleteCategoryHandler(
-  req: NextApiRequestWithUser,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
     if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
@@ -28,4 +25,4 @@ async function deleteCategoryHandler(
   }
 }
 
-export default withUser(deleteCategoryHandler);
+export default withUser(handler);

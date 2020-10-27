@@ -5,10 +5,7 @@ import { categoryModel } from '../../../../models/category';
 /**
  * Create category handler
  */
-async function createCategoryHandler(
-  req: NextApiRequestWithUser,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
     if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
@@ -27,4 +24,4 @@ async function createCategoryHandler(
   }
 }
 
-export default withUser(createCategoryHandler);
+export default withUser(handler);

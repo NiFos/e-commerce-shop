@@ -5,10 +5,7 @@ import { productModel } from '../../../../models/product';
 /**
  * Edit product
  */
-async function editProductHandler(
-  req: NextApiRequestWithUser,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
     if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
@@ -55,4 +52,4 @@ async function editProductHandler(
   }
 }
 
-export default withUser(editProductHandler);
+export default withUser(handler);

@@ -5,10 +5,7 @@ import { productModel } from '../../../../models/product';
 /**
  * Delete product
  */
-async function deleteProductHandler(
-  req: NextApiRequestWithUser,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
     if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
@@ -44,4 +41,4 @@ async function deleteProductHandler(
   }
 }
 
-export default withUser(deleteProductHandler);
+export default withUser(handler);

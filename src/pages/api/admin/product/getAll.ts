@@ -5,10 +5,7 @@ import { productModel } from '../../../../models/product';
 /**
  * Get all products
  */
-async function getAllProductHandler(
-  req: NextApiRequestWithUser,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
     if (!user?.id || !user.admin?.isAdmin) throw new Error('Unauthorized');
@@ -25,4 +22,4 @@ async function getAllProductHandler(
   }
 }
 
-export default withUser(getAllProductHandler);
+export default withUser(handler);

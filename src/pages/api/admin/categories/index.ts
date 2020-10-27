@@ -5,10 +5,7 @@ import { categoryModel } from '../../../../models/category';
 /**
  * To get all categories
  */
-async function getAllAdminCategoriesHandler(
-  req: NextApiRequestWithUser,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
     if (!user?.id || !user.admin?.isAdmin) throw new Error('Unauthorized');
@@ -23,4 +20,4 @@ async function getAllAdminCategoriesHandler(
   }
 }
 
-export default withUser(getAllAdminCategoriesHandler);
+export default withUser(handler);
