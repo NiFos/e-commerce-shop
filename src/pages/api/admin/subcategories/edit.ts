@@ -1,9 +1,9 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiResponse } from 'next';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { categoryModel } from '../../../../models/category';
 
 /**
- * To get all subcategories
+ * Edit category
  */
 async function editSubcategoryHandler(
   req: NextApiRequestWithUser,
