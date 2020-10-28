@@ -1,4 +1,5 @@
 import { NextApiResponse } from 'next';
+import { getPhotoUrl } from '../../../../libs/storage';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { productModel } from '../../../../models/product';
 
@@ -17,7 +18,12 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
 
     if (!product[0]?.product_id) throw 'Not found!';
 
-    return res.json({ product: product[0] });
+    return res.json({
+      product: {
+        ...product[0],
+        photo: getPhotoUrl('products', productid.toString()),
+      },
+    });
   } catch (error) {
     return res.status(400).json({
       error: true,

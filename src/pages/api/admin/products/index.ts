@@ -1,4 +1,5 @@
 import { NextApiResponse } from 'next';
+import { getPhotoUrl } from '../../../../libs/storage';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { productModel } from '../../../../models/product';
 
@@ -12,9 +13,14 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
       throw 'Unauthorized';
 
     const { pagesize, page } = req.query;
-    const product = await productModel.getAllProducts(+pagesize, +page);
+    const products = await productModel.getAllProducts(+pagesize, +page);
 
-    return res.json({ product: product[0] });
+    return res.json({
+      products: products.map((item: any) => ({
+        ...item,
+        photo: getPhotoUrl('products', item.product_id),
+      })),
+    });
   } catch (error) {
     return res.status(400).json({
       error: true,

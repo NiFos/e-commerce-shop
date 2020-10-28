@@ -1,10 +1,15 @@
 import { NextApiResponse } from 'next';
-import { getPhotoUrl } from '../../../../libs/storage';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
-import { discountModel } from '../../../../models/discount';
+import { uploadFile } from '../../../../libs/storage';
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 /**
- * Get discount handler
+ * Upload photo to discount
  */
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
@@ -15,21 +20,15 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
       !user.admin?.fullAccess
     )
       throw 'Unauthorized';
-
-    const { discountid } = req.query;
-
-    const discount = await discountModel.getDiscountById(+discountid);
-
-    if (!discount[0]?.product_id) throw 'Not found!';
-
+    const { productid, mod } = req.query;
+    if (typeof +productid === 'undefined') throw 'Not enough params';
+    const response = await uploadFile(req, 'products', productid.toString());
+    if (!response.success) throw response.message;
     return res.json({
-      discount: {
-        ...discount[0],
-        photo: getPhotoUrl('discounts', discountid.toString()),
-      },
+      photo: `${response.message}${mod ? `?mod=${Date.now()}` : ''}`,
     });
   } catch (error) {
-    return res.status(400).json({
+    res.status(400).json({
       error: true,
       message: error.toString(),
     });
