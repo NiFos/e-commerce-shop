@@ -11,21 +11,25 @@ async function deleteSubcategoryHandler(
 ) {
   try {
     const user = req.user;
-    if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
-      throw new Error('Unauthorized');
+    if (
+      typeof user?.id === 'undefined' ||
+      !user.admin?.isAdmin ||
+      !user.admin?.fullAccess
+    )
+      throw 'Unauthorized';
 
     const { subcategoryid } = req.query;
 
     const deletedCategories = await categoryModel.deleteSubcategory(
       +subcategoryid
     );
-    if (deletedCategories !== 1) throw new Error('not found!');
+    if (deletedCategories !== 1) throw 'not found!';
 
-    return res.json({ error: false, deletedId: subcategoryid });
+    return res.json({ deletedId: subcategoryid });
   } catch (error) {
     return res.status(400).json({
       error: true,
-      message: error,
+      message: error.toString(),
     });
   }
 }

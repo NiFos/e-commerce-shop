@@ -11,15 +11,17 @@ async function getAllAdminSubcategoriesHandler(
 ) {
   try {
     const user = req.user;
-    if (!user?.id || !user.admin?.isAdmin) throw new Error('Unauthorized');
+    if (typeof user?.id === 'undefined' || !user.admin?.isAdmin)
+      throw 'Unauthorized';
+
     const { categoryid } = req.query;
     const subcategories = await categoryModel.getAllSubcategories(+categoryid);
 
-    return res.json({ error: false, subcategories });
+    return res.json({ subcategories });
   } catch (error) {
     return res.status(400).json({
       error: true,
-      message: error,
+      message: error.toString(),
     });
   }
 }

@@ -12,19 +12,23 @@ async function deleteAdminHandler(
 ) {
   try {
     const user = req.user;
-    if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
-      throw new Error('Unauthorized');
+    if (
+      typeof user?.id === 'undefined' ||
+      !user.admin?.isAdmin ||
+      !user.admin?.fullAccess
+    )
+      throw 'Unauthorized';
 
     const { userid } = req.query;
 
     const adminExist = await adminModel.checkIfAdminExist(+userid);
-    if (!adminExist) throw new Error('Admin not exist');
+    if (!adminExist) throw 'Admin not found';
 
     const deletedAdmin = await adminModel.deleteAdmin(+userid);
-    if (deletedAdmin !== 1) throw new Error('Something went wrong!');
+    if (deletedAdmin !== 1) throw 'Something went wrong!';
 
     const userInfo = await userModel.findUserById(+userid);
-    if (!userInfo[0].user_id) throw new Error('Cannot find user!');
+    if (!userInfo[0]?.user_id) throw 'Cannot find user!';
 
     return res.json({
       user: {
@@ -35,7 +39,7 @@ async function deleteAdminHandler(
   } catch (error) {
     return res.status(400).json({
       error: true,
-      message: error,
+      message: error.toString(),
     });
   }
 }

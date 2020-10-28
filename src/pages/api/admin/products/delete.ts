@@ -3,25 +3,29 @@ import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { productModel } from '../../../../models/product';
 
 /**
- * Create product
+ * Delete product handler
  */
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
-    if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
-      throw new Error('Unauthorized');
+    if (
+      typeof user?.id === 'undefined' ||
+      !user.admin?.isAdmin ||
+      !user.admin?.fullAccess
+    )
+      throw 'Unauthorized';
 
     const { productid } = req.query;
 
     const product = await productModel.deleteProduct(+productid);
 
-    if (product !== 1) throw new Error('Not found!');
+    if (product !== 1) throw 'Not found!';
 
-    return res.json({ error: false, deletedId: productid });
+    return res.json({ deletedId: productid });
   } catch (error) {
     return res.status(400).json({
       error: true,
-      message: error,
+      message: error.toString(),
     });
   }
 }

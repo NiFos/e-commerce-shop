@@ -11,11 +11,15 @@ async function addAdminHandler(
 ) {
   try {
     const user = req.user;
-    if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
-      throw new Error('Unauthorized');
+    if (
+      typeof user?.id === 'undefined' ||
+      !user.admin?.isAdmin ||
+      !user.admin?.fullAccess
+    )
+      throw 'Unauthorized';
 
     const admins = await adminModel.getAllAdmins();
-    if (admins.length <= 0) throw new Error('Not found');
+    if (admins.length <= 0) throw 'Not found';
 
     return res.json({
       admins,
@@ -23,7 +27,7 @@ async function addAdminHandler(
   } catch (error) {
     return res.status(400).json({
       error: true,
-      message: error,
+      message: error.toString(),
     });
   }
 }

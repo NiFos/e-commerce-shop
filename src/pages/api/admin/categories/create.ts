@@ -8,18 +8,22 @@ import { categoryModel } from '../../../../models/category';
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
-    if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
-      throw new Error('Unauthorized');
+    if (
+      typeof user?.id === 'undefined' ||
+      !user.admin?.isAdmin ||
+      !user.admin?.fullAccess
+    )
+      throw 'Unauthorized';
 
     const { title } = req.body;
     const categories = await categoryModel.createCategory(user.id, title);
-    if (!categories[0].category_id) throw new Error('Not create!');
+    if (!categories[0]?.category_id) throw 'Not create!';
 
-    return res.json({ error: false, categories: categories[0] });
+    return res.json({ categories: categories[0] });
   } catch (error) {
     return res.status(401).json({
       error: true,
-      message: error,
+      message: error.toString(),
     });
   }
 }

@@ -8,8 +8,12 @@ import { IProductDataUpdate, productModel } from '../../../../models/product';
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
-    if (!user?.id || !user.admin?.isAdmin || !user.admin?.fullAccess)
-      throw new Error('Unauthorized');
+    if (
+      typeof user?.id === 'undefined' ||
+      !user.admin?.isAdmin ||
+      !user.admin?.fullAccess
+    )
+      throw 'Unauthorized';
 
     const {
       title,
@@ -28,12 +32,12 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     if (techspecs) data.techspecs = techspecs;
     if (quantity) data.quantity = quantity;
     if (subcategoryid) data.subcategory_id = subcategoryid;
+
     const product = await productModel.editProduct(+productid, data);
 
-    if (product <= 0) throw new Error('Not edited!');
+    if (product <= 0) throw 'Not edited!';
 
     return res.json({
-      error: false,
       product: {
         title,
         price,
@@ -47,7 +51,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   } catch (error) {
     return res.status(400).json({
       error: true,
-      message: error,
+      message: error.toString(),
     });
   }
 }

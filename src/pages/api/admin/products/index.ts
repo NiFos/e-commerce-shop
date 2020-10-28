@@ -8,16 +8,17 @@ import { productModel } from '../../../../models/product';
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
-    if (!user?.id || !user.admin?.isAdmin) throw new Error('Unauthorized');
+    if (typeof user?.id === 'undefined' || !user.admin?.isAdmin)
+      throw 'Unauthorized';
 
-    const { pagesize, page } = req.body;
-    const product = await productModel.getAllProducts(pagesize, page);
+    const { pagesize, page } = req.query;
+    const product = await productModel.getAllProducts(+pagesize, +page);
 
-    return res.json({ error: false, product: product[0] });
+    return res.json({ product: product[0] });
   } catch (error) {
     return res.status(400).json({
       error: true,
-      message: error,
+      message: error.toString(),
     });
   }
 }
