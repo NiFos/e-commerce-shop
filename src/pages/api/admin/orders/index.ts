@@ -1,23 +1,21 @@
 import { NextApiResponse } from 'next';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
-import { userModel } from '../../../../models/user';
+import { orderModel } from '../../../../models/order';
 
 /**
- * Handler for adding user to admin list
+ * Get all orders handler
  */
-async function searchUserHandler(
-  req: NextApiRequestWithUser,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
+
     if (typeof user?.id === 'undefined' || !user.admin?.isAdmin)
       throw 'Unauthorized';
 
-    const { username } = req.query;
+    const { pagesize, page } = req.query;
+    const orders = await orderModel.getAllOrders(+pagesize, +page);
 
-    const users = await userModel.findUsers(username.toString());
-    return res.json({ users });
+    return res.json(orders);
   } catch (error) {
     return res.status(400).json({
       error: true,
@@ -25,4 +23,5 @@ async function searchUserHandler(
     });
   }
 }
-export default withUser(searchUserHandler);
+
+export default withUser(handler);
