@@ -28,6 +28,7 @@ export const categoryModel = {
    * @param title - name of new category
    */
   async createCategory(createdBy: number, title: string): Promise<any> {
+    if (typeof createdBy === 'undefined' || !title) return [];
     return await database()
       .insert({ created_by: createdBy, title })
       .into(categoriesTable)
@@ -39,6 +40,7 @@ export const categoryModel = {
    * @param newTitle New title of category
    */
   async editCategory(categoryId: number, newTitle: string): Promise<any> {
+    if (typeof categoryId === 'undefined' || !newTitle) return 0;
     return await database()
       .update({ title: newTitle })
       .where('category_id', '=', categoryId)
@@ -50,6 +52,7 @@ export const categoryModel = {
    * @param categoryId Id category
    */
   async deleteCategory(categoryId: number): Promise<any> {
+    if (typeof categoryId === 'undefined') return 0;
     return await database()
       .delete()
       .from(categoriesTable)
@@ -60,6 +63,7 @@ export const categoryModel = {
    * @param categoryId Id category
    */
   async deleteSubcategory(subcategoryId: number): Promise<any> {
+    if (typeof subcategoryId === 'undefined') return 0;
     return await database()
       .delete()
       .from(subCategoriesTable)
@@ -75,6 +79,12 @@ export const categoryModel = {
     categoryId: number,
     title: string
   ): Promise<any> {
+    if (
+      typeof createdBy === 'undefined' ||
+      typeof categoryId === 'undefined' ||
+      !title
+    )
+      return 0;
     return await database()
       .insert({ category_id: categoryId, created_by: createdBy, title })
       .into(subCategoriesTable)
@@ -86,6 +96,7 @@ export const categoryModel = {
    * @param newTitle New title of category
    */
   async editSubcategory(subcategoryId: number, newTitle: string): Promise<any> {
+    if (typeof subcategoryId === 'undefined' || !newTitle) return 0;
     return await database()
       .update({ title: newTitle })
       .where('subcategory_id', '=', subcategoryId)

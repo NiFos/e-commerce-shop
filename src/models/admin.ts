@@ -18,6 +18,7 @@ export const adminModel = {
    * @param userId - User id
    */
   async checkIfAdminExist(userId: number): Promise<boolean> {
+    if (typeof userId === 'undefined') return false;
     const response = await database()
       .select('*')
       .from(adminsTable)
@@ -32,6 +33,7 @@ export const adminModel = {
    * @param fullAccess - level of access for user (false - only view permissions, true - full access)
    */
   async addUserToAdmins(userId: number, fullAccess: boolean): Promise<any> {
+    if (typeof userId === 'undefined') return [];
     return await database()
       .insert({
         user_id: userId,
@@ -50,6 +52,7 @@ export const adminModel = {
     userId: number,
     fullAccess: boolean
   ): Promise<any> {
+    if (typeof userId === 'undefined') return 0;
     return await database()
       .update({ full_access: fullAccess })
       .where('user_id', '=', userId)
@@ -61,6 +64,7 @@ export const adminModel = {
    * @param userId - User id
    */
   async deleteAdmin(userId: number): Promise<any> {
+    if (typeof userId === 'undefined') return 0;
     return await database()
       .delete()
       .where('user_id', '=', userId)

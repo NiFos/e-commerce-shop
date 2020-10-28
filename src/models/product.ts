@@ -26,7 +26,7 @@ export const productModel = {
    * @param pageSize - Page size
    * @param page - Page
    */
-  async getAllProducts(pageSize: number, page: number): Promise<any> {
+  async getAllProducts(pageSize = 5, page = 1): Promise<any> {
     const offSet = page === 1 ? 0 : page * pageSize - pageSize;
     return await database()
       .select('*')
@@ -39,6 +39,7 @@ export const productModel = {
    * @param productId - Product id
    */
   async getProduct(productId: number): Promise<any> {
+    if (typeof productId === 'undefined') return false;
     return await database()
       .select('*')
       .from(productsTable)
@@ -50,6 +51,7 @@ export const productModel = {
    * @param data - Product data: title, number, quantity, tech specs, description, created by
    */
   async createProduct(data: IProductDataInsert): Promise<any> {
+    if (JSON.stringify(data) === '{}') return [];
     return await database().insert(data).into(productsTable);
   },
   /**
@@ -57,6 +59,8 @@ export const productModel = {
    * @param data data - Product data: title, number, quantity, tech specs, description
    */
   async editProduct(productId: number, data: IProductDataUpdate): Promise<any> {
+    if (typeof productId === 'undefined' || JSON.stringify(data) === '{}')
+      return 0;
     return await database()
       .update(data)
       .from(productsTable)
@@ -72,6 +76,8 @@ export const productModel = {
     plus: boolean,
     amount: number
   ): Promise<any> {
+    if (typeof productId === 'undefined' || typeof amount === 'undefined')
+      return 0;
     if (plus) {
       return await database()
         .table(productsTable)
@@ -89,6 +95,7 @@ export const productModel = {
    * @param productId - Product id to delete
    */
   async deleteProduct(productId: number): Promise<any> {
+    if (typeof productId === 'undefined') return 0;
     return await database()
       .delete()
       .from(productsTable)

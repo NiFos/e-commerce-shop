@@ -31,10 +31,12 @@ export const discountModel = {
    * @param discountId - Discount id
    */
   async getDiscountById(discountId: number): Promise<any> {
+    if (typeof discountId === 'undefined') return [];
     const discounts = await database()
       .select('*')
       .from(discountsTable)
       .where('discount_id', '=', discountId);
+    if (discounts[0]?.discount_id) return [];
     const discountsDetails = await database()
       .select('*')
       .from(discountsDetailsTable)
@@ -51,6 +53,7 @@ export const discountModel = {
    * @param data - Discount data
    */
   async createDiscount(data: IDiscountInsert): Promise<any> {
+    if (JSON.stringify(data) === '{}') return [];
     const discount: any = await database()
       .insert({
         title: data.title,
@@ -61,7 +64,7 @@ export const discountModel = {
       })
       .into(discountsTable);
 
-    if (!discount[0].discount_id) return [];
+    if (!discount[0]?.discount_id) return [];
 
     const productsData = data.products.map((product) => ({
       product_id: product,
@@ -85,6 +88,8 @@ export const discountModel = {
    * @param data - Update discount data
    */
   async editDiscount(discountId: number, data: IDiscountUpdate): Promise<any> {
+    if (typeof discountId === 'undefined' || JSON.stringify(data) === '{}')
+      return 0;
     return database()
       .update(data)
       .where('discount_id', '=', discountId)
@@ -96,6 +101,7 @@ export const discountModel = {
    * @param discountId Id discount to delete
    */
   async deleteDiscount(discountId: number): Promise<any> {
+    if (typeof discountId === 'undefined') return 0;
     const deletedDiscount = await database()
       .delete()
       .from(discountsTable)
