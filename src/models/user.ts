@@ -1,6 +1,7 @@
 import { database } from '../libs/db';
 
 const usersTable = 'users';
+const adminsTable = 'admins';
 export const userModel = {
   /**
    * Search users by username (limited 10 users)
@@ -21,10 +22,27 @@ export const userModel = {
    */
   async findUserById(userId: number): Promise<any> {
     if (typeof userId === 'undefined') return [];
-    return await database()
+    const user = await database()
       .select('*')
       .from(usersTable)
       .where('user_id', '=', userId)
       .limit(1);
+    if (!user[0]?.user_id) return [];
+
+    const admin = await database()
+      .select('*')
+      .from(adminsTable)
+      .where('user_id', '=', userId);
+    const isAdmin = !!admin[0]?.user_id;
+
+    const response = {
+      ...user[0],
+      admin: {
+        isAdmin,
+        fullAccess: admin[0]?.full_access,
+      },
+    };
+
+    return [response];
   },
 };

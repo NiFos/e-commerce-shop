@@ -1,6 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import jwt from 'jsonwebtoken';
 
-export interface NextApiRequestWithUser extends NextApiRequest {
+const jwtSecret = process.env.JWT_SECRET || 'secret';
+
+export interface IUser {
   user?: {
     id?: number;
     username?: string;
@@ -10,6 +13,9 @@ export interface NextApiRequestWithUser extends NextApiRequest {
     };
   };
 }
+
+export interface NextApiRequestWithUser extends NextApiRequest, IUser {}
+
 /**
  * @param handler Pass handler from /api
  */
@@ -17,10 +23,9 @@ export const withUser = (handler: any) => (
   req: NextApiRequestWithUser,
   res: NextApiResponse
 ) => {
-  req.user = {
-    id: 0,
-    username: 'username',
-    admin: { isAdmin: true, fullAccess: true },
-  };
+  const cookie = req.cookies.authorization;
+  const cookiePayload = jwt.verify(cookie, jwtSecret) as any;
+
+  req.user = cookiePayload?.user;
   return handler(req, res);
 };
