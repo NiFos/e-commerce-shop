@@ -58,7 +58,10 @@ export const reviewModel = {
         (user) => review.sender_id === user.user_id
       );
       return {
-        ...review,
+        reviewId: review.review_id,
+        rating: review.rating,
+        text: review.text,
+        date: review.created_on,
         user: {
           username: users[userId].username,
           userId: users[userId].user_id,
