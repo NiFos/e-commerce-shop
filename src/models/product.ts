@@ -101,4 +101,16 @@ export const productModel = {
       .from(productsTable)
       .where('product_id', '=', productId);
   },
+
+  /**
+   * Search products by name
+   * @param name - Search name
+   */
+  async searchProducts(name: string): Promise<any> {
+    if (typeof name === 'undefined') return [];
+    return await database()
+      .select('*')
+      .from(productsTable)
+      .where('title', 'ilike', `%${name}%`);
+  },
 };
