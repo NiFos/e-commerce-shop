@@ -45,4 +45,17 @@ export const userModel = {
 
     return [response];
   },
+
+  /**
+   * Edit user information
+   * @param payload - Update payload (phone, deliveryaddress)
+   */
+  async editUserInformation(userId: number, payload: any) {
+    if (JSON.stringify(payload) === '{}') return 0;
+
+    return await database()
+      .update(payload)
+      .from(usersTable)
+      .where('user_id', '=', userId);
+  },
 };

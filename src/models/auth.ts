@@ -62,7 +62,7 @@ export const authModel = {
       .into(usersTable)
       .returning('*');
     if (!regResponse[0]?.user_id) return [];
-    const hashedPassword = await hash(password, salt);
+    const hashedPassword = await hash(password, +salt);
     const credentialsResponse = await database()
       .insert({
         user_id: regResponse[0].user_id,

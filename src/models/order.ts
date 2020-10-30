@@ -68,4 +68,34 @@ export const orderModel = {
       .where('order_id', '=', orderId);
     return deletedOrder;
   },
+
+  /**
+   * Get all user orders
+   * @param userId - User id
+   */
+  async getUserOrders(userId: number): Promise<any> {
+    const orders = await database()
+      .select('*')
+      .from(ordersTable)
+      .where('ordered_by', '=', userId);
+    if (!orders[0]?.order_id) return [];
+
+    const ordersIds = orders.map((item) => item.order_id);
+    const details = await database()
+      .select('*')
+      .from(orderDetailsTable)
+      .whereIn('order_id', ordersIds);
+    if (!orders[0]?.order_id) return [];
+
+    const response = orders.map((order) => {
+      const products = details.map(
+        (product) => product.order_id === order.order_id
+      );
+      return {
+        ...order,
+        products,
+      };
+    });
+    return response;
+  },
 };

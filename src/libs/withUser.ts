@@ -7,6 +7,8 @@ export interface IUser {
   user?: {
     id?: number;
     username?: string;
+    phone?: string;
+    deliveryaddress?: string;
     admin?: {
       isAdmin?: boolean;
       fullAccess?: boolean;
