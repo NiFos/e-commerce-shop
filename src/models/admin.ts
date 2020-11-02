@@ -1,6 +1,6 @@
 import { database } from '../libs/db';
 
-const adminsTable = 'admins';
+export const adminsTable = 'admins';
 
 /**
  * Admin model

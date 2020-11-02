@@ -1,7 +1,8 @@
 import { database } from '../libs/db';
+import { adminsTable } from './admin';
 
-const usersTable = 'users';
-const adminsTable = 'admins';
+export const usersTable = 'users';
+
 export const userModel = {
   /**
    * Search users by username (limited 10 users)

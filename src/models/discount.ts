@@ -15,8 +15,8 @@ export interface IDiscountUpdate {
   percent_discount?: number;
 }
 
-const discountsTable = 'discounts';
-const discountsDetailsTable = 'discounts_details';
+export const discountsTable = 'discounts';
+export const discountsDetailsTable = 'discounts_details';
 
 export const discountModel = {
   /**

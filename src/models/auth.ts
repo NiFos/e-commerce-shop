@@ -1,9 +1,8 @@
 import { database } from '../libs/db';
 import { compare, hash } from 'bcrypt';
-import { userModel } from './user';
+import { userModel, usersTable } from './user';
 
 const cookieTable = 'users_cookie';
-const usersTable = 'users';
 const usersCredentialsTable = 'users_credentials';
 const salt = process.env.PASSWORD_SALT || 10;
 

@@ -1,7 +1,7 @@
 import { database } from '../libs/db';
+import { usersTable } from './user';
 
-const reviewsTable = 'reviews';
-const usersTable = 'users';
+export const reviewsTable = 'reviews';
 
 export const reviewModel = {
   /**

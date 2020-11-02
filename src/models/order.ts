@@ -1,7 +1,7 @@
 import { database } from '../libs/db';
 
-const ordersTable = 'orders';
-const orderDetailsTable = 'order_detail';
+export const ordersTable = 'orders';
+export const orderDetailsTable = 'order_detail';
 
 export const orderModel = {
   /**
