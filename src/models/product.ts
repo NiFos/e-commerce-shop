@@ -1,6 +1,8 @@
 import { database } from '../libs/db';
 
-const productsTable = 'products';
+export const productsTable = 'products';
+export const tagsTable = 'tags';
+export const productsTagsTable = 'products_tags';
 
 export interface IProductDataInsert {
   title: string;
@@ -32,6 +34,34 @@ export const productModel = {
       .select('*')
       .from(productsTable)
       .offset(offSet)
+      .limit(pageSize);
+  },
+
+  /**
+   * Get all products in subcategory
+   * @param subcategoryId - Subcategory id
+   * @param pageSize - Page size
+   * @param page - Page
+   */
+  async getAllProductsInSubcategory(
+    subcategoryId: number,
+    tags: number[],
+    prices: [number, number],
+    pageSize = 5,
+    after = 0
+  ): Promise<any> {
+    if (typeof subcategoryId === 'undefined') return [];
+    return await database()
+      .select('*')
+      .from(productsTable)
+      .whereBetween('price', prices)
+      .innerJoin(
+        productsTagsTable,
+        `${productsTagsTable}.product_id`,
+        `${productsTable}.product_id`
+      )
+      .whereIn(`${productsTagsTable}.tag_id`, tags)
+      .andWhere('products.product_id', '>', after)
       .limit(pageSize);
   },
   /**

@@ -1,7 +1,8 @@
 import { database } from '../libs/db';
+import { productsTable, productsTagsTable, tagsTable } from './product';
 
-const categoriesTable = 'categories';
-const subCategoriesTable = 'subcategories';
+export const categoriesTable = 'categories';
+export const subCategoriesTable = 'subcategories';
 
 /**
  * Category model
@@ -16,11 +17,54 @@ export const categoryModel = {
   /**
    * Get all categories from database
    */
-  async getAllSubcategories(categoryId: number): Promise<any> {
+  async getAllSubcategories(categoryId?: number): Promise<any> {
+    if (typeof categoryId === 'undefined') {
+      return await database().select('*').from(subCategoriesTable);
+    }
     return await database()
       .select('*')
       .from(subCategoriesTable)
       .where('category_id', '=', categoryId);
+  },
+
+  /**
+   * Get subcategory by id
+   * @param subcategoryId - Subcategory id
+   */
+  async getSubcategory(subcategoryId: number) {
+    return await database()
+      .select('*')
+      .from(subCategoriesTable)
+      .where('subcategory_id', '=', subcategoryId);
+  },
+
+  /**
+   * Get subcategory data, such as: tags, prices
+   * @param subcategoryId - Subcategory id
+   */
+  async getSubcategoryData(subcategoryId: number) {
+    const pricesData: any = await database()
+      .min({ min: 'price' })
+      .max({ max: 'price' })
+      .from(productsTable)
+      .where('subcategory_id', '=', subcategoryId);
+    const tags = await database()
+      .select(`${tagsTable}.tag_id`, `${tagsTable}.title`)
+      .from(productsTable)
+      .innerJoin(
+        productsTagsTable,
+        `${productsTable}.product_id`,
+        `${productsTagsTable}.product_id`
+      )
+      .innerJoin(
+        tagsTable,
+        `${productsTagsTable}.tag_id`,
+        `${tagsTable}.tag_id`
+      );
+    return {
+      prices: [pricesData[0].min, pricesData[0].max],
+      tags,
+    };
   },
 
   /**
