@@ -1,4 +1,5 @@
 import { database } from '../libs/db';
+import { reviewsTable } from './review';
 
 export const productsTable = 'products';
 export const productsSalesTable = 'products_sales';
@@ -39,6 +40,44 @@ export const productModel = {
   },
 
   /**
+   * Get 5 popular products
+   */
+  async getPopularProducts(): Promise<any> {
+    return await database()
+      .select('*')
+      .from(productsTable)
+      .innerJoin(
+        productsSalesTable,
+        `${productsSalesTable}.product_id`,
+        `${productsTable}.product_id`
+      )
+      .orderBy(`${productsSalesTable}.sales`, 'desc')
+      .limit(5);
+  },
+
+  /**
+   * Get 5 top rated
+   */
+  async getTopRated(): Promise<any> {
+    return await database()
+      .select(
+        `${productsTable}.product_id`,
+        `${productsTable}.price`,
+        `${productsTable}.title`
+      )
+      .avg({ rating: 'rating' })
+      .from(productsTable)
+      .innerJoin(
+        reviewsTable,
+        `${reviewsTable}.product_id`,
+        `${productsTable}.product_id`
+      )
+      .limit(5)
+      .groupBy(`${productsTable}.product_id`)
+      .orderBy('rating', 'desc');
+  },
+
+  /**
    * Get all products in subcategory
    * @param subcategoryId - Subcategory id
    * @param pageSize - Page size
@@ -75,6 +114,16 @@ export const productModel = {
       .select('*')
       .from(productsTable)
       .where('product_id', '=', productId)
+      .limit(1);
+  },
+  /**
+   * Get last new product
+   */
+  async getLastNewProduct(): Promise<any> {
+    return await database()
+      .select('*')
+      .from(productsTable)
+      .orderByRaw('RANDOM()')
       .limit(1);
   },
   /**

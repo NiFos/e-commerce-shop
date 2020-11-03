@@ -27,6 +27,17 @@ export const discountModel = {
   },
 
   /**
+   * Get random discount
+   */
+  async getRandomDiscount(): Promise<any> {
+    return await database()
+      .select('*')
+      .from(discountsTable)
+      .limit(1)
+      .orderByRaw('RANDOM()');
+  },
+
+  /**
    * Get discount by id (with affected products)
    * @param discountId - Discount id
    */
