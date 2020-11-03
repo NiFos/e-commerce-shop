@@ -1,5 +1,6 @@
 import { database } from '../libs/db';
 import { cartModel, cartTable } from './cart';
+import { discountsDetailsTable, discountsTable } from './discount';
 
 export const ordersTable = 'orders';
 export const orderDetailsTable = 'order_detail';
@@ -74,11 +75,31 @@ export const orderModel = {
       .returning('*');
     if (order.length <= 0) return [];
 
-    const productsData = products.map((product) => ({
-      order_id: order[0].order_id,
-      product_id: product.product_id,
-      quantity: product.quantity,
-    }));
+    const discounts = await database()
+      .select('percent_discount', 'product_id')
+      .from(discountsTable)
+      .innerJoin(
+        discountsDetailsTable,
+        `${discountsDetailsTable}.discount_id`,
+        `${discountsTable}.discount_id`
+      )
+      .whereIn(
+        'product_id',
+        products.map((item) => item.product_id)
+      );
+
+    const productsData = products.map((product) => {
+      const price = discounts.filter(
+        (item) => item.product_id === product.product_id
+      );
+      return {
+        order_id: order[0].order_id,
+        product_id: product.product_id,
+        quantity: product.quantity,
+        price_one: price[0].percent_discount,
+      };
+    });
+
     const orderDetails = await database()
       .insert(productsData)
       .into(orderDetailsTable)
@@ -102,6 +123,7 @@ export const orderModel = {
         products: orderDetails.map((item) => ({
           productId: item.product_id,
           quantity: item.quantity,
+          priceOne: item.price_one,
         })),
       },
     ];
