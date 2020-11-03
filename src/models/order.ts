@@ -1,4 +1,5 @@
 import { database } from '../libs/db';
+import { cartModel, cartTable } from './cart';
 
 export const ordersTable = 'orders';
 export const orderDetailsTable = 'order_detail';
@@ -51,6 +52,56 @@ export const orderModel = {
       .update({ status })
       .from(ordersTable)
       .where('order_id', '=', orderId);
+  },
+  /**
+   * Create order
+   * @param userId - User id
+   * @param deliveryAddress - Delivery address
+   */
+  async createOrder(userId: number, deliveryAddress: string): Promise<any> {
+    if (typeof userId === 'undefined') return [];
+
+    const products = await cartModel.getUserCart(userId);
+    if (products.length <= 0) return [];
+
+    const order = await database()
+      .insert({
+        delivery_address: deliveryAddress,
+        ordered_by: userId,
+        status: 0,
+      })
+      .into(ordersTable)
+      .returning('*');
+    if (order.length <= 0) return [];
+
+    const productsData = products.map((product) => ({
+      order_id: order[0].order_id,
+      product_id: product.product_id,
+      quantity: product.quantity,
+    }));
+    const orderDetails = await database()
+      .insert(productsData)
+      .into(orderDetailsTable)
+      .returning('*');
+    if (orderDetails.length <= 0) {
+      await database()
+        .delete()
+        .from(ordersTable)
+        .where({ order_id: order[0].order_id });
+      return [];
+    }
+    await database().delete().from(cartTable).where({ user_id: userId });
+    return [
+      {
+        orderId: order[0].order_id,
+        status: order[0].status,
+        deliveryAddress: order[0].delivery_address,
+        products: orderDetails.map((item) => ({
+          productId: item.product_id,
+          quantity: item.quantity,
+        })),
+      },
+    ];
   },
   /**
    * Delete order with returning ordered products amount to quantity
