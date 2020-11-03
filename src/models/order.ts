@@ -90,6 +90,9 @@ export const orderModel = {
         .where({ order_id: order[0].order_id });
       return [];
     }
+    orderDetails.forEach(async (detail) => {
+      await database().increment('sales', detail.quantity);
+    });
     await database().delete().from(cartTable).where({ user_id: userId });
     return [
       {

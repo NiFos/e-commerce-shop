@@ -1,6 +1,7 @@
 import { database } from '../libs/db';
 
 export const productsTable = 'products';
+export const productsSalesTable = 'products_sales';
 export const tagsTable = 'tags';
 export const productsTagsTable = 'products_tags';
 
@@ -82,7 +83,23 @@ export const productModel = {
    */
   async createProduct(data: IProductDataInsert): Promise<any> {
     if (JSON.stringify(data) === '{}') return [];
-    return await database().insert(data).into(productsTable);
+    const product = await database()
+      .insert(data)
+      .into(productsTable)
+      .returning('*');
+    if (product.length <= 0) return [];
+    const sales = await database()
+      .insert({ product_id: product[0].product_id })
+      .into(productsSalesTable)
+      .returning('*');
+    if (sales.length <= 0) {
+      await database()
+        .delete()
+        .from(productsTable)
+        .where({ product_id: product[0].product_id });
+      return [];
+    }
+    return product;
   },
   /**
    * Update product data
