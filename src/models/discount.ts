@@ -6,17 +6,14 @@ export interface IDiscountInsert {
   date_to: Date;
   percent_discount: number;
   created_by: number;
-  products: [number];
+  promocode: string;
 }
 export interface IDiscountUpdate {
   title?: string;
   description?: string;
-  date_to?: Date;
-  percent_discount?: number;
 }
 
 export const discountsTable = 'discounts';
-export const discountsDetailsTable = 'discounts_details';
 
 export const discountModel = {
   /**
@@ -38,7 +35,7 @@ export const discountModel = {
   },
 
   /**
-   * Get discount by id (with affected products)
+   * Get discount by id
    * @param discountId - Discount id
    */
   async getDiscountById(discountId: number): Promise<any> {
@@ -48,15 +45,31 @@ export const discountModel = {
       .from(discountsTable)
       .where('discount_id', '=', discountId);
     if (discounts[0]?.discount_id) return [];
-    const discountsDetails = await database()
-      .select('*')
-      .from(discountsDetailsTable)
-      .where('discount_id', '=', discountId);
 
-    return {
-      ...discounts[0],
-      products: discountsDetails,
-    };
+    return [
+      {
+        discount: discounts[0],
+      },
+    ];
+  },
+
+  /**
+   * Get discount by promocode
+   * @param promocode - Promocode
+   */
+  async getDiscountByPromocode(promocode: string): Promise<any> {
+    if (typeof promocode === 'undefined') return [];
+    const discounts = await database()
+      .select('*')
+      .from(discountsTable)
+      .where('promocode', '=', promocode.toUpperCase());
+    if (discounts[0]?.discount_id) return [];
+
+    return [
+      {
+        discount: discounts[0],
+      },
+    ];
   },
 
   /**
@@ -72,26 +85,16 @@ export const discountModel = {
         date_to: data.date_to,
         percent_discount: data.percent_discount,
         created_by: data.created_by,
+        promocode: data.promocode.toUpperCase(),
       })
       .into(discountsTable);
 
     if (!discount[0]?.discount_id) return [];
-
-    const productsData = data.products.map((product) => ({
-      product_id: product,
-    }));
-    const products = await database()
-      .insert(productsData)
-      .into(discountsDetailsTable);
-
-    if (products.length <= 0) {
-      await discountModel.deleteDiscount(discount[0].discount_id);
-      return [];
-    }
-    return {
-      ...discount[0],
-      products,
-    };
+    return [
+      {
+        discount: discount[0],
+      },
+    ];
   },
 
   /**
@@ -118,11 +121,6 @@ export const discountModel = {
       .from(discountsTable)
       .where('discount_id', '=', discountId);
     if (deletedDiscount !== 1) return 0;
-
-    await database()
-      .delete()
-      .from(discountsDetailsTable)
-      .where('discount_id', '=', discountId);
     return deletedDiscount;
   },
 };

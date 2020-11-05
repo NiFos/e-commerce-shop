@@ -1,6 +1,6 @@
 import { database } from '../libs/db';
 import { cartModel, cartTable } from './cart';
-import { discountsDetailsTable, discountsTable } from './discount';
+import { discountModel } from './discount';
 
 export const ordersTable = 'orders';
 export const orderDetailsTable = 'order_detail';
@@ -59,7 +59,12 @@ export const orderModel = {
    * @param userId - User id
    * @param deliveryAddress - Delivery address
    */
-  async createOrder(userId: number, deliveryAddress: string): Promise<any> {
+  async createOrder(
+    userId: number,
+    deliveryAddress: string,
+    status: number,
+    promocode: string
+  ): Promise<any> {
     if (typeof userId === 'undefined') return [];
 
     const products = await cartModel.getUserCart(userId);
@@ -69,34 +74,21 @@ export const orderModel = {
       .insert({
         delivery_address: deliveryAddress,
         ordered_by: userId,
-        status: 0,
+        status,
+        promocode,
       })
       .into(ordersTable)
       .returning('*');
     if (order.length <= 0) return [];
 
-    const discounts = await database()
-      .select('percent_discount', 'product_id')
-      .from(discountsTable)
-      .innerJoin(
-        discountsDetailsTable,
-        `${discountsDetailsTable}.discount_id`,
-        `${discountsTable}.discount_id`
-      )
-      .whereIn(
-        'product_id',
-        products.map((item) => item.product_id)
-      );
+    const discount = await discountModel.getDiscountByPromocode(promocode);
 
     const productsData = products.map((product) => {
-      const price = discounts.filter(
-        (item) => item.product_id === product.product_id
-      );
       return {
         order_id: order[0].order_id,
         product_id: product.product_id,
         quantity: product.quantity,
-        price_one: price[0].percent_discount,
+        price_one: product.price * (100 - discount[0].percent_discount / 100),
       };
     });
 

@@ -15,14 +15,14 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     )
       throw 'Unauthorized';
 
-    const { title, description, to, percentage, products } = req.body;
+    const { title, description, to, percentage, promocode } = req.body;
     const discount = await discountModel.createDiscount({
       created_by: user.id,
       date_to: to,
       description,
       title,
       percent_discount: percentage,
-      products,
+      promocode,
     });
     if (!discount[0]?.discount_id) throw 'Not create!';
 

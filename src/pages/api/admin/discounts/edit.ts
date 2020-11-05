@@ -15,13 +15,11 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     )
       throw 'Unauthorized';
 
-    const { discountid, title, description, percentage, to } = req.body;
+    const { discountid, title, description } = req.body;
 
     const data: IDiscountUpdate = {};
     if (title) data.title = title;
-    if (to) data.date_to = to;
     if (description) data.description = description;
-    if (percentage) data.percent_discount = percentage;
 
     const categories = await discountModel.editDiscount(+discountid, data);
     if (categories <= 0) throw 'Not found!';
