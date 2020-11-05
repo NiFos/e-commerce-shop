@@ -1,4 +1,5 @@
 import { database } from '../libs/db';
+import { productsTable } from './product';
 
 export const cartTable = 'users_cart';
 export const cartModel = {
@@ -33,6 +34,11 @@ export const cartModel = {
     return await database()
       .select('*')
       .from(cartTable)
+      .innerJoin(
+        productsTable,
+        `${productsTable}.product_id`,
+        `${cartTable}.product_id`
+      )
       .where('user_id', '=', userId);
   },
 
