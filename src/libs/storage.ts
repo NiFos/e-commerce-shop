@@ -38,12 +38,12 @@ export async function uploadFile(
 
     if (!file) return { success: false, message: 'Cannot parse file' };
 
-    await sharp(file.path).jpeg().toFile(`public/upload/${file.name}`);
+    await sharp(file.path).jpeg().toFile(`upload/${file.name}`);
 
     fs.unlinkSync(file.path);
     const response = await storage
       .bucket(bucketName)
-      .upload(`public/upload/${file.name}`, {
+      .upload(`upload/${file.name}`, {
         destination: `${dest}/${name}.jpg`,
         public: true,
         contentType: 'image/jpeg',
