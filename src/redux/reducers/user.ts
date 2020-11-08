@@ -1,26 +1,36 @@
+import Axios from 'axios';
+
 const userReducerTypes = {
-  auth: 'user/AUTH',
+  auth: 'auth/AUTH',
+  authSetError: 'auth/SET_ERROR',
 };
 
 interface IUserReducer {
-  me: {
+  me?: {
     user: {
-      userid: number;
+      id: number;
       username: string;
-      isAdmin: boolean;
+      admin: {
+        isAdmin: boolean;
+        fullAccess?: boolean;
+      };
     };
     cart: [];
   };
+  authError?: string;
 }
 const initialState: IUserReducer = {
-  me: {
+  /* me: {
     user: {
-      userid: 0,
+      id: 0,
       username: '',
-      isAdmin: false,
+      admin: {
+        isAdmin: false,
+      },
     },
     cart: [],
   },
+  authError: '', */
 };
 
 /**
@@ -40,6 +50,13 @@ export const userReducer = (
       };
     }
 
+    case userReducerTypes.authSetError: {
+      return {
+        ...state,
+        authError: payload,
+      };
+    }
+
     default: {
       return state;
     }
@@ -47,3 +64,49 @@ export const userReducer = (
 };
 
 // Actions
+/**
+ * Login action
+ * @param data - Login data
+ */
+export const login = (data: { email: string; password: string }) => async (
+  dispatch: any
+) => {
+  const response = await Axios.post('/api/login', data);
+  if (response?.data?.error) {
+    dispatch(setAuthError(response.data?.message));
+  }
+  dispatch({
+    type: userReducerTypes.auth,
+    payload: response.data,
+  });
+};
+
+/**
+ * Reg action
+ * @param data - Reg data
+ */
+export const register = (data: {
+  username: string;
+  email: string;
+  password: string;
+}) => async (dispatch: any) => {
+  const response = await Axios.post('/api/register', data);
+  if (response?.data?.error) {
+    dispatch(setAuthError(response.data?.message));
+  }
+  dispatch({
+    type: userReducerTypes.auth,
+    payload: response.data,
+  });
+};
+
+/**
+ * Set auth error message
+ * @param message - Message
+ */
+const setAuthError = (payload: string) => {
+  return {
+    type: userReducerTypes.authSetError,
+    payload,
+  };
+};
