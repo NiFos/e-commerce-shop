@@ -1,4 +1,4 @@
-import { Button, Container, Input } from '@material-ui/core';
+import { Button, Container, Divider, Input } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import Axios from 'axios';
 
@@ -30,7 +30,7 @@ export interface IAuthData {
 /**
  * Auth page
  */
-export default function Component(props: Props) {
+export default function Component(props: Props): JSX.Element {
   const [isReg, setIsReg] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
@@ -86,6 +86,14 @@ export default function Component(props: Props) {
     }
 
     setLoading(false);
+  }
+
+  /**
+   * Get google oauth url and redirect google
+   */
+  async function oauthHandler() {
+    const url = await Axios.get('/api/oauth/geturl');
+    router.push(url.data.url);
   }
   return (
     <Container>
@@ -146,6 +154,8 @@ export default function Component(props: Props) {
           </Button>
         </form>
       )}
+      <Divider />
+      <Button onClick={oauthHandler}>Sign-in with Google</Button>
     </Container>
   );
 }
