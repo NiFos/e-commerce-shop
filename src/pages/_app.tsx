@@ -12,7 +12,7 @@ export default function App({ Component, pageProps }: any) {
 
   return (
     <Provider store={store}>
-      <Layout isAdmin={false}>
+      <Layout>
         <Component {...pageProps} />
       </Layout>
     </Provider>

@@ -1,4 +1,5 @@
 import { Container } from '@material-ui/core';
+import { useRouter } from 'next/router';
 import React from 'react';
 
 interface Props {
@@ -9,5 +10,9 @@ interface Props {
  * Admin page
  */
 export default function Admin(props: Props) {
-  return <Container>Admin page</Container>;
+  const router = useRouter();
+  React.useEffect(() => {
+    router.push('/admin/orders');
+  });
+  return <Container>Dashboard</Container>;
 }
