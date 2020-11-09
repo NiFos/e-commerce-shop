@@ -4,6 +4,9 @@ import Axios from 'axios';
 
 import React from 'react';
 import { minLength, validateEmail } from '../../libs/validation';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, register } from '../../redux/reducers/user';
+import { RootState } from '../../redux/store';
 
 interface Props {
   children?: any;
@@ -31,11 +34,22 @@ export interface IAuthData {
  * Auth page
  */
 export default function Component(props: Props): JSX.Element {
+  const dispatch = useDispatch();
+  const state = useSelector((state: RootState) => state);
   const [isReg, setIsReg] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState('');
   const [authData, setAuthData] = React.useState<IAuthData>({});
   const router = useRouter();
+
+  React.useEffect(() => {
+    if (typeof state?.user?.me?.user?.id !== 'undefined') {
+      if (state?.user?.me?.user?.admin?.isAdmin) {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
+    }
+  }, [state]);
 
   /**
    * Change authData
@@ -47,7 +61,6 @@ export default function Component(props: Props): JSX.Element {
     if (type === 'username') valid = minLength(value, 6);
     else if (type === 'password') valid = minLength(value, 6);
     else if (type === 'email') valid = validateEmail(value);
-    setError('');
     setAuthData({
       ...authData,
       [type]: {
@@ -64,27 +77,31 @@ export default function Component(props: Props): JSX.Element {
   async function submitForm() {
     setLoading(true);
     if (isReg) {
-      const response = await Axios.post('/api/register', {
-        username: authData.username?.value,
-        password: authData.password?.value,
-        email: authData.email?.value,
-      });
-      if (typeof response?.data?.user?.id === 'undefined') {
-        setError(response.data?.message);
+      if (
+        typeof authData.username?.value !== 'undefined' ||
+        typeof authData.email?.value !== 'undefined' ||
+        typeof authData.password?.value !== 'undefined'
+      ) {
+        const data = {
+          username: authData.username?.value || '',
+          password: authData.password?.value || '',
+          email: authData.email?.value || '',
+        };
+        dispatch(register(data));
       }
-      router.push('/');
     } else {
-      const response = await Axios.post('/api/login', {
-        password: authData.password?.value,
-        email: authData.email?.value,
-      });
-      if (response.data?.user?.admin?.isAdmin) {
-        router.push('/admin');
-      } else {
-        router.push('/');
+      if (
+        typeof authData.username?.value !== 'undefined' ||
+        typeof authData.email?.value !== 'undefined' ||
+        typeof authData.password?.value !== 'undefined'
+      ) {
+        const data = {
+          password: authData.password?.value || '',
+          email: authData.email?.value || '',
+        };
+        dispatch(login(data));
       }
     }
-
     setLoading(false);
   }
 
@@ -97,7 +114,7 @@ export default function Component(props: Props): JSX.Element {
   }
   return (
     <Container>
-      {error && <span>{error}</span>}
+      {state?.user?.authError && <span>{state?.user?.authError}</span>}
       <label>
         <input
           type="checkbox"

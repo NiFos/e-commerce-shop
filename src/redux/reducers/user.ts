@@ -1,27 +1,25 @@
+import Axios from 'axios';
+
 const userReducerTypes = {
-  auth: 'user/AUTH',
+  auth: 'auth/AUTH',
+  authSetError: 'auth/SET_ERROR',
 };
 
-interface IUserReducer {
-  me: {
-    user: {
-      userid: number;
+export interface IUserReducer {
+  me?: {
+    user?: {
+      id: number;
       username: string;
-      isAdmin: boolean;
+      admin: {
+        isAdmin: boolean;
+        fullAccess?: boolean;
+      };
     };
-    cart: [];
+    cart?: [];
   };
+  authError?: string;
 }
-const initialState: IUserReducer = {
-  me: {
-    user: {
-      userid: 0,
-      username: '',
-      isAdmin: false,
-    },
-    cart: [],
-  },
-};
+const initialState: IUserReducer = {};
 
 /**
  * User reducer
@@ -29,7 +27,7 @@ const initialState: IUserReducer = {
 export const userReducer = (
   state = initialState,
   { type, payload }: any
-): any => {
+): IUserReducer => {
   switch (type) {
     case userReducerTypes.auth: {
       return {
@@ -40,6 +38,13 @@ export const userReducer = (
       };
     }
 
+    case userReducerTypes.authSetError: {
+      return {
+        ...state,
+        authError: payload,
+      };
+    }
+
     default: {
       return state;
     }
@@ -47,3 +52,49 @@ export const userReducer = (
 };
 
 // Actions
+/**
+ * Login action
+ * @param data - Login data
+ */
+export const login = (data: { email: string; password: string }) => async (
+  dispatch: any
+) => {
+  const response = await Axios.post('/api/login', data);
+  if (response?.data?.error) {
+    dispatch(setAuthError(response.data?.message));
+  }
+  dispatch({
+    type: userReducerTypes.auth,
+    payload: response.data,
+  });
+};
+
+/**
+ * Reg action
+ * @param data - Reg data
+ */
+export const register = (data: {
+  username: string;
+  email: string;
+  password: string;
+}) => async (dispatch: any) => {
+  const response = await Axios.post('/api/register', data);
+  if (response?.data?.error) {
+    dispatch(setAuthError(response.data?.message));
+  }
+  dispatch({
+    type: userReducerTypes.auth,
+    payload: response.data,
+  });
+};
+
+/**
+ * Set auth error message
+ * @param message - Message
+ */
+const setAuthError = (payload: string) => {
+  return {
+    type: userReducerTypes.authSetError,
+    payload,
+  };
+};
