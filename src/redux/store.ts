@@ -49,6 +49,8 @@ export const initializeStore = (preloadedState: any) => {
   return _store;
 };
 
+export type RootState = ReturnType<typeof rootReducer>;
+
 /**
  * useStore hook
  */

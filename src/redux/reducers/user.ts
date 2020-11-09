@@ -5,9 +5,9 @@ const userReducerTypes = {
   authSetError: 'auth/SET_ERROR',
 };
 
-interface IUserReducer {
+export interface IUserReducer {
   me?: {
-    user: {
+    user?: {
       id: number;
       username: string;
       admin: {
@@ -15,23 +15,11 @@ interface IUserReducer {
         fullAccess?: boolean;
       };
     };
-    cart: [];
+    cart?: [];
   };
   authError?: string;
 }
-const initialState: IUserReducer = {
-  /* me: {
-    user: {
-      id: 0,
-      username: '',
-      admin: {
-        isAdmin: false,
-      },
-    },
-    cart: [],
-  },
-  authError: '', */
-};
+const initialState: IUserReducer = {};
 
 /**
  * User reducer
@@ -39,7 +27,7 @@ const initialState: IUserReducer = {
 export const userReducer = (
   state = initialState,
   { type, payload }: any
-): any => {
+): IUserReducer => {
   switch (type) {
     case userReducerTypes.auth: {
       return {

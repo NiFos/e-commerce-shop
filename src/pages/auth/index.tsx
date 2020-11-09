@@ -6,6 +6,7 @@ import React from 'react';
 import { minLength, validateEmail } from '../../libs/validation';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, register } from '../../redux/reducers/user';
+import { RootState } from '../../redux/store';
 
 interface Props {
   children?: any;
@@ -34,7 +35,7 @@ export interface IAuthData {
  */
 export default function Component(props: Props): JSX.Element {
   const dispatch = useDispatch();
-  const state = useSelector((state) => state);
+  const state = useSelector((state: RootState) => state);
   const [isReg, setIsReg] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [authData, setAuthData] = React.useState<IAuthData>({});
