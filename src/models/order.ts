@@ -20,6 +20,28 @@ export const orderModel = {
       .limit(pageSize)
       .offset(offSet);
   },
+
+  /**
+   * Get all orders
+   * @param pageSize - Limit orders to return
+   * @param page - Number of page
+   */
+  async getFeed(): Promise<any> {
+    return await database()
+      .select('status', database().raw('COUNT(*)'))
+      .from(ordersTable)
+      .groupByRaw('ROLLUP(status)');
+  },
+
+  /**
+   * Get orders by month (last year)
+   */
+  async getOrdersByMonth(): Promise<any> {
+    return await database()
+      .select(database().raw(`${'date_trunc'}('month', created_on)`))
+      .from(ordersTable)
+      .groupByRaw('1');
+  },
   /**
    * Get all information about order
    * @param orderId - Order id

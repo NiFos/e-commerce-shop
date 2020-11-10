@@ -2,6 +2,7 @@ import Axios from 'axios';
 
 const userReducerTypes = {
   auth: 'auth/AUTH',
+  me: 'auth/ME',
   authSetError: 'auth/SET_ERROR',
 };
 
@@ -30,6 +31,15 @@ export const userReducer = (
 ): IUserReducer => {
   switch (type) {
     case userReducerTypes.auth: {
+      return {
+        ...state,
+        me: {
+          user: payload.user,
+        },
+      };
+    }
+
+    case userReducerTypes.me: {
       return {
         ...state,
         me: {
@@ -95,6 +105,17 @@ export const register = (data: {
 const setAuthError = (payload: string) => {
   return {
     type: userReducerTypes.authSetError,
+    payload,
+  };
+};
+
+/**
+ * Set auth error message
+ * @param message - Message
+ */
+export const meUser = (payload: any) => {
+  return {
+    type: userReducerTypes.me,
     payload,
   };
 };

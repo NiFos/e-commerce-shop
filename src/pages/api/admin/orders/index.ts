@@ -15,7 +15,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     const { pagesize, page } = req.query;
     const orders = await orderModel.getAllOrders(+pagesize, +page);
 
-    return res.json(orders);
+    return res.json({ orders });
   } catch (error) {
     return res.status(400).json({
       error: true,
