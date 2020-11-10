@@ -31,3 +31,24 @@ export const withUser = (handler: any) => (
   req.user = cookiePayload?.user;
   return handler(req, res);
 };
+
+/**
+ * Check user
+ * @param req - Context req
+ */
+export const checkUser = (req: any): IUser => {
+  const cookie = parseAuthCookie(req.headers.cookie);
+  if (!cookie) return {};
+
+  const cookiePayload = jwt.verify(cookie, jwtSecret) as any;
+  return cookiePayload;
+};
+
+/**
+ * Parse auth cookie
+ * @param cookie - Cookie string
+ */
+const parseAuthCookie = (cookie: string): string => {
+  const splitCookie = cookie.split('=');
+  return splitCookie[1];
+};

@@ -75,6 +75,9 @@ export const authUtil = {
     });
     const cookie = serialize('authorization', token, {
       httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
       maxAge: +cookieAge,
     });
     return cookie;
