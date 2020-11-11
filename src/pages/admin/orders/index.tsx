@@ -44,6 +44,7 @@ export default function Component(props: Props): JSX.Element {
   const [currentOrderStatus, setCurrentOrderStatus] = React.useState(-1);
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state.orders);
+  const userState = useSelector((state: RootState) => state.user);
 
   React.useEffect(() => {
     if (typeof state?.currentOrder?.status !== 'undefined') {
@@ -87,7 +88,12 @@ export default function Component(props: Props): JSX.Element {
         <div>{order.orderId}</div>
         <div>{order.status}</div>
         <div>{moment(order.orderDate * 1000).format('lll')}</div>
-        <Button onClick={() => editHandler(order.orderId)}>Edit</Button>
+        <Button
+          onClick={() => editHandler(order.orderId)}
+          disabled={!userState.me?.user?.admin.fullAccess}
+        >
+          Edit
+        </Button>
       </div>
     ));
   }

@@ -41,6 +41,7 @@ export default function Component(props: Props) {
   const router = useRouter();
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state.categories);
+  const userState = useSelector((state: RootState) => state.user);
 
   React.useEffect(() => {
     if (
@@ -137,7 +138,10 @@ export default function Component(props: Props) {
         <Button onClick={() => getSubcategoriesHandler(item.category_id)}>
           {item.title}
         </Button>
-        <Button onClick={() => editHandler(true, item.category_id)}>
+        <Button
+          onClick={() => editHandler(true, item.category_id)}
+          disabled={!!userState.me?.user?.admin.fullAccess}
+        >
           Edit
         </Button>
       </div>

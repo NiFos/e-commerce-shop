@@ -10,7 +10,10 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     user: {
       userid: user?.id,
       username: user?.username,
-      isAdmin: user?.admin?.isAdmin,
+      admin: {
+        isAdmin: user?.admin?.isAdmin,
+        fullAccess: user?.admin?.fullAccess,
+      },
     },
     cart: [],
   });

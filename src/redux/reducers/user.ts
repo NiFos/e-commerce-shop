@@ -3,6 +3,7 @@ import Axios from 'axios';
 const userReducerTypes = {
   auth: 'auth/AUTH',
   me: 'auth/ME',
+  meLoadingStatus: 'auth/ME_LOADING_STATUS',
   authSetError: 'auth/SET_ERROR',
 };
 
@@ -19,6 +20,7 @@ export interface IUserReducer {
     cart?: [];
   };
   authError?: string;
+  meLoadingStatus?: 'loading' | 'loaded' | 'error';
 }
 const initialState: IUserReducer = {};
 
@@ -45,6 +47,13 @@ export const userReducer = (
         me: {
           user: payload.user,
         },
+      };
+    }
+
+    case userReducerTypes.meLoadingStatus: {
+      return {
+        ...state,
+        meLoadingStatus: payload,
       };
     }
 
@@ -110,12 +119,30 @@ const setAuthError = (payload: string) => {
 };
 
 /**
- * Set auth error message
+ * Get information about current user
  * @param message - Message
  */
-export const meUser = (payload: any) => {
-  return {
-    type: userReducerTypes.me,
-    payload,
-  };
+export const meUser = () => async (dispatch: any) => {
+  try {
+    dispatch({
+      type: userReducerTypes.meLoadingStatus,
+      payload: 'loading',
+    });
+
+    const response = await Axios.get('/api/me', { withCredentials: true });
+    dispatch({
+      type: userReducerTypes.me,
+      payload: response.data,
+    });
+
+    dispatch({
+      type: userReducerTypes.meLoadingStatus,
+      payload: 'loaded',
+    });
+  } catch (error) {
+    dispatch({
+      type: userReducerTypes.meLoadingStatus,
+      payload: 'error',
+    });
+  }
 };
