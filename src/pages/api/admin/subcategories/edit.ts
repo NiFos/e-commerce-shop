@@ -18,14 +18,11 @@ async function editSubcategoryHandler(
     )
       throw 'Unauthorized';
 
-    const { subcategoryid, title } = req.body;
-    const categories = await categoryModel.editSubcategory(
-      subcategoryid,
-      title
-    );
+    const { id, title } = req.body;
+    const categories = await categoryModel.editSubcategory(id, title);
     if (categories <= 0) throw 'not found!';
 
-    return res.json({ category: { subcategoryid, title } });
+    return res.json({ category: { id, title } });
   } catch (error) {
     return res.status(400).json({
       error: true,

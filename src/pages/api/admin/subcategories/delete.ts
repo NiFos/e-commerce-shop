@@ -18,14 +18,12 @@ async function deleteSubcategoryHandler(
     )
       throw 'Unauthorized';
 
-    const { subcategoryid } = req.query;
+    const { id } = req.query;
 
-    const deletedCategories = await categoryModel.deleteSubcategory(
-      +subcategoryid
-    );
+    const deletedCategories = await categoryModel.deleteSubcategory(+id);
     if (deletedCategories !== 1) throw 'not found!';
 
-    return res.json({ deletedId: subcategoryid });
+    return res.json({ deletedId: id });
   } catch (error) {
     return res.status(400).json({
       error: true,

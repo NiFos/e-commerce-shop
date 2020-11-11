@@ -15,12 +15,12 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     )
       throw 'Unauthorized';
 
-    const { categoryid, title } = req.body;
+    const { id, title } = req.body;
 
-    const categories = await categoryModel.editCategory(+categoryid, title);
+    const categories = await categoryModel.editCategory(+id, title);
     if (categories <= 0) throw 'not found!';
 
-    return res.json({ category: { categoryid, title } });
+    return res.json({ category: { id, title } });
   } catch (error) {
     return res.status(400).json({
       error: true,

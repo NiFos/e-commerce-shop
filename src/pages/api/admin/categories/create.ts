@@ -21,7 +21,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
 
     return res.json({ categories: categories[0] });
   } catch (error) {
-    return res.status(401).json({
+    return res.status(400).json({
       error: true,
       message: error.toString(),
     });
