@@ -18,17 +18,17 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     const { title, description, to, percentage, promocode } = req.body;
     const discount = await discountModel.createDiscount({
       created_by: user.id,
-      date_to: to,
+      date_to: new Date(to).toISOString(),
       description,
       title,
-      percent_discount: percentage,
+      percent_discount: +percentage,
       promocode,
     });
     if (!discount[0]?.discount_id) throw 'Not create!';
 
-    return res.json({ categories: discount[0] });
+    return res.json({ discount: discount[0] });
   } catch (error) {
-    return res.status(401).json({
+    return res.status(400).json({
       error: true,
       message: error.toString(),
     });

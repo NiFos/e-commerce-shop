@@ -4,6 +4,7 @@ import { settingsReducer } from './settings';
 import { userReducer } from './user';
 import { categoriesReducer } from './categories';
 import { adminsReducer } from './admins';
+import { discountsReducer } from './discounts';
 
 export const rootReducer = combineReducers({
   user: userReducer,
@@ -11,4 +12,5 @@ export const rootReducer = combineReducers({
   settings: settingsReducer,
   categories: categoriesReducer,
   admins: adminsReducer,
+  discounts: discountsReducer,
 });

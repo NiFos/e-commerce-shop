@@ -3,7 +3,7 @@ import { database } from '../libs/db';
 export interface IDiscountInsert {
   title: string;
   description: string;
-  date_to: Date;
+  date_to: string;
   percent_discount: number;
   created_by: number;
   promocode: string;
@@ -87,14 +87,11 @@ export const discountModel = {
         created_by: data.created_by,
         promocode: data.promocode.toUpperCase(),
       })
-      .into(discountsTable);
+      .into(discountsTable)
+      .returning('*');
 
     if (!discount[0]?.discount_id) return [];
-    return [
-      {
-        discount: discount[0],
-      },
-    ];
+    return [discount[0]];
   },
 
   /**
