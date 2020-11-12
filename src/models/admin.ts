@@ -1,4 +1,5 @@
 import { database } from '../libs/db';
+import { usersTable } from './user';
 
 export const adminsTable = 'admins';
 
@@ -10,7 +11,10 @@ export const adminModel = {
    * Get all in admins list
    */
   async getAllAdmins(): Promise<any> {
-    return await database().select('*').from(adminsTable);
+    return await database()
+      .select('*')
+      .from(adminsTable)
+      .innerJoin(usersTable, `${usersTable}.user_id`, `${adminsTable}.user_id`);
   },
 
   /**

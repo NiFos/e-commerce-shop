@@ -11,9 +11,8 @@ const categoriesReducerTypes = {
   getSubcategoriesLoadingStatus: 'categories/GET_SUBCATEGORIES_LOADING_STATUS',
   createLoadingStatus: 'categories/CREATE_LOADING_STATUS',
   editLoadingStatus: 'categories/EDIT_LOADING_STATUS',
-  deleteLoadingStatus: 'categories/EDIT_LOADING_STATUS',
+  deleteLoadingStatus: 'categories/DELETE_LOADING_STATUS',
 };
-// TODO: [V]COMPLETE THIS REDUCER & [V]CATEGORIES SUBMIT HANDLER & CATEGORIES NEW CATEGORY/SUB
 export interface ICategoriesReducer {
   categories?: any[];
   subCategories?: any[];
