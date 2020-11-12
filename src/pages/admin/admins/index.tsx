@@ -153,7 +153,10 @@ export default function Component(props: Props) {
           <div key={item.user_id}>
             <div>{item.username}</div>
             <div>{item.full_access ? 'Full access' : 'View access'}</div>
-            <Button onClick={() => editHandler(item.user_id, item.full_access)}>
+            <Button
+              onClick={() => editHandler(item.user_id, item.full_access)}
+              disabled={!userState?.me?.user?.admin?.fullAccess}
+            >
               Edit
             </Button>
           </div>
@@ -243,7 +246,12 @@ export default function Component(props: Props) {
             Admins with view access:{' '}
             {props.admins.filter((item: any) => !item.full_access).length}
           </div>
-          <Button onClick={addNewHandler}>Add new admin</Button>
+          <Button
+            onClick={addNewHandler}
+            disabled={!userState?.me?.user?.admin?.fullAccess}
+          >
+            Add new admin
+          </Button>
         </div>
       </div>
       {/* Admin list */}
@@ -266,7 +274,10 @@ export default function Component(props: Props) {
  */
 export async function getServerSideProps(context: any) {
   const userData = checkUser(context.req);
-  if (typeof userData?.user?.id === 'undefined')
+  if (
+    typeof userData?.user?.id === 'undefined' ||
+    !userData?.user?.admin?.isAdmin
+  )
     return { props: { error: 'unauth' } };
 
   const reduxStore = initializeStore({});

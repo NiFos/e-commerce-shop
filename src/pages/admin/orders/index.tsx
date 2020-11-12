@@ -177,7 +177,10 @@ export default function Component(props: Props): JSX.Element {
  */
 export async function getServerSideProps(context: any) {
   const userData = checkUser(context.req);
-  if (typeof userData?.user?.id === 'undefined')
+  if (
+    typeof userData?.user?.id === 'undefined' ||
+    !userData?.user?.admin?.isAdmin
+  )
     return { props: { error: 'unauth' } };
 
   const reduxStore = initializeStore({});

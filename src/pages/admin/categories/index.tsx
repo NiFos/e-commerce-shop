@@ -140,7 +140,7 @@ export default function Component(props: Props) {
         </Button>
         <Button
           onClick={() => editHandler(true, item.category_id)}
-          disabled={!!userState.me?.user?.admin.fullAccess}
+          disabled={!userState.me?.user?.admin.fullAccess}
         >
           Edit
         </Button>
@@ -154,7 +154,10 @@ export default function Component(props: Props) {
     return state.subCategories.map((item: any) => (
       <div key={item.subcategory_id}>
         <span>{item.title}</span>
-        <Button onClick={() => editHandler(false, item.subcategory_id)}>
+        <Button
+          onClick={() => editHandler(false, item.subcategory_id)}
+          disabled={!userState?.me?.user?.admin?.fullAccess}
+        >
           Edit
         </Button>
       </div>
@@ -208,7 +211,10 @@ export default function Component(props: Props) {
         <div>
           <div>
             <Typography variant={'body1'}>Categories</Typography>
-            <Button onClick={() => createHandler(true)}>
+            <Button
+              onClick={() => createHandler(true)}
+              disabled={!userState?.me?.user?.admin?.fullAccess}
+            >
               Add new category
             </Button>
           </div>
@@ -220,7 +226,10 @@ export default function Component(props: Props) {
           <div>
             <div>
               <Typography variant={'body1'}>Subcategories</Typography>
-              <Button onClick={() => createHandler(false)}>
+              <Button
+                onClick={() => createHandler(false)}
+                disabled={!userState?.me?.user?.admin?.fullAccess}
+              >
                 Add new subcategory
               </Button>
             </div>
@@ -241,7 +250,10 @@ export default function Component(props: Props) {
  */
 export async function getServerSideProps(context: any) {
   const userData = checkUser(context.req);
-  if (typeof userData?.user?.id === 'undefined')
+  if (
+    typeof userData?.user?.id === 'undefined' ||
+    !userData?.user?.admin?.isAdmin
+  )
     return { props: { error: 'unauth' } };
 
   const reduxStore = initializeStore({});

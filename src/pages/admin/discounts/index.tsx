@@ -11,3 +11,15 @@ interface Props {
 export default function Component(props: Props) {
   return <Container>Discounts</Container>;
 }
+
+/**
+ * Ssr
+ */
+export async function getServerSideProps(context: any) {
+  const userData = checkUser(context.req);
+  if (
+    typeof userData?.user?.id === 'undefined' ||
+    !userData?.user?.admin?.isAdmin
+  )
+    return { props: { error: 'unauth' } };
+}
