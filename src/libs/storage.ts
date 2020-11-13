@@ -49,6 +49,7 @@ export async function uploadFile(
         contentType: 'image/jpeg',
         gzip: true,
       });
+    fs.unlinkSync(`upload/${file.name}`);
     if (typeof response[0]?.id === 'undefined') throw 'Not uploaded';
 
     return {
