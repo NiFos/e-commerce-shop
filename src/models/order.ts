@@ -17,7 +17,7 @@ export const orderModel = {
     return await database()
       .select('*')
       .from(ordersTable)
-      .limit(pageSize)
+      .limit(pageSize + 1)
       .offset(offSet);
   },
 

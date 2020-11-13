@@ -23,6 +23,8 @@ import {
 } from '../../../redux/reducers/orders';
 import { initializeStore, RootState } from '../../../redux/store';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { Pagination } from '../../../components/Pagination';
+import { useRouter } from 'next/router';
 
 interface IOrder {
   orderId: number;
@@ -32,6 +34,8 @@ interface IOrder {
 interface Props {
   children?: any;
   orders: IOrder[];
+  hasMore: boolean;
+  page: number;
   feed: any[];
   chartData: any[];
 }
@@ -43,6 +47,7 @@ export default function Component(props: Props): JSX.Element {
   const [currentOrder, setCurrentOrder] = React.useState(-1);
   const [currentOrderStatus, setCurrentOrderStatus] = React.useState(-1);
   const dispatch = useDispatch();
+  const router = useRouter();
   const state = useSelector((state: RootState) => state.orders);
   const userState = useSelector((state: RootState) => state.user);
 
@@ -51,6 +56,18 @@ export default function Component(props: Props): JSX.Element {
       setCurrentOrderStatus(state?.currentOrder?.status);
     }
   }, [state]);
+
+  /**
+   *
+   * @param next If true current page +1
+   */
+  function pagination(next: boolean) {
+    const currentPage = router.query.page || 1;
+    router.push({
+      pathname: router.pathname,
+      query: `page=${next ? '' + (+currentPage + 1) : '' + (+currentPage - 1)}`,
+    });
+  }
 
   /**
    * Edit handler
@@ -168,6 +185,12 @@ export default function Component(props: Props): JSX.Element {
         </div>
         <div>{renderOrders()}</div>
       </div>
+      <Pagination
+        next={() => pagination(true)}
+        prev={() => pagination(false)}
+        currentPage={+props.page}
+        hasMore={props.hasMore}
+      />
     </Container>
   );
 }
@@ -187,6 +210,10 @@ export async function getServerSideProps(context: any) {
   const { pagesize, page } = context.query;
 
   const orders = await orderModel.getAllOrders(+pagesize, +page);
+  const hasMore = orders.length > +pagesize;
+  if (hasMore) {
+    orders.splice(orders.length - 1, 1);
+  }
   await reduxStore.dispatch(getOrders(orders));
 
   const feed = await orderModel.getFeed();
@@ -215,6 +242,8 @@ export async function getServerSideProps(context: any) {
       orders: [
         { orderId: 0, status: 0, orderDate: 1604995348 },
       ] /* reduxStore.getState().orders.orders */,
+      hasMore,
+      page: page || 1,
     },
   };
 }

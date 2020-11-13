@@ -26,10 +26,13 @@ import {
 import { initializeStore, RootState } from '../../../redux/store';
 import { UploadPhotoModal } from '../../../components/Modals/uploadPhoto';
 import moment from 'moment';
+import { Pagination } from '../../../components/Pagination';
 
 interface Props {
   children?: any;
   products: any[];
+  hasMore: boolean;
+  page: number;
 }
 
 interface IProductData {
@@ -80,6 +83,18 @@ export default function Component(props: Props) {
       router.events.off('routeChangeComplete', () => setLoading(false));
     };
   }, []);
+
+  /**
+   *
+   * @param next If true current page +1
+   */
+  function pagination(next: boolean) {
+    const currentPage = router.query.page || 1;
+    router.push({
+      pathname: router.pathname,
+      query: `page=${next ? '' + (+currentPage + 1) : '' + (+currentPage - 1)}`,
+    });
+  }
 
   /**
    * Change product data values
@@ -357,6 +372,12 @@ export default function Component(props: Props) {
 
       {/* Products */}
       <div>{loading ? <CircularProgress /> : renderProducts()}</div>
+      <Pagination
+        prev={() => pagination(false)}
+        next={() => pagination(true)}
+        currentPage={props.page}
+        hasMore={props.hasMore}
+      />
     </Container>
   );
 }
@@ -375,7 +396,12 @@ export async function getServerSideProps(context: any) {
   const pageSize = 5;
 
   const reduxStore = initializeStore({});
-  const products = await productModel.getAllProducts(pageSize, +page);
+  const products = await productModel.getAllProducts(pageSize, +page || 1);
+  const hasMore = products.length > +pageSize;
+  if (hasMore) {
+    products.splice(products.length - 1, 1);
+  }
+
   const productsData = products.map((item: any) => ({
     ...item,
     photo: getPhotoUrl('products', item.product_id),
@@ -385,6 +411,8 @@ export async function getServerSideProps(context: any) {
   return {
     props: {
       products: reduxStore.getState().products.products,
+      hasMore,
+      page: +page || 1,
     },
   };
 }

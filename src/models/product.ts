@@ -36,7 +36,7 @@ export const productModel = {
       .select('*')
       .from(productsTable)
       .offset(offSet)
-      .limit(pageSize);
+      .limit(pageSize + 1);
   },
 
   /**
