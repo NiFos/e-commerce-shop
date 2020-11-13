@@ -18,6 +18,7 @@ import moment from 'moment';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { UploadPhotoModal } from '../../../components/Modals/uploadPhoto';
 import { getPhotoUrl } from '../../../libs/storage';
 import { checkUser } from '../../../libs/withUser';
 import { discountModel } from '../../../models/discount';
@@ -73,7 +74,7 @@ export default function Component(props: Props) {
   }, [state]);
 
   /**
-   * Change new discount data values
+   * Change discount data values
    * @param name - Name of property
    * @param value - Value
    */
@@ -278,21 +279,12 @@ export default function Component(props: Props) {
       </Dialog>
 
       {/* Upload photo modal */}
-      <Dialog open={openUploadPhoto} onClose={cleanUploadPhoto}>
-        <DialogTitle>Upload photo</DialogTitle>
-        <DialogContent>
-          <img src={state.newDiscount?.photo} alt="Photo" />
-          <input
-            type="file"
-            onChange={(e) => uploadPhotoHandler(e.target.files)}
-            multiple={false}
-            accept={'image/*'}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={cleanUploadPhoto}>Submit</Button>
-        </DialogActions>
-      </Dialog>
+      <UploadPhotoModal
+        isOpen={openUploadPhoto}
+        submitHandler={cleanUploadPhoto}
+        uploadHandler={uploadPhotoHandler}
+        imageSrc={state.newDiscount?.photo}
+      />
 
       {/* Edit discount modal */}
       <Dialog
@@ -321,7 +313,6 @@ export default function Component(props: Props) {
           <Button onClick={submitEdit}>Submit</Button>
         </DialogActions>
       </Dialog>
-
       {/* Information */}
       <div>
         <div>Total discounts - {props.discounts.length}</div>

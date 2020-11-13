@@ -153,7 +153,7 @@ export default function Component(props: Props) {
   function renderSubcategories() {
     return state.subCategories.map((item: any) => (
       <div key={item.subcategory_id}>
-        <span>{item.title}</span>
+        <span>Id - {item.subcategory_id}</span> <span>{item.title}</span>
         <Button
           onClick={() => editHandler(false, item.subcategory_id)}
           disabled={!userState?.me?.user?.admin?.fullAccess}
