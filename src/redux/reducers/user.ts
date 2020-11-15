@@ -146,3 +146,19 @@ export const meUser = () => async (dispatch: any) => {
     });
   }
 };
+
+/**
+ * Logout user
+ */
+export const logoutUser = () => async (dispatch: any) => {
+  try {
+    const response = await Axios.get('/api/logout', { withCredentials: true });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    dispatch({
+      type: userReducerTypes.me,
+      payload: {},
+    });
+  }
+};

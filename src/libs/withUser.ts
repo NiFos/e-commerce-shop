@@ -26,6 +26,7 @@ export const withUser = (handler: any) => (
   res: NextApiResponse
 ) => {
   const cookie = req.cookies.authorization;
+  if (typeof cookie === 'undefined') return handler(req, res);
   const cookiePayload = jwt.verify(cookie, jwtSecret) as any;
 
   req.user = cookiePayload?.user;

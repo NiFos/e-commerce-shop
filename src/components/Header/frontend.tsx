@@ -7,9 +7,13 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core';
-import Link from 'next/link';
 import SearchIcon from '@material-ui/icons/Search';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { useRouter } from 'next/router';
+import { logoutUser } from '../../redux/reducers/user';
+import { ProfilePopup } from './profilePopup';
 
 interface Props {
   children?: any;
@@ -35,8 +39,12 @@ const useStyles = makeStyles({
  */
 export default function Component(props: Props) {
   const classes = useStyles();
+  const userState = useSelector((state: RootState) => state.user);
   const [categoriesOpen, setCategoriesOpen] = React.useState(false);
   const [searchOpen, setSearchOpen] = React.useState(false);
+  const [profileOpen, setProfileOpen] = React.useState(false);
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   /**
    * Open / Close categories modal on click
@@ -51,6 +59,26 @@ export default function Component(props: Props) {
   function handleSearchBtnClick() {
     setSearchOpen(!searchOpen);
   }
+
+  /**
+   * Open / Close search modal on click
+   */
+  function handleProfileBtnClick() {
+    setProfileOpen(!profileOpen);
+  }
+
+  /**
+   * Handle pop up clicks
+   * @param route - '/profile', '/cart', 'logout'
+   */
+  function handlePopupClick(route: '/profile' | '/cart' | '/logout') {
+    if (route === '/logout') {
+      dispatch(logoutUser());
+    } else {
+      router.push(route);
+    }
+    handleProfileBtnClick();
+  }
   return (
     <Container className={classes.header}>
       <div className={classes.content}>
@@ -63,7 +91,16 @@ export default function Component(props: Props) {
           <IconButton onClick={handleSearchBtnClick}>
             <SearchIcon />
           </IconButton>
-          <Avatar>NiFos</Avatar>
+          <div>
+            <Avatar onClick={handleProfileBtnClick}>NiFos</Avatar>
+            {profileOpen && (
+              <ProfilePopup
+                closeHandler={handleProfileBtnClick}
+                handleClick={handlePopupClick}
+                cartItems={userState.me?.cart?.length || 0}
+              />
+            )}
+          </div>
         </div>
       </div>
       <Divider />

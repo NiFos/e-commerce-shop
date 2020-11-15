@@ -66,6 +66,20 @@ export const authUtil = {
   },
 
   /**
+   * Delete cookies
+   */
+  clearCookie(res: NextApiResponse): any {
+    const cookie = serialize('authorization', '', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+      maxAge: -1,
+    });
+    res.setHeader('Set-Cookie', [cookie]);
+  },
+
+  /**
    * Gen cookie with payload
    * @param payload - Payload object (user)
    */
