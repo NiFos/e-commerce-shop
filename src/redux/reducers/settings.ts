@@ -5,7 +5,7 @@ export interface ISettingsReducer {
   language: 'ru' | 'en';
 }
 const initialState: ISettingsReducer = {
-  language: 'ru',
+  language: 'en',
 };
 
 /**
@@ -34,6 +34,7 @@ export const settingsReducer = (
  * Change language action
  */
 export const changeLanguage = (language: 'ru' | 'en') => {
+  localStorage.setItem('language', language);
   return {
     type: settingsReducerTypes.changeLanguage,
     payload: language,

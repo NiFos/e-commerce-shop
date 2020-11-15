@@ -178,11 +178,16 @@ export const orderModel = {
     if (!orders[0]?.order_id) return [];
 
     const response = orders.map((order) => {
-      const products = details.map(
+      const products = details.filter(
         (product) => product.order_id === order.order_id
       );
       return {
         ...order,
+        totalPrice: products.reduce(
+          (sum, currentValue) =>
+            sum + currentValue.price_one * currentValue.quantity,
+          0
+        ),
         products,
       };
     });

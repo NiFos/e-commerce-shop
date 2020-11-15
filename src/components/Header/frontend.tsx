@@ -91,16 +91,20 @@ export default function Component(props: Props) {
           <IconButton onClick={handleSearchBtnClick}>
             <SearchIcon />
           </IconButton>
-          <div>
-            <Avatar onClick={handleProfileBtnClick}>NiFos</Avatar>
-            {profileOpen && (
-              <ProfilePopup
-                closeHandler={handleProfileBtnClick}
-                handleClick={handlePopupClick}
-                cartItems={userState.me?.cart?.length || 0}
-              />
-            )}
-          </div>
+          {userState.me?.user?.userid ? (
+            <div>
+              <Avatar onClick={handleProfileBtnClick}>NiFos</Avatar>
+              {profileOpen && (
+                <ProfilePopup
+                  closeHandler={handleProfileBtnClick}
+                  handleClick={handlePopupClick}
+                  cartItems={userState.me?.cart?.length || 0}
+                />
+              )}
+            </div>
+          ) : (
+            <Button onClick={() => router.push('/auth')}>Auth</Button>
+          )}
         </div>
       </div>
       <Divider />

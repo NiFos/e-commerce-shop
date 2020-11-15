@@ -4,13 +4,14 @@ const userReducerTypes = {
   auth: 'auth/AUTH',
   me: 'auth/ME',
   meLoadingStatus: 'auth/ME_LOADING_STATUS',
+  editLoadingStatus: 'auth/ME_LOADING_STATUS',
   authSetError: 'auth/SET_ERROR',
 };
 
 export interface IUserReducer {
   me?: {
     user?: {
-      id: number;
+      userid: number;
       username: string;
       admin: {
         isAdmin: boolean;
@@ -18,9 +19,17 @@ export interface IUserReducer {
       };
     };
     cart?: [];
+    profileInfo?: {
+      orders?: any[];
+      username?: string;
+      deliveryAddress?: string;
+      phone?: string;
+      created_on?: string;
+    };
   };
   authError?: string;
   meLoadingStatus?: 'loading' | 'loaded' | 'error';
+  editLoadingStatus?: 'loading' | 'loaded' | 'error';
 }
 const initialState: IUserReducer = {};
 
@@ -45,7 +54,8 @@ export const userReducer = (
       return {
         ...state,
         me: {
-          user: payload.user,
+          ...state.me,
+          ...payload,
         },
       };
     }
@@ -54,6 +64,13 @@ export const userReducer = (
       return {
         ...state,
         meLoadingStatus: payload,
+      };
+    }
+
+    case userReducerTypes.editLoadingStatus: {
+      return {
+        ...state,
+        editLoadingStatus: payload,
       };
     }
 
@@ -159,6 +176,64 @@ export const logoutUser = () => async (dispatch: any) => {
     dispatch({
       type: userReducerTypes.me,
       payload: {},
+    });
+  }
+};
+
+/**
+ * Get profile information
+ * @param username - Username
+ * @param phone - Phone
+ * @param deliveryAddress - Delivery address
+ * @param orders - Orders
+ */
+export const getProfileInfo = (
+  username: string,
+  phone: string,
+  deliveryAddress: string,
+  orders: any[]
+) => {
+  return {
+    type: userReducerTypes.me,
+    payload: {
+      profileInfo: {
+        orders,
+        username,
+        deliveryAddress,
+        phone,
+      },
+    },
+  };
+};
+
+/**
+ * Edit user information
+ * @param payload - Phone, Delivery address
+ */
+export const editUserInfo = (
+  phone: string | undefined,
+  deliveryAddress: string | undefined
+) => async (dispatch: any) => {
+  try {
+    dispatch({
+      type: userReducerTypes.editLoadingStatus,
+      payload: 'loading',
+    });
+    const response = await Axios.post(
+      '/api/profile/edit',
+      { phone, deliveryaddress: deliveryAddress },
+      {
+        withCredentials: true,
+      }
+    );
+    dispatch({
+      type: userReducerTypes.editLoadingStatus,
+      payload: 'loaded',
+    });
+  } catch (error) {
+    dispatch({
+      type: userReducerTypes.editLoadingStatus,
+      payload: 'error',
     });
   }
 };

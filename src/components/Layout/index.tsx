@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { meUser } from '../../redux/reducers/user';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { changeLanguage } from '../../redux/reducers/settings';
 
 interface Props {
   children: any;
@@ -20,6 +21,10 @@ export default function Component(props: Props) {
   const state = useSelector((state: RootState) => state.user);
   React.useEffect(() => {
     dispatch(meUser());
+    const language = localStorage.getItem('language');
+    if (typeof language !== 'undefined' && language !== null) {
+      dispatch(changeLanguage(language as 'ru' | 'en'));
+    }
   }, []);
   return (
     <div>
