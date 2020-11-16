@@ -8,16 +8,16 @@ import { categoryModel } from '../../../models/category';
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const categories = await categoryModel.getAllCategories();
-    const subCategories = await categoryModel.getAllCategories();
+    const subCategories = await categoryModel.getAllSubcategories();
     const categoriesData = categories.map((category: any) => {
       return {
         title: category.title,
         id: category.category_id,
-        subCategories: subCategories.map((subCategory: any) => {
-          if (subCategory.category_id === category.category_id)
+        subcategories: subCategories.map((subcategory: any) => {
+          if (subcategory.category_id === category.category_id)
             return {
-              title: subCategory.title,
-              subCategoryId: subCategory.subcategory_id,
+              title: subcategory.title,
+              id: subcategory.subcategory_id,
             };
         }),
       };

@@ -14,6 +14,8 @@ import { RootState } from '../../redux/store';
 import { useRouter } from 'next/router';
 import { logoutUser } from '../../redux/reducers/user';
 import { ProfilePopup } from './profilePopup';
+import { Categories } from '../Categories';
+import Link from 'next/link';
 
 interface Props {
   children?: any;
@@ -81,9 +83,12 @@ export default function Component(props: Props) {
   }
   return (
     <Container className={classes.header}>
+      <Categories open={categoriesOpen} onClose={handleCategoryBtnClick} />
       <div className={classes.content}>
         <div className={classes.items}>
-          <Typography variant={'h4'}>{name}</Typography>
+          <Link href="/">
+            <Typography variant={'h4'}>{name}</Typography>
+          </Link>
           <Divider orientation="vertical" />
           <Button onClick={handleCategoryBtnClick}>Categories</Button>
         </div>

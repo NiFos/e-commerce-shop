@@ -7,7 +7,10 @@ const axiosInstance = Axios.create({
 
 const categoriesReducerTypes = {
   getCategories: 'categories/GET_CATEGORIES',
+  getPublicCategories: 'categories/GET_PUBLIC_CATEGORIES',
   getSubcategories: 'categories/GET_SUBCATEGORIES',
+  getPublicCategoriesLoadingStatus:
+    'categories/GET_SUBCATEGORIES_LOADING_STATUS',
   getSubcategoriesLoadingStatus: 'categories/GET_SUBCATEGORIES_LOADING_STATUS',
   createLoadingStatus: 'categories/CREATE_LOADING_STATUS',
   editLoadingStatus: 'categories/EDIT_LOADING_STATUS',
@@ -15,7 +18,9 @@ const categoriesReducerTypes = {
 };
 export interface ICategoriesReducer {
   categories?: any[];
+  publicCategories?: any[];
   subCategories?: any[];
+  getPublicCategoriesLoadingStatus?: 'loading' | 'error' | 'loaded';
   getSubcategoriesLoadingStatus?: 'loading' | 'error' | 'loaded';
   createLoadingStatus?: 'loading' | 'error' | 'loaded';
   editLoadingStatus?: 'loading' | 'error' | 'loaded';
@@ -42,6 +47,20 @@ export const categoriesReducer = (
       return {
         ...state,
         subCategories: payload,
+      };
+    }
+
+    case categoriesReducerTypes.getPublicCategories: {
+      return {
+        ...state,
+        publicCategories: payload,
+      };
+    }
+
+    case categoriesReducerTypes.getPublicCategoriesLoadingStatus: {
+      return {
+        ...state,
+        getPublicCategoriesLoadingStatus: payload,
       };
     }
 
@@ -88,6 +107,32 @@ export const getCategories = (categories: any[]) => {
     type: categoriesReducerTypes.getCategories,
     payload: categories,
   };
+};
+
+/**
+ * Get categories action
+ */
+export const getPublicCategories = () => async (dispatch: any) => {
+  try {
+    dispatch({
+      type: categoriesReducerTypes.getPublicCategoriesLoadingStatus,
+      payload: 'loading',
+    });
+    const response = await Axios.get('/api/category/getAll');
+    dispatch({
+      type: categoriesReducerTypes.getPublicCategories,
+      payload: response.data.categories,
+    });
+    dispatch({
+      type: categoriesReducerTypes.getPublicCategoriesLoadingStatus,
+      payload: 'loaded',
+    });
+  } catch (error) {
+    dispatch({
+      type: categoriesReducerTypes.getPublicCategoriesLoadingStatus,
+      payload: 'error',
+    });
+  }
 };
 
 /**
