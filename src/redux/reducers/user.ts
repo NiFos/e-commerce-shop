@@ -1,11 +1,13 @@
 import Axios from 'axios';
 
 const userReducerTypes = {
-  auth: 'auth/AUTH',
-  me: 'auth/ME',
-  meLoadingStatus: 'auth/ME_LOADING_STATUS',
-  editLoadingStatus: 'auth/ME_LOADING_STATUS',
-  authSetError: 'auth/SET_ERROR',
+  auth: 'user/AUTH',
+  me: 'user/ME',
+  addToCart: 'user/ADD_TO_CART',
+  meLoadingStatus: 'user/ME_LOADING_STATUS',
+  addToCartLoadingStatus: 'user/ADD_TO_CART_LOADING_STATUS',
+  editLoadingStatus: 'user/ME_LOADING_STATUS',
+  authSetError: 'user/SET_ERROR',
 };
 
 export interface IUserReducer {
@@ -18,7 +20,7 @@ export interface IUserReducer {
         fullAccess?: boolean;
       };
     };
-    cart?: [];
+    cart?: any;
     profileInfo?: {
       orders?: any[];
       username?: string;
@@ -28,6 +30,7 @@ export interface IUserReducer {
     };
   };
   authError?: string;
+  addToCartLoadingStatus?: 'loading' | 'loaded' | 'error';
   meLoadingStatus?: 'loading' | 'loaded' | 'error';
   editLoadingStatus?: 'loading' | 'loaded' | 'error';
 }
@@ -57,6 +60,24 @@ export const userReducer = (
           ...state.me,
           ...payload,
         },
+      };
+    }
+
+    case userReducerTypes.addToCart: {
+      const oldCart = [...state.me?.cart];
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          cart: [oldCart, ...payload],
+        },
+      };
+    }
+
+    case userReducerTypes.addToCartLoadingStatus: {
+      return {
+        ...state,
+        addToCartLoadingStatus: payload,
       };
     }
 
@@ -103,6 +124,43 @@ export const login = (data: { email: string; password: string }) => async (
     type: userReducerTypes.auth,
     payload: response.data,
   });
+};
+
+/**
+ * Add product to cart
+ * @param productId - Product id
+ */
+export const addProductToCart = (productId: number, quantity: number) => async (
+  dispatch: any
+) => {
+  try {
+    dispatch({
+      type: userReducerTypes.addToCartLoadingStatus,
+      payload: 'loading',
+    });
+    const response = await Axios.post('/api/cart/add', {
+      productId,
+      quantity,
+    });
+    dispatch({
+      type: userReducerTypes.addToCart,
+      payload: [
+        {
+          productId,
+          quantity,
+        },
+      ],
+    });
+    dispatch({
+      type: userReducerTypes.addToCartLoadingStatus,
+      payload: 'loaded',
+    });
+  } catch (error) {
+    dispatch({
+      type: userReducerTypes.addToCartLoadingStatus,
+      payload: error.toString(),
+    });
+  }
 };
 
 /**

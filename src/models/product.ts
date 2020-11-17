@@ -78,6 +78,13 @@ export const productModel = {
   },
 
   /**
+   * Get all products ids
+   */
+  async getIds(): Promise<any> {
+    return await database().select('product_id').from(productsTable);
+  },
+
+  /**
    * Get all products in subcategory
    * @param subcategoryId - Subcategory id
    * @param pageSize - Page size

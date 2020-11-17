@@ -29,7 +29,7 @@ export const cartModel = {
    * Get user products in cart
    * @param userId - User id
    */
-  async getUserCart(userId: number) {
+  async getUserCart(userId: number | undefined) {
     if (typeof userId === 'undefined') return [];
     return await database()
       .select('*')

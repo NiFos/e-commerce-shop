@@ -232,7 +232,9 @@ export default function Component(props: Props) {
         </div>
         <div>
           <div>
-            <div>{item.title}</div>
+            <div>
+              {item.product_id} - {item.title}
+            </div>
             <Button
               onClick={() => productHandler(false, item.product_id)}
               disabled={!userState.me?.user?.admin.fullAccess}

@@ -9,15 +9,15 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const user = req.user;
     if (typeof user?.id === 'undefined') throw 'Unauthorized';
-    const { productid, rating, text } = req.body;
+    const { productId, rating, text } = req.body;
 
     const response = await reviewModel.addReview(
-      +productid,
+      +productId,
       user.id,
       +rating,
       text
     );
-    if (response.length <= 0) return res.json({});
+    if (response.length <= 0) throw 'Not created!';
     return res.json({
       reviewId: response[0].review_id,
       user: {

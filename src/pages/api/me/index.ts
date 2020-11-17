@@ -1,11 +1,13 @@
 import { NextApiResponse } from 'next';
 import { NextApiRequestWithUser, withUser } from '../../../libs/withUser';
+import { cartModel } from '../../../models/cart';
 
 /**
  * Me handler
  */
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   const user = req.user;
+  const cart = await cartModel.getUserCart(user?.id);
   return res.json({
     user: {
       userid: user?.id,
@@ -15,7 +17,10 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
         fullAccess: user?.admin?.fullAccess,
       },
     },
-    cart: [],
+    cart: cart.map((item: any) => ({
+      productId: item.product_id,
+      quantity: item.quantity,
+    })),
   });
 }
 

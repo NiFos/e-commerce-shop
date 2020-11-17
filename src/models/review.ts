@@ -42,12 +42,17 @@ export const reviewModel = {
     if (typeof productId === 'undefined') return [];
 
     const reviews = await database()
-      .select('*')
+      .select(`${reviewsTable}.*`, `${usersTable}.username`)
       .from(reviewsTable)
+      .innerJoin(
+        usersTable,
+        `${reviewsTable}.sender_id`,
+        `${usersTable}.user_id`
+      )
       .where('product_id', '=', productId);
     if (reviews.length <= 0) return [];
 
-    const sendersIds = reviews.map((item) => item.sender_id);
+    /* const sendersIds = reviews.map((item) => item.sender_id);
     const users = await database()
       .select('username', 'user_id')
       .from(usersTable)
@@ -67,7 +72,7 @@ export const reviewModel = {
           userId: users[userId].user_id,
         },
       };
-    });
-    return response;
+    }); */
+    return reviews;
   },
 };

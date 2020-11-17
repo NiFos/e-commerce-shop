@@ -15,6 +15,7 @@ const productsReducerTypes = {
   editLoadingStatus: 'products/EDIT_LOADING_STATUS',
   deleteLoadingStatus: 'products/DELETE_LOADING_STATUS',
   getProductsLoadingStatus: 'products/SEARCH_LOADING_STATUS',
+  addReviewLoadingStatus: 'products/ADD_REVIEW_LOADING_STATUS',
 };
 export interface IProductsReducer {
   products?: any[];
@@ -28,6 +29,7 @@ export interface IProductsReducer {
   uploadPhotoLoadingStatus?: 'loading' | 'error' | 'loaded';
   deleteLoadingStatus?: 'loading' | 'error' | 'loaded';
   getProductsLoadingStatus?: 'loading' | 'error' | 'loaded';
+  addReviewLoadingStatus?: 'loading' | 'error' | 'loaded';
 }
 const initialState: IProductsReducer = {};
 
@@ -103,6 +105,13 @@ export const productsReducer = (
       return {
         ...state,
         getProductsLoadingStatus: payload,
+      };
+    }
+
+    case productsReducerTypes.addReviewLoadingStatus: {
+      return {
+        ...state,
+        addReviewLoadingStatus: payload,
       };
     }
 
@@ -252,6 +261,36 @@ export const uploadProductPhoto = (
   } catch (error) {
     dispatch({
       type: productsReducerTypes.uploadPhotoLoadingStatus,
+      payload: error,
+    });
+  }
+};
+
+/**
+ * Send review
+ */
+export const sendReview = (
+  rating: number,
+  text: string,
+  productId: number
+) => async (dispatch: any) => {
+  try {
+    dispatch({
+      type: productsReducerTypes.addReviewLoadingStatus,
+      payload: 'loading',
+    });
+    const response = await axiosInstance.post('/api/product/sendreview', {
+      productId,
+      text,
+      rating,
+    });
+    dispatch({
+      type: productsReducerTypes.addReviewLoadingStatus,
+      payload: 'loaded',
+    });
+  } catch (error) {
+    dispatch({
+      type: productsReducerTypes.addReviewLoadingStatus,
       payload: error,
     });
   }
