@@ -19,6 +19,7 @@ import { getPhotoUrl } from '../../libs/storage';
 import { productModel } from '../../models/product';
 import { reviewModel } from '../../models/review';
 import { sendReview } from '../../redux/reducers/products';
+import { changeRoute } from '../../redux/reducers/settings';
 import { addProductToCart } from '../../redux/reducers/user';
 import { RootState } from '../../redux/store';
 
@@ -50,6 +51,17 @@ export default function Component(props: Props) {
     }
   }, [userState, state]);
 
+  React.useEffect(() => {
+    dispatch(
+      changeRoute('product', {
+        productId: props.product.product_id,
+        categoryId: props.product.subcategory_id,
+        productTitle: props.product.title,
+        categoryTitle: props.product.subcategory_title,
+      })
+    );
+  }, []);
+
   /**
    * Add this product to cart
    */
@@ -75,6 +87,8 @@ export default function Component(props: Props) {
    * Render reviews
    */
   function renderReviews() {
+    console.log(props.product);
+
     return props.reviews.map((item: any) => {
       return (
         <div key={item.review_id}>

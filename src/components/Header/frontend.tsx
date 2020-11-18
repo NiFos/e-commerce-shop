@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Breadcrumbs,
   Button,
   Container,
   Divider,
@@ -16,6 +17,7 @@ import { logoutUser } from '../../redux/reducers/user';
 import { ProfilePopup } from './profilePopup';
 import { Categories } from '../Categories';
 import Link from 'next/link';
+import { RouteBreadcrums } from './routeBreadcrums';
 
 interface Props {
   children?: any;
@@ -91,6 +93,9 @@ export default function Component(props: Props) {
           </Link>
           <Divider orientation="vertical" />
           <Button onClick={handleCategoryBtnClick}>Categories</Button>
+        </div>
+        <div className={classes.items}>
+          <RouteBreadcrums currentRoute={router.asPath} />
         </div>
         <div className={classes.items}>
           <IconButton onClick={handleSearchBtnClick}>

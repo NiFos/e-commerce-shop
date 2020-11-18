@@ -1,4 +1,5 @@
 import { database } from '../libs/db';
+import { subCategoriesTable } from './category';
 import { reviewsTable } from './review';
 
 export const productsTable = 'products';
@@ -118,9 +119,17 @@ export const productModel = {
   async getProduct(productId: number): Promise<any> {
     if (typeof productId === 'undefined') return false;
     return await database()
-      .select('*')
+      .select(
+        `${productsTable}.*`,
+        `${subCategoriesTable}.title as subcategory_title`
+      )
       .from(productsTable)
       .where('product_id', '=', productId)
+      .innerJoin(
+        subCategoriesTable,
+        `${subCategoriesTable}.subcategory_id`,
+        `${productsTable}.subcategory_id`
+      )
       .limit(1);
   },
   /**
