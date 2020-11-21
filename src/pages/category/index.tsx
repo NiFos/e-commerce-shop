@@ -11,3 +11,10 @@ interface Props {
 export default function Component(props: Props) {
   return <Container>Category</Container>;
 }
+
+/**
+ * Ssr
+ */
+export async function getStaticProps(context: any) {
+  return { props: {} };
+}

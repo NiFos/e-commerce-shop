@@ -22,7 +22,7 @@ export default function Component(props: Props): JSX.Element {
   function renderPopular() {
     return props.popular.map((item: any) => {
       return (
-        <Link href={`/product/${item.product_id}`} key={item.product_id}>
+        <Link href={`/product/${item.productId}`} key={item.productId}>
           <div>
             <img width={300} height={300} src={item.photo} alt="" />
             <span>{item.title}</span>
@@ -39,7 +39,7 @@ export default function Component(props: Props): JSX.Element {
   function renderTopRated() {
     return props.topRated.map((item: any) => {
       return (
-        <Link href={`/product/${item.product_id}`} key={item.product_id}>
+        <Link href={`/product/${item.productId}`} key={item.productId}>
           <div>
             <img width={300} height={300} src={item.photo} alt="" />
             <span>{item.title}</span>
