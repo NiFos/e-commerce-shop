@@ -38,6 +38,7 @@ export default function Component(props: Props) {
         <div className={classes.items}>
           <Typography variant={'h4'}>{name}</Typography>
           <Divider orientation="vertical" />
+          <Link href="/">Main page</Link>
           <Link href="/admin/categories">Categories</Link>
           <Link href="/admin/products">Products</Link>
           <Link href="/admin/orders">Orders</Link>

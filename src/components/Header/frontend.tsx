@@ -93,6 +93,11 @@ export default function Component(props: Props) {
           </Link>
           <Divider orientation="vertical" />
           <Button onClick={handleCategoryBtnClick}>Categories</Button>
+          {userState.me?.user?.admin.isAdmin && (
+            <Link href="/admin">
+              <Button>Admin dashboard</Button>
+            </Link>
+          )}
         </div>
         <div className={classes.items}>
           <RouteBreadcrums currentRoute={router.asPath} />
