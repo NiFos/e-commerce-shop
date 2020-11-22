@@ -103,12 +103,12 @@ export const productModel = {
       .select('*')
       .from(productsTable)
       .whereBetween('price', prices)
-      .innerJoin(
+      /* .innerJoin(
         productsTagsTable,
         `${productsTagsTable}.product_id`,
         `${productsTable}.product_id`
       )
-      .whereIn(`${productsTagsTable}.tag_id`, tags)
+      .whereIn(`${productsTagsTable}.tag_id`, tags) */
       .andWhere('products.product_id', '>', after)
       .limit(pageSize);
   },

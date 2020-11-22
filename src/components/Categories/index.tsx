@@ -57,6 +57,8 @@ export function Categories(props: Props) {
    */
   function renderSubcategories(subcategories: any[]) {
     return subcategories.map((item: any) => {
+      console.log(item);
+
       return (
         <ButtonGroup key={item.id}>
           <Button
