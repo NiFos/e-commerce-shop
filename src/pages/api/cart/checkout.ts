@@ -4,6 +4,7 @@ import { userModel } from '../../../models/user';
 import { cartModel } from '../../../models/cart';
 import { stripeModel } from '../../../models/stripe';
 import { discountModel } from '../../../models/discount';
+import stripe from 'stripe';
 
 /**
  * Checkout
@@ -21,15 +22,22 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
 
     const { promocode } = req.body;
     const discount = await discountModel.getDiscountByPromocode(promocode);
-    const stripeProducts = products.map((item) => ({
-      name: item.title,
-      quantity: item.quantity,
-      price_data: {
-        currency: 'USD',
-        unit_amount:
-          item.price * 100 * (100 - discount[0].percent_discount / 100),
-      },
-    }));
+    const stripeProducts = products.map(
+      (item): stripe.Checkout.SessionCreateParams.LineItem => ({
+        quantity: item.quantity,
+        description: item.product_id,
+        price_data: {
+          product_data: {
+            name: item.title,
+          },
+          currency: 'USD',
+          unit_amount:
+            item.price *
+            100 *
+            ((100 - (discount[0]?.percent_discount || 0)) / 100),
+        },
+      })
+    );
     const session = await stripeModel.createSession(
       user.id,
       stripeProducts,

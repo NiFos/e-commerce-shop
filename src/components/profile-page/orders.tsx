@@ -18,9 +18,9 @@ export function Orders(props: Props) {
         <div key={order.order_id}>
           <div>
             <Typography variant={'h6'}>Order id: {order.order_id}</Typography>
-            <Typography variant={'h6'}>Order id: {order.status}</Typography>
+            <Typography variant={'h6'}>Status: {order.status}</Typography>
             <Typography variant={'h6'}>
-              Order id: {order.delivery_address}
+              Delivery address: {order.delivery_address}
             </Typography>
             <div>Total price {order.totalPrice}</div>
           </div>

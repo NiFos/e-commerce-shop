@@ -239,9 +239,7 @@ export async function getServerSideProps(context: any) {
         { name: 'February', uv: 5, pv: 1 },
         { name: 'March', uv: 25, pv: 2 },
       ] /* reduxStore.getState().orders.chartData */,
-      orders: [
-        { orderId: 0, status: 0, orderDate: 1604995348 },
-      ] /* reduxStore.getState().orders.orders */,
+      orders: reduxStore.getState().orders.orders,
       hasMore,
       page: page || 1,
     },

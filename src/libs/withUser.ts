@@ -25,12 +25,17 @@ export const withUser = (handler: any) => (
   req: NextApiRequestWithUser,
   res: NextApiResponse
 ) => {
-  const cookie = req.cookies.authorization;
-  if (typeof cookie === 'undefined') return handler(req, res);
-  const cookiePayload = jwt.verify(cookie, jwtSecret) as any;
+  try {
+    const cookie = req.cookies.authorization;
+    if (typeof cookie === 'undefined') return handler(req, res);
 
-  req.user = cookiePayload?.user;
-  return handler(req, res);
+    const cookiePayload = jwt.verify(cookie, jwtSecret) as any;
+    req.user = cookiePayload?.user;
+
+    return handler(req, res);
+  } catch (error) {
+    return handler(req, res);
+  }
 };
 
 /**
@@ -50,6 +55,12 @@ export const checkUser = (req: any): IUser => {
  * @param cookie - Cookie string
  */
 const parseAuthCookie = (cookie: string): string => {
-  const splitCookie = cookie.split('=');
-  return splitCookie[1];
+  const splitCookie = cookie.split(';');
+  const cookies: any = {};
+  splitCookie.forEach((item) => {
+    const [key, value] = item.split('=');
+    Object.assign(cookies, { [key]: value });
+  });
+
+  return cookies.authorization;
 };

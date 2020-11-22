@@ -10,11 +10,11 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     const user = req.user;
     if (typeof user?.id === 'undefined') throw 'Unauthorized';
 
-    const { productid } = req.body;
-    const product = await cartModel.removeFromCart(user.id, +productid);
-    if (product !== 1) throw 'Not found!';
+    const { productId } = req.body;
+    const product = await cartModel.removeFromCart(user.id, +productId);
+    if (product === 0) throw 'Not found!';
     return res.json({
-      deletedId: +productid,
+      deletedId: +productId,
     });
   } catch (error) {
     return res.status(400).json({

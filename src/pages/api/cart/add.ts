@@ -12,6 +12,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
 
     const { productId, quantity } = req.body;
     const product = await cartModel.addToCart(user.id, +productId, +quantity);
+    if (product.length <= 0) throw 'Not added!';
     return res.json({
       product: {
         productId: product[0]?.product_id,

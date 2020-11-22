@@ -63,13 +63,7 @@ export const discountModel = {
       .select('*')
       .from(discountsTable)
       .where('promocode', '=', promocode.toUpperCase());
-    if (discounts[0]?.discount_id) return [];
-
-    return [
-      {
-        discount: discounts[0],
-      },
-    ];
+    return discounts;
   },
 
   /**

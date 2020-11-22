@@ -15,6 +15,12 @@ export const cartModel = {
       typeof quantity === 'undefined'
     )
       return [];
+    const exist = await database().select('product_id').from(cartTable).where({
+      user_id: userId,
+      product_id: productId,
+    });
+    if (exist.length > 0) return [];
+
     return await database()
       .insert({
         user_id: userId,
@@ -32,7 +38,11 @@ export const cartModel = {
   async getUserCart(userId: number | undefined) {
     if (typeof userId === 'undefined') return [];
     return await database()
-      .select('*')
+      .select(
+        `${cartTable}.*`,
+        `${productsTable}.title`,
+        `${productsTable}.price`
+      )
       .from(cartTable)
       .innerJoin(
         productsTable,
@@ -55,6 +65,7 @@ export const cartModel = {
       product_id: productId,
     });
   },
+
   /**
    * Clean cart
    * @param userId - User id
