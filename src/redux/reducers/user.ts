@@ -3,9 +3,15 @@ import Axios from 'axios';
 const userReducerTypes = {
   auth: 'user/AUTH',
   me: 'user/ME',
+  promocode: 'user/PROMOCODE',
+  checkoutId: 'user/CHECKOUT_ID',
+  getCart: 'user/GET_CART',
   addToCart: 'user/ADD_TO_CART',
   meLoadingStatus: 'user/ME_LOADING_STATUS',
+  checkoutLoadingStatus: 'user/CHECKOUT_LOADING_STATUS',
+  promocodeLoadingStatus: 'user/PROMOCODE_LOADING_STATUS',
   addToCartLoadingStatus: 'user/ADD_TO_CART_LOADING_STATUS',
+  removeFromCartLoadingStatus: 'user/REMOVE_FROM_CART_LOADING_STATUS',
   editLoadingStatus: 'user/ME_LOADING_STATUS',
   authSetError: 'user/SET_ERROR',
 };
@@ -29,8 +35,13 @@ export interface IUserReducer {
       created_on?: string;
     };
   };
+  promocode?: any;
+  checkoutId?: string;
   authError?: string;
+  checkoutLoadingStatus?: 'loading' | 'loaded' | 'error';
+  promocodeLoadingStatus?: 'loading' | 'loaded' | 'error';
   addToCartLoadingStatus?: 'loading' | 'loaded' | 'error';
+  removeFromCartLoadingStatus?: 'loading' | 'loaded' | 'error';
   meLoadingStatus?: 'loading' | 'loaded' | 'error';
   editLoadingStatus?: 'loading' | 'loaded' | 'error';
 }
@@ -64,13 +75,57 @@ export const userReducer = (
     }
 
     case userReducerTypes.addToCart: {
-      const oldCart = [...state.me?.cart];
       return {
         ...state,
         me: {
           ...state.me,
-          cart: [oldCart, ...payload],
+          cart: [...state.me?.cart, payload],
         },
+      };
+    }
+
+    case userReducerTypes.getCart: {
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          cart: payload,
+        },
+      };
+    }
+
+    case userReducerTypes.promocode: {
+      return {
+        ...state,
+        promocode: payload,
+      };
+    }
+
+    case userReducerTypes.checkoutId: {
+      return {
+        ...state,
+        checkoutId: payload,
+      };
+    }
+
+    case userReducerTypes.checkoutLoadingStatus: {
+      return {
+        ...state,
+        checkoutLoadingStatus: payload,
+      };
+    }
+
+    case userReducerTypes.removeFromCartLoadingStatus: {
+      return {
+        ...state,
+        removeFromCartLoadingStatus: payload,
+      };
+    }
+
+    case userReducerTypes.promocodeLoadingStatus: {
+      return {
+        ...state,
+        promocodeLoadingStatus: payload,
       };
     }
 
@@ -223,6 +278,104 @@ export const meUser = () => async (dispatch: any) => {
 };
 
 /**
+ * Get cart action
+ */
+export const getCart = (cart: any[]) => {
+  return {
+    type: userReducerTypes.getCart,
+    payload: cart,
+  };
+};
+
+/**
+ * Remove from cart action
+ */
+export const removeFromCart = (productId: number) => async (dispatch: any) => {
+  try {
+    dispatch({
+      type: userReducerTypes.removeFromCartLoadingStatus,
+      payload: 'loading',
+    });
+
+    const response = await Axios.post('/api/cart/remove', {
+      productId,
+    });
+
+    dispatch({
+      type: userReducerTypes.removeFromCartLoadingStatus,
+      payload: 'loaded',
+    });
+  } catch (error) {
+    dispatch({
+      type: userReducerTypes.removeFromCartLoadingStatus,
+      payload: error,
+    });
+  }
+};
+
+/**
+ * Get information about promocode
+ * @param promocode - Promocode
+ */
+export const getPromocode = (promocode: string) => async (dispatch: any) => {
+  try {
+    dispatch({
+      type: userReducerTypes.promocodeLoadingStatus,
+      payload: 'loading',
+    });
+
+    const response = await Axios.post('/api/promocode', {
+      promocode,
+    });
+    dispatch({
+      type: userReducerTypes.promocode,
+      payload: response.data,
+    });
+
+    dispatch({
+      type: userReducerTypes.promocodeLoadingStatus,
+      payload: 'loaded',
+    });
+  } catch (error) {
+    dispatch({
+      type: userReducerTypes.promocodeLoadingStatus,
+      payload: error,
+    });
+  }
+};
+
+/**
+ * Checkout
+ * @param promocode - Promocode
+ */
+export const checkoutUser = (promocode: string) => async (dispatch: any) => {
+  try {
+    dispatch({
+      type: userReducerTypes.checkoutLoadingStatus,
+      payload: 'loading',
+    });
+
+    const response = await Axios.post('/api/cart/checkout', {
+      promocode,
+    });
+    dispatch({
+      type: userReducerTypes.checkoutId,
+      payload: response.data.stripeId,
+    });
+
+    dispatch({
+      type: userReducerTypes.checkoutLoadingStatus,
+      payload: 'loaded',
+    });
+  } catch (error) {
+    dispatch({
+      type: userReducerTypes.checkoutLoadingStatus,
+      payload: error,
+    });
+  }
+};
+
+/**
  * Logout user
  */
 export const logoutUser = () => async (dispatch: any) => {
@@ -249,7 +402,7 @@ export const getProfileInfo = (
   username: string,
   phone: string,
   deliveryAddress: string,
-  orders: any[]
+  orders?: any[]
 ) => {
   return {
     type: userReducerTypes.me,

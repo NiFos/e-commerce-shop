@@ -87,8 +87,6 @@ export default function Component(props: Props) {
    * Render reviews
    */
   function renderReviews() {
-    console.log(props.product);
-
     return props.reviews.map((item: any) => {
       return (
         <div key={item.review_id}>

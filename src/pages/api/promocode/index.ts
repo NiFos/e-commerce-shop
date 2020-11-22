@@ -14,6 +14,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     return res.json({
       discount: {
         percentage: discountInformation[0]?.percent_discount,
+        promocode: discountInformation[0]?.promocode,
         title: discountInformation[0]?.title,
         description: discountInformation[0]?.description,
         dateTo: discountInformation[0]?.date_to,

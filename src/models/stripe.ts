@@ -24,7 +24,6 @@ export const stripeModel = {
       payment_method_types: ['card'],
       success_url: successUrl,
       cancel_url: cancelUrl,
-      customer: '' + userId,
       mode: 'payment',
       metadata: {
         userId,
@@ -34,17 +33,14 @@ export const stripeModel = {
     });
     return session;
   },
-
   /**
-   * Create stripe discount promocode
-   * @param promocode - Promocode (FALL20)
-   * @param to - Expires date (timestamp)
+   * Get line items from checkout
+   * @param checkoutId - Checkout id
    */
-  async createDiscount(promocode: string, to: number) {
-    const discount = await stripeInstance.promotionCodes.create({
-      coupon: promocode.toUpperCase(),
-      expires_at: to,
-    });
-    return discount;
+  async getLineItems(checkoutId: string) {
+    const lineItems = await stripeInstance.checkout.sessions.listLineItems(
+      checkoutId
+    );
+    return lineItems;
   },
 };
