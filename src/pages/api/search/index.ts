@@ -7,8 +7,8 @@ import { productModel } from '../../../models/product';
  */
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
-    const { name } = req.query;
-    const products = await productModel.searchProducts(name.toString());
+    const { search } = req.query;
+    const products = await productModel.searchProducts(search.toString());
     return res.json({
       products,
     });

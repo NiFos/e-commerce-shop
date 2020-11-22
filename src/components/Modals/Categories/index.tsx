@@ -13,8 +13,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPublicCategories } from '../../redux/reducers/categories';
-import { RootState } from '../../redux/store';
+import { getPublicCategories } from '../../../redux/reducers/categories';
+import { RootState } from '../../../redux/store';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 interface Props {
@@ -57,8 +57,6 @@ export function Categories(props: Props) {
    */
   function renderSubcategories(subcategories: any[]) {
     return subcategories.map((item: any) => {
-      console.log(item);
-
       return (
         <ButtonGroup key={item.id}>
           <Button

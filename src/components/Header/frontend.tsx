@@ -15,9 +15,10 @@ import { RootState } from '../../redux/store';
 import { useRouter } from 'next/router';
 import { logoutUser } from '../../redux/reducers/user';
 import { ProfilePopup } from './profilePopup';
-import { Categories } from '../Categories';
+import { Categories } from '../Modals/Categories';
 import Link from 'next/link';
 import { RouteBreadcrums } from './routeBreadcrums';
+import { Search } from '../Modals/Search';
 
 interface Props {
   children?: any;
@@ -85,6 +86,7 @@ export default function Component(props: Props) {
   }
   return (
     <Container className={classes.header}>
+      <Search open={searchOpen} onClose={handleSearchBtnClick} />
       <Categories open={categoriesOpen} onClose={handleCategoryBtnClick} />
       <div className={classes.content}>
         <div className={classes.items}>
