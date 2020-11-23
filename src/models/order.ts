@@ -38,7 +38,7 @@ export const orderModel = {
    */
   async getOrdersByMonth(): Promise<any> {
     return await database()
-      .select(database().raw(`${'date_trunc'}('month', created_on)`))
+      .select(database().raw(`${'date_trunc'}('month', created_on), COUNT(*)`))
       .from(ordersTable)
       .groupByRaw('1');
   },

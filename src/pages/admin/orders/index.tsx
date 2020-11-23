@@ -29,7 +29,7 @@ import { useRouter } from 'next/router';
 interface IOrder {
   orderId: number;
   status: number;
-  orderDate: number;
+  created_on: number;
 }
 interface Props {
   children?: any;
@@ -104,7 +104,7 @@ export default function Component(props: Props): JSX.Element {
       <div key={order.orderId}>
         <div>{order.orderId}</div>
         <div>{order.status}</div>
-        <div>{moment(order.orderDate * 1000).format('lll')}</div>
+        <div>{moment(order.created_on).format('lll')}</div>
         <Button
           onClick={() => editHandler(order.orderId)}
           disabled={!userState.me?.user?.admin.fullAccess}
@@ -165,7 +165,7 @@ export default function Component(props: Props): JSX.Element {
         <div>
           <div>Last year data</div>
           <div>
-            <LineChart data={props?.chartData}>
+            <LineChart width={500} height={300} data={props?.chartData}>
               <Line type="monotone" dataKey="uv" stroke="#8884d8" />
               <CartesianGrid stroke="#ccc" />
               <XAxis dataKey="name" />
@@ -210,22 +210,31 @@ export async function getServerSideProps(context: any) {
   const { pageSize, page } = context.query;
 
   const orders = await orderModel.getAllOrders(+pageSize, +page);
-  const hasMore = orders.length > +pageSize;
+  const ordersData = orders.map((item: any) => {
+    return {
+      ...item,
+      created_on: new Date(item.created_on).toString(),
+    };
+  });
+  const hasMore = ordersData.length > +pageSize;
   if (hasMore) {
-    orders.splice(orders.length - 1, 1);
+    ordersData.splice(ordersData.length - 1, 1);
   }
-  await reduxStore.dispatch(getOrders(orders));
+  await reduxStore.dispatch(getOrders(ordersData));
 
   const feed = await orderModel.getFeed();
   await reduxStore.dispatch(
     getFeed(
-      feed.map((item: any) => ({ statusId: item.status, count: item.count }))
+      feed.map((item: any) => ({
+        statusId: item.status || 0,
+        count: item.count,
+      }))
     )
   );
 
   const ordersByMonth = await orderModel.getOrdersByMonth();
   const chartData = ordersByMonth.map((item: any, index: number) => ({
-    name: item.created_on,
+    name: moment(new Date(item.date_trunc).toString()).format('MMMM'),
     uv: item.count,
     pv: index,
   }));
@@ -233,12 +242,8 @@ export async function getServerSideProps(context: any) {
 
   return {
     props: {
-      feed: [{ statusId: 0, count: 1 }] /* reduxStore.getState().orders.feed */,
-      chartData: [
-        { name: 'January', uv: 10, pv: 0 },
-        { name: 'February', uv: 5, pv: 1 },
-        { name: 'March', uv: 25, pv: 2 },
-      ] /* reduxStore.getState().orders.chartData */,
+      feed: reduxStore.getState().orders.feed,
+      chartData: reduxStore.getState().orders.chartData,
       orders: reduxStore.getState().orders.orders,
       hasMore,
       page: page || 1,
