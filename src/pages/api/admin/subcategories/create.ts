@@ -18,11 +18,11 @@ async function createSubcategoryHandler(
     )
       throw 'Unauthorized';
 
-    const { categoryid, title } = req.body;
+    const { categoryId, title } = req.body;
 
     const categories = await categoryModel.createSubcategory(
       user.id,
-      categoryid,
+      categoryId,
       title
     );
 

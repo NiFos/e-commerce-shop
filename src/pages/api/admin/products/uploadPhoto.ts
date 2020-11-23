@@ -20,9 +20,9 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
       !user.admin?.fullAccess
     )
       throw 'Unauthorized';
-    const { productid, mod } = req.query;
-    if (typeof +productid === 'undefined') throw 'Not enough params';
-    const response = await uploadFile(req, 'products', productid.toString());
+    const { productId, mod } = req.query;
+    if (typeof +productId === 'undefined') throw 'Not enough params';
+    const response = await uploadFile(req, 'products', productId.toString());
     if (!response.success) throw response.message;
     return res.json({
       photo: `${response.message}${mod ? `?mod=${Date.now()}` : ''}`,

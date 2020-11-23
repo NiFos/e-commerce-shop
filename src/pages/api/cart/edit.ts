@@ -10,16 +10,16 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     const user = req.user;
     if (typeof user?.id === 'undefined') throw 'Unauthorized';
 
-    const { productid, quantity } = req.body;
+    const { productId, quantity } = req.body;
     const product = await cartModel.editCartProduct(
       user.id,
-      +productid,
+      +productId,
       +quantity
     );
     if (product !== 1) throw 'Not found!';
     return res.json({
       product: {
-        productId: +productid,
+        productId: +productId,
         quantity,
       },
     });

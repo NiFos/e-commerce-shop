@@ -11,9 +11,9 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     if (typeof user?.id === 'undefined' || !user.admin?.isAdmin)
       throw 'Unauthorized';
 
-    const { orderid } = req.query;
+    const { orderId } = req.query;
 
-    const order = await orderModel.getOrderById(+orderid);
+    const order = await orderModel.getOrderById(+orderId);
 
     if (!order[0]?.order_id) throw 'Not found!';
 

@@ -12,9 +12,9 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     if (typeof user?.id === 'undefined' || !user.admin?.isAdmin)
       throw 'Unauthorized';
 
-    const { pagesize, page } = req.query;
-    const products = await productModel.getAllProducts(+pagesize, +page);
-    const hasMore = products.length > +pagesize;
+    const { pageSize, page } = req.query;
+    const products = await productModel.getAllProducts(+pageSize, +page);
+    const hasMore = products.length > +pageSize;
     products.splice(products.length - 1, 1);
     return res.json({
       products: products.map((item: any) => ({

@@ -147,7 +147,7 @@ export const getSubcategories = (categoryId: number) => async (
       payload: 'loading',
     });
     const response = await axiosInstance.get(
-      `/api/admin/subcategories/?categoryid=${categoryId}`
+      `/api/admin/subcategories/?categoryId=${categoryId}`
     );
     dispatch({
       type: categoriesReducerTypes.getSubcategories,
@@ -234,7 +234,7 @@ export const createCategory = (
       type: categoriesReducerTypes.createLoadingStatus,
       payload: 'loading',
     });
-    const options = isCategory ? { title } : { categoryid: categoryId, title };
+    const options = isCategory ? { title } : { categoryId, title };
     const response = await axiosInstance.post(
       `/api/admin/${isCategory ? 'categories' : 'subcategories'}/create`,
       options

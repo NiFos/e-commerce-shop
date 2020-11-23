@@ -16,16 +16,16 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     )
       throw 'Unauthorized';
 
-    const { discountid } = req.query;
+    const { discountId } = req.query;
 
-    const discount = await discountModel.getDiscountById(+discountid);
+    const discount = await discountModel.getDiscountById(+discountId);
 
     if (!discount[0]?.product_id) throw 'Not found!';
 
     return res.json({
       discount: {
         ...discount[0],
-        photo: getPhotoUrl('discounts', discountid.toString()),
+        photo: getPhotoUrl('discounts', discountId.toString()),
       },
     });
   } catch (error) {

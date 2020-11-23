@@ -12,16 +12,16 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     if (typeof user?.id === 'undefined' || !user.admin?.isAdmin)
       throw 'Unauthorized';
 
-    const { productid } = req.query;
+    const { productId } = req.query;
 
-    const product = await productModel.getProduct(+productid);
+    const product = await productModel.getProduct(+productId);
 
     if (!product[0]?.product_id) throw 'Not found!';
 
     return res.json({
       product: {
         ...product[0],
-        photo: getPhotoUrl('products', productid.toString()),
+        photo: getPhotoUrl('products', productId.toString()),
       },
     });
   } catch (error) {

@@ -8,7 +8,6 @@ import { reviewModel } from '../../../models/review';
  */
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
-    const user = req.user;
     const { productid } = req.query;
     const product = await productModel.getProduct(+productid);
     if (product.length <= 0) return res.json({});
@@ -25,4 +24,4 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   }
 }
 
-export default withUser(handler);
+export default handler;

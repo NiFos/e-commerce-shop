@@ -15,12 +15,12 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     )
       throw 'Unauthorized';
 
-    const { orderid, status } = req.body;
+    const { orderId, status } = req.body;
 
-    const order = await orderModel.editOrderStatus(+orderid, +status);
+    const order = await orderModel.editOrderStatus(+orderId, +status);
     if (order <= 0) throw 'Not found!';
 
-    return res.json({ order: { orderid, status } });
+    return res.json({ order: { orderId, status } });
   } catch (error) {
     return res.status(400).json({
       error: true,

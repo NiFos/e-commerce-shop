@@ -15,16 +15,16 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     )
       throw 'Unauthorized';
 
-    const { discountid, title, description } = req.body;
+    const { discountId, title, description } = req.body;
 
     const data: IDiscountUpdate = {};
     if (title) data.title = title;
     if (description) data.description = description;
 
-    const categories = await discountModel.editDiscount(+discountid, data);
+    const categories = await discountModel.editDiscount(+discountId, data);
     if (categories <= 0) throw 'Not found!';
 
-    return res.json({ category: { discountid, title } });
+    return res.json({ category: { discountId, title } });
   } catch (error) {
     return res.status(400).json({
       error: true,

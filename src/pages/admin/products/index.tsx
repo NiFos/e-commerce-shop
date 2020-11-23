@@ -162,7 +162,7 @@ export default function Component(props: Props) {
   function submitEdit() {
     dispatch(
       editProduct({
-        productid: currentProductId,
+        productId: currentProductId,
         title:
           productData.title !== props.products[currentProductIndex].title
             ? productData.title
@@ -185,7 +185,7 @@ export default function Component(props: Props) {
           productData.quantity !== props.products[currentProductIndex].quantity
             ? productData.quantity
             : undefined,
-        subcategoryid:
+        subcategoryId:
           productData.subcategory_id !==
           props.products[currentProductIndex].subcategory_id
             ? productData.subcategory_id

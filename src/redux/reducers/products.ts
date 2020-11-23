@@ -167,7 +167,7 @@ export const deleteProduct = (id: number) => async (dispatch: any) => {
       payload: 'loading',
     });
     const response = await axiosInstance.delete(
-      `/api/admin/products/delete?productid=${id}`
+      `/api/admin/products/delete?productId=${id}`
     );
     dispatch({
       type: productsReducerTypes.deleteLoadingStatus,
@@ -246,7 +246,7 @@ export const uploadProductPhoto = (
     const formData = new FormData();
     formData.append('file', file);
     const response = await axiosInstance.post(
-      `/api/admin/products/uploadPhoto?productid=${id}&mod=${mod}`,
+      `/api/admin/products/uploadPhoto?productId=${id}&mod=${mod}`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );

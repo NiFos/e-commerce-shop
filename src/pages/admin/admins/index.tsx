@@ -8,8 +8,6 @@ import {
   DialogTitle,
   FormControlLabel,
   Input,
-  MenuItem,
-  Select,
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useRouter } from 'next/router';
@@ -41,7 +39,7 @@ export default function Component(props: Props) {
   const [search, setSearch] = React.useState('');
   const [newOpen, setNewOpen] = React.useState(false);
   const [editOpen, setEditOpen] = React.useState(false);
-  const [fullAccess, setFullaccess] = React.useState(false);
+  const [fullAccess, setfullAccess] = React.useState(false);
   const [currentAdmin, setCurrentAdmin] = React.useState(-1);
   const [currentAdminAccess, setCurrentAdminAccess] = React.useState(false);
   const router = useRouter();
@@ -186,7 +184,7 @@ export default function Component(props: Props) {
                 control={
                   <Checkbox
                     checked={fullAccess}
-                    onChange={() => setFullaccess(!fullAccess)}
+                    onChange={() => setfullAccess(!fullAccess)}
                     name="fullAccess"
                   />
                 }

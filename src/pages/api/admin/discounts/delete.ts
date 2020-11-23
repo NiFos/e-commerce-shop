@@ -15,12 +15,12 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     )
       throw 'Unauthorized';
 
-    const { discountid } = req.query;
+    const { discountId } = req.query;
 
-    const deletedDiscount = await discountModel.deleteDiscount(+discountid);
+    const deletedDiscount = await discountModel.deleteDiscount(+discountId);
     if (deletedDiscount !== 1) throw 'Not found!';
 
-    return res.json({ deletedId: discountid });
+    return res.json({ deletedId: discountId });
   } catch (error) {
     return res.status(400).json({
       error: true,

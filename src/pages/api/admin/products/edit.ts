@@ -21,8 +21,8 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
       quantity,
       techspecs,
       description,
-      subcategoryid,
-      productid,
+      subcategoryId,
+      productId,
     } = req.body;
 
     const data: IProductDataUpdate = {};
@@ -31,9 +31,9 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     if (description) data.description = description;
     if (techspecs) data.techspecs = techspecs;
     if (quantity) data.quantity = quantity;
-    if (subcategoryid) data.subcategory_id = subcategoryid;
+    if (subcategoryId) data.subcategory_id = subcategoryId;
 
-    const product = await productModel.editProduct(+productid, data);
+    const product = await productModel.editProduct(+productId, data);
 
     if (product <= 0) throw 'Not edited!';
 
@@ -44,8 +44,8 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
         quantity,
         techSpecs: techspecs,
         description,
-        subcategoryId: subcategoryid,
-        productId: productid,
+        subcategoryId,
+        productId: productId,
       },
     });
   } catch (error) {

@@ -21,14 +21,14 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
       quantity,
       techspecs,
       description,
-      subcategoryid,
+      subcategoryId,
     } = req.body;
 
     const product = await productModel.createProduct({
       created_by: user.id,
       price,
       quantity,
-      subcategory_id: subcategoryid,
+      subcategory_id: subcategoryId,
       title,
       description,
       techspecs,

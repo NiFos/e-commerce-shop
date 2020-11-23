@@ -19,15 +19,15 @@ async function deleteAdminHandler(
     )
       throw 'Unauthorized';
 
-    const { userid } = req.query;
+    const { userId } = req.query;
 
-    const adminExist = await adminModel.checkIfAdminExist(+userid);
+    const adminExist = await adminModel.checkIfAdminExist(+userId);
     if (!adminExist) throw 'Admin not found';
 
-    const deletedAdmin = await adminModel.deleteAdmin(+userid);
+    const deletedAdmin = await adminModel.deleteAdmin(+userId);
     if (deletedAdmin !== 1) throw 'Something went wrong!';
 
-    const userInfo = await userModel.findUserById(+userid);
+    const userInfo = await userModel.findUserById(+userId);
     if (!userInfo[0]?.user_id) throw 'Cannot find user!';
 
     return res.json({

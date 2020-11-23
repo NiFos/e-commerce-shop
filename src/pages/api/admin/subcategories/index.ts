@@ -14,8 +14,8 @@ async function getAllAdminSubcategoriesHandler(
     if (typeof user?.id === 'undefined' || !user.admin?.isAdmin)
       throw 'Unauthorized';
 
-    const { categoryid } = req.query;
-    const subcategories = await categoryModel.getAllSubcategories(+categoryid);
+    const { categoryId } = req.query;
+    const subcategories = await categoryModel.getAllSubcategories(+categoryId);
 
     return res.json({ subcategories });
   } catch (error) {

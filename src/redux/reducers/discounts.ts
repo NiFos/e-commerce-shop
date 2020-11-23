@@ -135,8 +135,8 @@ export const editDiscount = (
   description?: string
 ) => async (dispatch: any) => {
   try {
-    const data: { discountid: number; title?: string; description?: string } = {
-      discountid: discountId,
+    const data: { discountId: number; title?: string; description?: string } = {
+      discountId,
     };
     if (typeof title !== 'undefined') data.title = title;
     if (typeof description !== 'undefined') data.description = description;
@@ -170,7 +170,7 @@ export const deleteDiscount = (id: number) => async (dispatch: any) => {
       payload: 'loading',
     });
     const response = await axiosInstance.delete(
-      `/api/admin/discounts/delete?discountid=${id}`
+      `/api/admin/discounts/delete?discountId=${id}`
     );
     dispatch({
       type: discountsReducerTypes.deleteLoadingStatus,
@@ -246,7 +246,7 @@ export const uploadDiscountPhoto = (
     const formData = new FormData();
     formData.append('file', file);
     const response = await axiosInstance.post(
-      `/api/admin/discounts/uploadPhoto?discountid=${id}&mod=${mod}`,
+      `/api/admin/discounts/uploadPhoto?discountId=${id}&mod=${mod}`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );

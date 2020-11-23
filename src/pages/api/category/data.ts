@@ -7,10 +7,10 @@ import { categoryModel } from '../../../models/category';
  */
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
-    const { subcategoryid } = req.body;
-    const subcategory = await categoryModel.getSubcategory(+subcategoryid);
+    const { prodsubcategoryId } = req.body;
+    const subcategory = await categoryModel.getSubcategory(+prodsubcategoryId);
     const subcategoryData = await categoryModel.getSubcategoryData(
-      +subcategoryid
+      +prodsubcategoryId
     );
 
     return res.json({

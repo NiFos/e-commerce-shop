@@ -207,10 +207,10 @@ export async function getServerSideProps(context: any) {
     return { props: { error: 'unauth' } };
 
   const reduxStore = initializeStore({});
-  const { pagesize, page } = context.query;
+  const { pageSize, page } = context.query;
 
-  const orders = await orderModel.getAllOrders(+pagesize, +page);
-  const hasMore = orders.length > +pagesize;
+  const orders = await orderModel.getAllOrders(+pageSize, +page);
+  const hasMore = orders.length > +pageSize;
   if (hasMore) {
     orders.splice(orders.length - 1, 1);
   }

@@ -12,8 +12,8 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     if (typeof user?.id === 'undefined' || !user.admin?.isAdmin)
       throw 'Unauthorized';
 
-    const { pagesize, page } = req.query;
-    const orders = await orderModel.getAllOrders(+pagesize, +page);
+    const { pageSize, page } = req.query;
+    const orders = await orderModel.getAllOrders(+pageSize, +page);
 
     return res.json({ orders });
   } catch (error) {

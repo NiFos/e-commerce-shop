@@ -19,18 +19,18 @@ async function editAdminHandler(
     )
       throw 'Unauthorized';
 
-    const { userid, fullaccess } = req.body;
+    const { userId, fullAccess } = req.body;
 
-    const adminExist = await adminModel.checkIfAdminExist(+userid);
+    const adminExist = await adminModel.checkIfAdminExist(+userId);
     if (!adminExist) throw 'Admin not exist';
 
     const editedAdmin = await adminModel.editAdminAccessLevel(
-      +userid,
-      fullaccess
+      +userId,
+      fullAccess
     );
     if (editedAdmin <= 0) throw 'Something went wrong!';
 
-    const userInfo = await userModel.findUserById(+userid);
+    const userInfo = await userModel.findUserById(+userId);
     if (!userInfo[0]?.user_id) throw 'Cannot find user!';
 
     return res.json({
@@ -38,7 +38,7 @@ async function editAdminHandler(
         userId: userInfo[0].user_id,
         username: userInfo[0].username,
       },
-      fullAccess: fullaccess,
+      fullAccess: fullAccess,
     });
   } catch (error) {
     return res.status(400).json({

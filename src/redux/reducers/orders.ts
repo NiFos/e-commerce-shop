@@ -120,7 +120,7 @@ export const getOrder = (orderId: number) => async (dispatch: any) => {
       payload: 'loading',
     });
     const response = await axiosInstance.get(
-      `/api/admin/orders/get?orderid=${orderId}`
+      `/api/admin/orders/get?orderId=${orderId}`
     );
     dispatch({
       type: ordersReducerTypes.getOrder,
@@ -151,7 +151,7 @@ export const editOrderStatus = (orderId: number, status: number) => async (
 ) => {
   try {
     const response = await axiosInstance.post('api/admin/orders/edit', {
-      orderid: orderId,
+      orderId,
       status,
     });
     dispatch({
