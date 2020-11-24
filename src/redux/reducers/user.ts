@@ -1,5 +1,10 @@
 import Axios from 'axios';
 
+const axiosInstance = Axios.create({
+  baseURL: process.env.FRONTEND_URL || 'http://localhost:3000',
+  withCredentials: true,
+});
+
 const userReducerTypes = {
   auth: 'user/AUTH',
   me: 'user/ME',
@@ -171,7 +176,7 @@ export const userReducer = (
 export const login = (data: { email: string; password: string }) => async (
   dispatch: any
 ) => {
-  const response = await Axios.post('/api/login', data);
+  const response = await axiosInstance.post('/api/login', data);
   if (response?.data?.error) {
     dispatch(setAuthError(response.data?.message));
   }
@@ -193,7 +198,7 @@ export const addProductToCart = (productId: number, quantity: number) => async (
       type: userReducerTypes.addToCartLoadingStatus,
       payload: 'loading',
     });
-    const response = await Axios.post('/api/cart/add', {
+    const response = await axiosInstance.post('/api/cart/add', {
       productId,
       quantity,
     });
@@ -227,7 +232,7 @@ export const register = (data: {
   email: string;
   password: string;
 }) => async (dispatch: any) => {
-  const response = await Axios.post('/api/register', data);
+  const response = await axiosInstance.post('/api/register', data);
   if (response?.data?.error) {
     dispatch(setAuthError(response.data?.message));
   }
@@ -259,7 +264,7 @@ export const meUser = () => async (dispatch: any) => {
       payload: 'loading',
     });
 
-    const response = await Axios.get('/api/me', { withCredentials: true });
+    const response = await axiosInstance.get('/api/me');
     dispatch({
       type: userReducerTypes.me,
       payload: response.data,
@@ -297,7 +302,7 @@ export const removeFromCart = (productId: number) => async (dispatch: any) => {
       payload: 'loading',
     });
 
-    const response = await Axios.post('/api/cart/remove', {
+    const response = await axiosInstance.post('/api/cart/remove', {
       productId,
     });
 
@@ -324,7 +329,7 @@ export const getPromocode = (promocode: string) => async (dispatch: any) => {
       payload: 'loading',
     });
 
-    const response = await Axios.post('/api/promocode', {
+    const response = await axiosInstance.post('/api/promocode', {
       promocode,
     });
     dispatch({
@@ -355,7 +360,7 @@ export const checkoutUser = (promocode: string) => async (dispatch: any) => {
       payload: 'loading',
     });
 
-    const response = await Axios.post('/api/cart/checkout', {
+    const response = await axiosInstance.post('/api/cart/checkout', {
       promocode,
     });
     dispatch({
@@ -380,7 +385,7 @@ export const checkoutUser = (promocode: string) => async (dispatch: any) => {
  */
 export const logoutUser = () => async (dispatch: any) => {
   try {
-    const response = await Axios.get('/api/logout', { withCredentials: true });
+    const response = await axiosInstance.get('/api/logout');
   } catch (error) {
     console.log(error);
   } finally {
@@ -430,13 +435,10 @@ export const editUserInfo = (
       type: userReducerTypes.editLoadingStatus,
       payload: 'loading',
     });
-    const response = await Axios.post(
-      '/api/profile/edit',
-      { phone, deliveryaddress: deliveryAddress },
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axiosInstance.post('/api/profile/edit', {
+      phone,
+      deliveryaddress: deliveryAddress,
+    });
     dispatch({
       type: userReducerTypes.editLoadingStatus,
       payload: 'loaded',

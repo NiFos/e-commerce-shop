@@ -118,7 +118,7 @@ export const getPublicCategories = () => async (dispatch: any) => {
       type: categoriesReducerTypes.getPublicCategoriesLoadingStatus,
       payload: 'loading',
     });
-    const response = await Axios.get('/api/category/getAll');
+    const response = await axiosInstance.get('/api/category/getAll');
     dispatch({
       type: categoriesReducerTypes.getPublicCategories,
       payload: response.data.categories,
