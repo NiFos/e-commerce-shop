@@ -1,5 +1,6 @@
 import { NextApiResponse } from 'next';
 import { getPhotoUrl } from '../../../../libs/storage';
+import { withMethod } from '../../../../libs/withMethod';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { discountModel } from '../../../../models/discount';
 
@@ -36,4 +37,4 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   }
 }
 
-export default withUser(handler);
+export default withMethod(withUser(handler), 'GET');

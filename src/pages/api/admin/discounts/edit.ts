@@ -1,4 +1,5 @@
 import { NextApiResponse } from 'next';
+import { withMethod } from '../../../../libs/withMethod';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { discountModel, IDiscountUpdate } from '../../../../models/discount';
 
@@ -33,4 +34,4 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   }
 }
 
-export default withUser(handler);
+export default withMethod(withUser(handler), 'POST');

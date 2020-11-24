@@ -1,5 +1,6 @@
 import { NextApiResponse } from 'next';
 import { authUtil } from '../../../libs/auth';
+import { withMethod } from '../../../libs/withMethod';
 import { NextApiRequestWithUser } from '../../../libs/withUser';
 import { authModel } from '../../../models/auth';
 import { userModel } from '../../../models/user';
@@ -14,13 +15,13 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
 
     if (!codePayload?.data?.id) throw 'Not auth';
 
-    const userExist = await authModel.isUserExist(codePayload.data.email);
+    const userExist = await authModel.isUserExist(codePayload.data.email || '');
     let userId = userExist;
     if (typeof userExist === 'undefined') {
       const password = authUtil.genPassword();
       const register = await authModel.register(
-        codePayload.data.email,
-        codePayload.data.name,
+        codePayload.data.email || '',
+        codePayload.data.name || '',
         password
       );
       if (register[0]?.user_id) throw 'Not registered';
@@ -52,4 +53,4 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   }
 }
 
-export default handler;
+export default withMethod(handler, 'GET');

@@ -385,7 +385,7 @@ export const checkoutUser = (promocode: string) => async (dispatch: any) => {
  */
 export const logoutUser = () => async (dispatch: any) => {
   try {
-    await axiosInstance.get('/api/logout');
+    await axiosInstance.delete('/api/logout');
   } catch (error) {
     console.log(error);
   } finally {

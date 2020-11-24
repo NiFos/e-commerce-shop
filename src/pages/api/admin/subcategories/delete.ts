@@ -1,4 +1,5 @@
 import { NextApiResponse } from 'next';
+import { withMethod } from '../../../../libs/withMethod';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { categoryModel } from '../../../../models/category';
 
@@ -32,4 +33,4 @@ async function deleteSubcategoryHandler(
   }
 }
 
-export default withUser(deleteSubcategoryHandler);
+export default withMethod(withUser(deleteSubcategoryHandler), 'DELETE');

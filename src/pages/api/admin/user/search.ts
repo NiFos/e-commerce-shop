@@ -1,4 +1,5 @@
 import { NextApiResponse } from 'next';
+import { withMethod } from '../../../../libs/withMethod';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { userModel } from '../../../../models/user';
 
@@ -25,4 +26,4 @@ async function searchUserHandler(
     });
   }
 }
-export default withUser(searchUserHandler);
+export default withMethod(withUser(searchUserHandler), 'GET');

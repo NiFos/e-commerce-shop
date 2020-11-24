@@ -1,4 +1,5 @@
 import { NextApiResponse } from 'next';
+import { withMethod } from '../../../../libs/withMethod';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { categoryModel } from '../../../../models/category';
 
@@ -37,4 +38,4 @@ async function createSubcategoryHandler(
   }
 }
 
-export default withUser(createSubcategoryHandler);
+export default withMethod(withUser(createSubcategoryHandler), 'POST');

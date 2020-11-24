@@ -1,4 +1,5 @@
 import { NextApiResponse } from 'next';
+import { withMethod } from '../../../../libs/withMethod';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { categoryModel } from '../../../../models/category';
 
@@ -26,4 +27,4 @@ async function getAllAdminSubcategoriesHandler(
   }
 }
 
-export default withUser(getAllAdminSubcategoriesHandler);
+export default withMethod(withUser(getAllAdminSubcategoriesHandler), 'GET');

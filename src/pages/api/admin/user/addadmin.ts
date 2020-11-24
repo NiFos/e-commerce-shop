@@ -1,4 +1,5 @@
 import { NextApiResponse } from 'next';
+import { withMethod } from '../../../../libs/withMethod';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { adminModel } from '../../../../models/admin';
 import { userModel } from '../../../../models/user';
@@ -44,4 +45,4 @@ async function addAdminHandler(
     });
   }
 }
-export default withUser(addAdminHandler);
+export default withMethod(withUser(addAdminHandler), 'POST');

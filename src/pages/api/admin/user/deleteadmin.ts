@@ -1,4 +1,5 @@
 import { NextApiResponse } from 'next';
+import { withMethod } from '../../../../libs/withMethod';
 import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { adminModel } from '../../../../models/admin';
 import { userModel } from '../../../../models/user';
@@ -43,4 +44,4 @@ async function deleteAdminHandler(
     });
   }
 }
-export default withUser(deleteAdminHandler);
+export default withMethod(withUser(deleteAdminHandler), 'DELETE');
