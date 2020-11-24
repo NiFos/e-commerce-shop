@@ -100,7 +100,7 @@ export const editAdmin = (id: number, fullAccess: boolean) => async (
       type: adminsReducerTypes.editLoadingStatus,
       payload: 'loading',
     });
-    const response = await axiosInstance.post('/api/admin/user/editadmin', {
+    await axiosInstance.post('/api/admin/user/editadmin', {
       userId: id,
       fullAccess,
     });
@@ -124,9 +124,7 @@ export const deleteAdmin = (id: number) => async (dispatch: any) => {
       type: adminsReducerTypes.deleteLoadingStatus,
       payload: 'loading',
     });
-    const response = await axiosInstance.delete(
-      `/api/admin/user/deleteadmin?userId=${id}`
-    );
+    await axiosInstance.delete(`/api/admin/user/deleteadmin?userId=${id}`);
     dispatch({
       type: adminsReducerTypes.deleteLoadingStatus,
       payload: 'loaded',
@@ -152,7 +150,7 @@ export const addAdmin = (id: number, fullAccess: boolean) => async (
       type: adminsReducerTypes.addLoadingStatus,
       payload: 'loading',
     });
-    const response = await axiosInstance.post('/api/admin/user/addadmin', {
+    await axiosInstance.post('/api/admin/user/addadmin', {
       userid: id,
       fullAccess,
     });

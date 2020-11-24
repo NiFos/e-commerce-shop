@@ -198,7 +198,7 @@ export const addProductToCart = (productId: number, quantity: number) => async (
       type: userReducerTypes.addToCartLoadingStatus,
       payload: 'loading',
     });
-    const response = await axiosInstance.post('/api/cart/add', {
+    await axiosInstance.post('/api/cart/add', {
       productId,
       quantity,
     });
@@ -302,7 +302,7 @@ export const removeFromCart = (productId: number) => async (dispatch: any) => {
       payload: 'loading',
     });
 
-    const response = await axiosInstance.post('/api/cart/remove', {
+    await axiosInstance.post('/api/cart/remove', {
       productId,
     });
 
@@ -385,7 +385,7 @@ export const checkoutUser = (promocode: string) => async (dispatch: any) => {
  */
 export const logoutUser = () => async (dispatch: any) => {
   try {
-    const response = await axiosInstance.get('/api/logout');
+    await axiosInstance.get('/api/logout');
   } catch (error) {
     console.log(error);
   } finally {
@@ -435,7 +435,7 @@ export const editUserInfo = (
       type: userReducerTypes.editLoadingStatus,
       payload: 'loading',
     });
-    const response = await axiosInstance.post('/api/profile/edit', {
+    await axiosInstance.post('/api/profile/edit', {
       phone,
       deliveryaddress: deliveryAddress,
     });

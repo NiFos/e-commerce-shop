@@ -178,7 +178,7 @@ export const editCategory = (
       type: categoriesReducerTypes.editLoadingStatus,
       payload: 'loading',
     });
-    const response = await axiosInstance.post(
+    await axiosInstance.post(
       `/api/admin/${isCategory ? 'categories' : 'subcategories'}/edit?id=${id}`,
       { id, title }
     );
@@ -204,7 +204,7 @@ export const deleteCategory = (isCategory: boolean, id: number) => async (
       type: categoriesReducerTypes.deleteLoadingStatus,
       payload: 'loading',
     });
-    const response = await axiosInstance.delete(
+    await axiosInstance.delete(
       `/api/admin/${
         isCategory ? 'categories' : 'subcategories'
       }/delete?id=${id}`
@@ -235,7 +235,7 @@ export const createCategory = (
       payload: 'loading',
     });
     const options = isCategory ? { title } : { categoryId, title };
-    const response = await axiosInstance.post(
+    await axiosInstance.post(
       `/api/admin/${isCategory ? 'categories' : 'subcategories'}/create`,
       options
     );

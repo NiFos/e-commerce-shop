@@ -42,7 +42,7 @@ export default function Component(props: Props): JSX.Element {
   const router = useRouter();
 
   React.useEffect(() => {
-    if (typeof state?.user?.me?.user?.id !== 'undefined') {
+    if (typeof state?.user?.me?.user?.userid !== 'undefined') {
       if (state?.user?.me?.user?.admin?.isAdmin) {
         router.push('/admin');
       } else {

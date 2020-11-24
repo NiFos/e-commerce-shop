@@ -144,7 +144,7 @@ export const editProduct = (data: any) => async (dispatch: any) => {
       type: productsReducerTypes.editLoadingStatus,
       payload: 'loading',
     });
-    const response = await axiosInstance.post('/api/admin/products/edit', data);
+    await axiosInstance.post('/api/admin/products/edit', data);
     dispatch({
       type: productsReducerTypes.editLoadingStatus,
       payload: 'loaded',
@@ -166,9 +166,7 @@ export const deleteProduct = (id: number) => async (dispatch: any) => {
       type: productsReducerTypes.deleteLoadingStatus,
       payload: 'loading',
     });
-    const response = await axiosInstance.delete(
-      `/api/admin/products/delete?productId=${id}`
-    );
+    await axiosInstance.delete(`/api/admin/products/delete?productId=${id}`);
     dispatch({
       type: productsReducerTypes.deleteLoadingStatus,
       payload: 'loaded',
@@ -279,7 +277,7 @@ export const sendReview = (
       type: productsReducerTypes.addReviewLoadingStatus,
       payload: 'loading',
     });
-    const response = await axiosInstance.post('/api/product/sendreview', {
+    await axiosInstance.post('/api/product/sendreview', {
       productId,
       text,
       rating,

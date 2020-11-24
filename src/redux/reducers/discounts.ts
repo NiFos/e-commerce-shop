@@ -144,10 +144,7 @@ export const editDiscount = (
       type: discountsReducerTypes.editLoadingStatus,
       payload: 'loading',
     });
-    const response = await axiosInstance.post(
-      '/api/admin/discounts/edit',
-      data
-    );
+    await axiosInstance.post('/api/admin/discounts/edit', data);
     dispatch({
       type: discountsReducerTypes.editLoadingStatus,
       payload: 'loaded',
@@ -169,9 +166,7 @@ export const deleteDiscount = (id: number) => async (dispatch: any) => {
       type: discountsReducerTypes.deleteLoadingStatus,
       payload: 'loading',
     });
-    const response = await axiosInstance.delete(
-      `/api/admin/discounts/delete?discountId=${id}`
-    );
+    await axiosInstance.delete(`/api/admin/discounts/delete?discountId=${id}`);
     dispatch({
       type: discountsReducerTypes.deleteLoadingStatus,
       payload: 'loaded',

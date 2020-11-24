@@ -150,7 +150,7 @@ export const editOrderStatus = (orderId: number, status: number) => async (
   dispatch: any
 ) => {
   try {
-    const response = await axiosInstance.post('api/admin/orders/edit', {
+    await axiosInstance.post('api/admin/orders/edit', {
       orderId,
       status,
     });
