@@ -11,7 +11,7 @@ interface Props {
 /**
  * Pagination component
  */
-export function Pagination(props: Props) {
+export function Pagination(props: Props): JSX.Element {
   return (
     <div>
       <Button onClick={props.prev} disabled={props.currentPage < 2}>

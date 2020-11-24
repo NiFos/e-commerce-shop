@@ -8,7 +8,7 @@ export const userModel = {
    * Search users by username (limited 10 users)
    * @param username - Username to search
    */
-  async findUsers(username: string): Promise<any> {
+  async findUsers(username: string): Promise<any[]> {
     if (!username) return [];
     return await database()
       .select('*')
@@ -51,7 +51,7 @@ export const userModel = {
    * Edit user information
    * @param payload - Update payload (phone, deliveryaddress)
    */
-  async editUserInformation(userId: number, payload: any) {
+  async editUserInformation(userId: number, payload: any): Promise<any> {
     if (JSON.stringify(payload) === '{}') return 0;
 
     return await database()

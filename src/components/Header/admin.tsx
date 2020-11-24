@@ -8,10 +8,6 @@ import {
 import Link from 'next/link';
 import React from 'react';
 
-interface Props {
-  children?: any;
-}
-
 const name = 'Online shop';
 const useStyles = makeStyles({
   header: {
@@ -30,7 +26,7 @@ const useStyles = makeStyles({
 /**
  * Admin header
  */
-export default function Component(props: Props) {
+export default function Component(): JSX.Element {
   const classes = useStyles();
   return (
     <Container className={classes.header}>

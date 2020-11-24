@@ -10,6 +10,7 @@ import {
   Input,
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,7 +33,7 @@ interface Props {
 /**
  * Admins page
  */
-export default function Component(props: Props) {
+export default function Component(props: Props): JSX.Element {
   const state = useSelector((state: RootState) => state.admins);
   const userState = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
@@ -270,7 +271,7 @@ export default function Component(props: Props) {
 /**
  * Ssr
  */
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const userData = checkUser(context.req);
   if (
     typeof userData?.user?.id === 'undefined' ||
@@ -291,4 +292,4 @@ export async function getServerSideProps(context: any) {
       admins: reduxStore.getState().admins.admins,
     },
   };
-}
+};

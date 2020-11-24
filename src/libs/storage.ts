@@ -3,6 +3,7 @@ import fs from 'fs';
 import { parseFile } from './parse';
 import { NextApiRequestWithUser } from './withUser';
 import sharp from 'sharp';
+import { File } from 'formidable';
 
 const bucketName = process.env.GCP_BUCKET || '';
 const privateKey = (process.env.GCP_PRIVATE_KEY || '').replace(/\\n/g, '\n');
@@ -34,7 +35,7 @@ export async function uploadFile(
   name: string
 ): Promise<UploadFileResponse> {
   try {
-    const file: any = await parseFile(req);
+    const file: File = await parseFile(req);
 
     if (!file) return { success: false, message: 'Cannot parse file' };
 

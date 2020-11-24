@@ -28,7 +28,7 @@ interface IUserData {
 /**
  * Settings component
  */
-export function Settings(props: Props) {
+export function Settings(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const settingsState = useSelector((state: RootState) => state.settings);
   const [userInfoOpen, setUserInfoOpen] = React.useState(false);

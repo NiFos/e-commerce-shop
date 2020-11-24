@@ -8,7 +8,7 @@ interface Props {
 /**
  * Orders component
  */
-export function Orders(props: Props) {
+export function Orders(props: Props): JSX.Element {
   /**
    * Render orders
    */

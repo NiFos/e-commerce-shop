@@ -8,7 +8,11 @@ export const cartModel = {
    * @param userId - User id
    * @param productId - Product id
    */
-  async addToCart(userId: number, productId: number, quantity: number) {
+  async addToCart(
+    userId: number,
+    productId: number,
+    quantity: number
+  ): Promise<any> {
     if (
       typeof productId === 'undefined' ||
       typeof userId === 'undefined' ||
@@ -35,7 +39,7 @@ export const cartModel = {
    * Get user products in cart
    * @param userId - User id
    */
-  async getUserCart(userId: number | undefined) {
+  async getUserCart(userId: number | undefined): Promise<any> {
     if (typeof userId === 'undefined') return [];
     return await database()
       .select(
@@ -57,7 +61,7 @@ export const cartModel = {
    * @param userId - User id
    * @param productId - Product id
    */
-  async removeFromCart(userId: number, productId: number) {
+  async removeFromCart(userId: number, productId: number): Promise<any> {
     if (typeof userId === 'undefined' || typeof productId === 'undefined')
       return 0;
     return await database().delete().from(cartTable).where({
@@ -70,7 +74,7 @@ export const cartModel = {
    * Clean cart
    * @param userId - User id
    */
-  async cleanUserCart(userId: number) {
+  async cleanUserCart(userId: number): Promise<any> {
     if (typeof userId === 'undefined') return 0;
     return await database()
       .delete()
@@ -84,7 +88,11 @@ export const cartModel = {
    * @param productId - Product id
    * @param quantity - Quantity
    */
-  async editCartProduct(userId: number, productId: number, quantity: number) {
+  async editCartProduct(
+    userId: number,
+    productId: number,
+    quantity: number
+  ): Promise<any> {
     if (
       typeof userId === 'undefined' ||
       typeof productId === 'undefined' ||

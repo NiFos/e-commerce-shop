@@ -24,7 +24,7 @@ export interface NextApiRequestWithUser extends NextApiRequest, IUser {}
 export const withUser = (handler: any) => (
   req: NextApiRequestWithUser,
   res: NextApiResponse
-) => {
+): NextApiRequestWithUser => {
   try {
     const cookie = req.cookies.authorization;
     if (typeof cookie === 'undefined') return handler(req, res);

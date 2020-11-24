@@ -15,6 +15,7 @@ import {
 } from '../../redux/reducers/user';
 import { initializeStore, RootState } from '../../redux/store';
 import { loadStripe } from '@stripe/stripe-js';
+import { GetServerSideProps } from 'next';
 
 interface Props {
   children?: any;
@@ -25,7 +26,7 @@ interface Props {
 /**
  * Cart page
  */
-export default function Component(props: Props) {
+export default function Component(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const router = useRouter();
   const userState = useSelector((state: RootState) => state.user);
@@ -153,7 +154,7 @@ export default function Component(props: Props) {
 /**
  * Ssr
  */
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const userData = checkUser(context.req);
   if (typeof userData?.user?.id === 'undefined')
     return { props: { error: 'unauth' } };
@@ -177,4 +178,4 @@ export async function getServerSideProps(context: any) {
       stripeKey: process.env.STRIPE_PUBLIC_KEY || '',
     },
   };
-}
+};

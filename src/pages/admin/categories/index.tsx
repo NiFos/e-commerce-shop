@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,7 +33,7 @@ interface Props {
 /**
  * Categories page
  */
-export default function Component(props: Props) {
+export default function Component(props: Props): JSX.Element {
   const [categoryEdit, setCategoryEdit] = React.useState(-1);
   const [isCategory, setIsCategory] = React.useState(true);
   const [newCategory, setNewCategory] = React.useState(false);
@@ -248,7 +249,7 @@ export default function Component(props: Props) {
 /**
  * Ssr
  */
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const userData = checkUser(context.req);
   if (
     typeof userData?.user?.id === 'undefined' ||
@@ -268,4 +269,4 @@ export async function getServerSideProps(context: any) {
       categories: reduxStore.getState().categories.categories,
     },
   };
-}
+};

@@ -15,6 +15,7 @@ import {
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
 import moment from 'moment';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -48,7 +49,7 @@ interface IDiscountData {
 /**
  * Discounts page
  */
-export default function Component(props: Props) {
+export default function Component(props: Props): JSX.Element {
   const state = useSelector((state: RootState) => state.discounts);
   const userState = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
@@ -331,7 +332,7 @@ export default function Component(props: Props) {
 /**
  * Ssr
  */
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const userData = checkUser(context.req);
   if (
     typeof userData?.user?.id === 'undefined' ||
@@ -353,4 +354,4 @@ export async function getServerSideProps(context: any) {
       discounts: reduxStore.getState().discounts.discounts,
     },
   };
-}
+};

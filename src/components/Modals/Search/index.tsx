@@ -21,7 +21,7 @@ interface Props {
 /**
  * Search modal
  */
-export function Search(props: Props) {
+export function Search(props: Props): JSX.Element {
   const [value, setValue] = React.useState('');
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state.search);

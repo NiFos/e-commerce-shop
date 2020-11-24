@@ -10,7 +10,7 @@ interface Props {
 /**
  * Profile popup
  */
-export function ProfilePopup(props: Props) {
+export function ProfilePopup(props: Props): JSX.Element {
   const node = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     document.addEventListener('mousedown', handleClick);

@@ -19,7 +19,7 @@ export const stripeModel = {
     userId: number,
     products: stripe.Checkout.SessionCreateParams.LineItem[],
     promocode: string
-  ) {
+  ): Promise<stripe.Response<stripe.Checkout.Session>> {
     const session = await stripeInstance.checkout.sessions.create({
       payment_method_types: ['card'],
       success_url: successUrl,
@@ -37,7 +37,9 @@ export const stripeModel = {
    * Get line items from checkout
    * @param checkoutId - Checkout id
    */
-  async getLineItems(checkoutId: string) {
+  async getLineItems(
+    checkoutId: string
+  ): Promise<stripe.Response<stripe.ApiList<stripe.LineItem>>> {
     const lineItems = await stripeInstance.checkout.sessions.listLineItems(
       checkoutId
     );

@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Breadcrumbs,
   Button,
   Container,
   Divider,
@@ -20,10 +19,6 @@ import Link from 'next/link';
 import { RouteBreadcrums } from './routeBreadcrums';
 import { Search } from '../Modals/Search';
 
-interface Props {
-  children?: any;
-}
-
 const name = 'Online shop';
 const useStyles = makeStyles({
   header: {
@@ -42,7 +37,7 @@ const useStyles = makeStyles({
 /**
  * Frontend header
  */
-export default function Component(props: Props) {
+export default function Component(): JSX.Element {
   const classes = useStyles();
   const userState = useSelector((state: RootState) => state.user);
   const [categoriesOpen, setCategoriesOpen] = React.useState(false);
@@ -102,7 +97,7 @@ export default function Component(props: Props) {
           )}
         </div>
         <div className={classes.items}>
-          <RouteBreadcrums currentRoute={router.asPath} />
+          <RouteBreadcrums />
         </div>
         <div className={classes.items}>
           <IconButton onClick={handleSearchBtnClick}>

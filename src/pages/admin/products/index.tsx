@@ -27,6 +27,7 @@ import { initializeStore, RootState } from '../../../redux/store';
 import { UploadPhotoModal } from '../../../components/Modals/uploadPhoto';
 import moment from 'moment';
 import { Pagination } from '../../../components/Pagination';
+import { GetServerSideProps } from 'next';
 
 interface Props {
   children?: any;
@@ -47,7 +48,7 @@ interface IProductData {
 /**
  * Products page
  */
-export default function Component(props: Props) {
+export default function Component(props: Props): JSX.Element {
   const [loading, setLoading] = React.useState(false);
   const [currentProductId, setCurrentProductId] = React.useState(-1);
   const [currentProductIndex, setCurrentProductIndex] = React.useState(-1);
@@ -387,18 +388,18 @@ export default function Component(props: Props) {
 /**
  * Ssr
  */
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const userData = checkUser(context.req);
   if (
     typeof userData?.user?.id === 'undefined' ||
     !userData?.user?.admin?.isAdmin
   )
     return { props: { error: 'unauth' } };
-  const { page } = context.query;
+  const page = +(context.query.page || 1);
   const pageSize = 5;
 
   const reduxStore = initializeStore({});
-  const products = await productModel.getAllProducts(pageSize, +page || 1);
+  const products = await productModel.getAllProducts(pageSize, page);
   const hasMore = products.length > +pageSize;
   if (hasMore) {
     products.splice(products.length - 1, 1);
@@ -414,7 +415,7 @@ export async function getServerSideProps(context: any) {
     props: {
       products: reduxStore.getState().products.products,
       hasMore,
-      page: +page || 1,
+      page: page,
     },
   };
-}
+};

@@ -1,17 +1,13 @@
 import { Breadcrumbs, Link } from '@material-ui/core';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { IBreadcrum } from '../../redux/reducers/settings';
 import { RootState } from '../../redux/store';
-
-interface Props {
-  currentRoute: string;
-}
 
 /**
  * Route breadcrums component
  */
-export function RouteBreadcrums(props: Props) {
+export function RouteBreadcrums(): JSX.Element {
   const state = useSelector((state: RootState) => state.settings);
 
   /**

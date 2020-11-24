@@ -13,6 +13,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import moment from 'moment';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPhotoUrl } from '../../libs/storage';
@@ -32,7 +33,7 @@ interface Props {
 /**
  * Product page
  */
-export default function Component(props: Props) {
+export default function Component(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const [quantity, setQuantity] = React.useState<number>(1);
   const [reviewOpen, setReviewOpen] = React.useState(false);
@@ -191,27 +192,28 @@ export default function Component(props: Props) {
 /**
  * Ssr
  */
-export async function getStaticProps(context: any) {
-  const product = await productModel.getProduct(+context.params.id);
+export const getStaticProps: GetStaticProps = async (context) => {
+  const id = +(context?.params?.id || 0);
+  const product = await productModel.getProduct(id);
   const productData = {
     ...product[0],
     created_on: new Date(product[0].created_on).toString(),
     photo: getPhotoUrl('products', product[0].product_id),
   };
 
-  const reviews = await reviewModel.getProductReviews(+context.params.id);
+  const reviews = await reviewModel.getProductReviews(id);
   const reviewsData = reviews.map((item: any) => ({
     ...item,
     created_on: new Date(item.created_on).toString(),
   }));
 
   return { props: { product: productData, reviews: reviewsData } };
-}
+};
 
 /**
  * Static paths
  */
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
   const products = await productModel.getIds();
   const paths = products.map((item: any) => ({
     params: { id: item.product_id.toString() },
@@ -221,4 +223,4 @@ export async function getStaticPaths() {
     paths,
     fallback: false,
   };
-}
+};

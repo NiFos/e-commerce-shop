@@ -25,7 +25,7 @@ interface Props {
 /**
  * Categories component
  */
-export function Categories(props: Props) {
+export function Categories(props: Props): JSX.Element {
   const state = useSelector((state: RootState) => state.categories);
   const dispatch = useDispatch();
   const router = useRouter();

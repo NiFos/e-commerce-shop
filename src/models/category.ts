@@ -31,7 +31,7 @@ export const categoryModel = {
    * Get subcategory by id
    * @param subcategoryId - Subcategory id
    */
-  async getSubcategory(subcategoryId: number) {
+  async getSubcategory(subcategoryId: number): Promise<any> {
     return await database()
       .select('*')
       .from(subCategoriesTable)
@@ -42,7 +42,7 @@ export const categoryModel = {
    * Get subcategory data, such as: tags, prices
    * @param subcategoryId - Subcategory id
    */
-  async getSubcategoryData(subcategoryId: number) {
+  async getSubcategoryData(subcategoryId: number): Promise<any> {
     const pricesData: any = await database()
       .min({ min: 'price' })
       .max({ max: 'price' })

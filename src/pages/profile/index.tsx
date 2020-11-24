@@ -1,5 +1,6 @@
 import { Container, Divider, Typography } from '@material-ui/core';
 import moment from 'moment';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -25,7 +26,7 @@ interface Props {
 /**
  * Profile page
  */
-export default function Component(props: Props) {
+export default function Component(props: Props): JSX.Element {
   const userState = useSelector((state: RootState) => state.user);
   const router = useRouter();
 
@@ -71,7 +72,7 @@ export default function Component(props: Props) {
 /**
  * Ssr
  */
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const userData = checkUser(context.req);
   if (typeof userData?.user?.id === 'undefined')
     return { props: { error: 'unauth' } };
@@ -103,4 +104,4 @@ export async function getServerSideProps(context: any) {
       },
     },
   };
-}
+};

@@ -18,7 +18,7 @@ interface Props {
 /**
  * Upload photo modal
  */
-export function UploadPhotoModal(props: Props) {
+export function UploadPhotoModal(props: Props): JSX.Element {
   return (
     <Dialog open={props.isOpen} onClose={props.submitHandler}>
       <DialogTitle>Upload photo</DialogTitle>

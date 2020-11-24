@@ -8,10 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login, register } from '../../redux/reducers/user';
 import { RootState } from '../../redux/store';
 
-interface Props {
-  children?: any;
-}
-
 export interface IAuthData {
   username?: {
     touched: boolean;
@@ -33,7 +29,7 @@ export interface IAuthData {
 /**
  * Auth page
  */
-export default function Component(props: Props): JSX.Element {
+export default function Component(): JSX.Element {
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
   const [isReg, setIsReg] = React.useState(false);

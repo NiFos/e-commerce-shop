@@ -15,7 +15,7 @@ interface Props {
 /**
  * Layout component
  */
-export default function Component(props: Props) {
+export default function Component(props: Props): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state.user);

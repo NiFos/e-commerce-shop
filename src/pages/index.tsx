@@ -4,6 +4,7 @@ import { Container } from '@material-ui/core';
 import { productModel } from '../models/product';
 import { discountModel } from '../models/discount';
 import { getPhotoUrl } from '../libs/storage';
+import { GetStaticProps } from 'next';
 
 interface Props {
   mainDiscount: any;
@@ -71,7 +72,7 @@ export default function Component(props: Props): JSX.Element {
 /**
  * Ssr
  */
-export async function getStaticProps(context: any) {
+export const getStaticProps: GetStaticProps = async () => {
   const mainDiscount = await discountModel.getRandomDiscount();
   const lastNewProduct = await productModel.getLastNewProduct();
   const popular = await productModel.getPopularProducts();
@@ -107,4 +108,4 @@ export async function getStaticProps(context: any) {
       })),
     },
   };
-}
+};

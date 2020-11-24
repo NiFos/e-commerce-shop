@@ -7,6 +7,7 @@ import {
   Slider,
   Typography,
 } from '@material-ui/core';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { categoryModel } from '../../models/category';
@@ -28,7 +29,7 @@ interface Props {
 /**
  * Category page
  */
-export default function Component(props: Props) {
+export default function Component(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state.category);
   const [perPage, setPerPage] = React.useState(5);
@@ -126,22 +127,22 @@ export default function Component(props: Props) {
 /**
  * Ssr
  */
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
   const subcategories = await categoryModel.getAllSubcategories();
 
   const paths = subcategories.map((item: any) => ({
     params: { id: '' + item.subcategory_id },
   }));
   return { paths, fallback: false };
-}
+};
 
 /**
  * Ssr
  */
-export async function getStaticProps(context: any) {
-  const id = context.params.id;
-  const subcategory = await categoryModel.getSubcategory(+id);
-  const subcategoryData = await categoryModel.getSubcategoryData(+id);
+export const getStaticProps: GetStaticProps = async (context) => {
+  const id = +(context?.params?.id || 0);
+  const subcategory = await categoryModel.getSubcategory(id);
+  const subcategoryData = await categoryModel.getSubcategoryData(id);
 
   return {
     props: {
@@ -155,4 +156,4 @@ export async function getStaticProps(context: any) {
       },
     },
   };
-}
+};

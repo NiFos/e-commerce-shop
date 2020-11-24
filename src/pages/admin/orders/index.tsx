@@ -25,6 +25,7 @@ import { initializeStore, RootState } from '../../../redux/store';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { Pagination } from '../../../components/Pagination';
 import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
 
 interface IOrder {
   orderId: number;
@@ -198,7 +199,7 @@ export default function Component(props: Props): JSX.Element {
 /**
  * Ssr props
  */
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const userData = checkUser(context.req);
   if (
     typeof userData?.user?.id === 'undefined' ||
@@ -207,7 +208,8 @@ export async function getServerSideProps(context: any) {
     return { props: { error: 'unauth' } };
 
   const reduxStore = initializeStore({});
-  const { pageSize, page } = context.query;
+  const pageSize = +(context.query.pageSize || 5);
+  const page = +(context.query.page || 1);
 
   const orders = await orderModel.getAllOrders(+pageSize, +page);
   const ordersData = orders.map((item: any) => {
@@ -249,4 +251,4 @@ export async function getServerSideProps(context: any) {
       page: page || 1,
     },
   };
-}
+};

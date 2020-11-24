@@ -2,8 +2,9 @@ import { NextApiResponse } from 'next';
 import { IUser } from './withUser';
 import { serialize } from 'cookie';
 import jwt from 'jsonwebtoken';
-import { google } from 'googleapis';
+import { google, oauth2_v2 } from 'googleapis';
 import { generate } from 'generate-password';
+import { GaxiosPromise } from 'googleapis/build/src/apis/ml';
 
 const cookieAge = process.env.COOKIE_EXPIRATION || 31556926;
 const jwtAge = process.env.JWT_EXPIRATION || '1y';
@@ -30,7 +31,7 @@ export const authUtil = {
   /**
    * Get google oauth url
    */
-  async getOauthUrl(): Promise<any> {
+  async getOauthUrl(): Promise<string> {
     const scope = [
       'https://www.googleapis.com/auth/userinfo.email',
       'https://www.googleapis.com/auth/userinfo.profile',
@@ -49,7 +50,7 @@ export const authUtil = {
    * Get user information (email, etc.)
    * @param token - Code from query
    */
-  async getUserInfo(token: string): Promise<any> {
+  async getUserInfo(token: string): GaxiosPromise<oauth2_v2.Schema$Userinfo> {
     const auth = createConnectionGoogle();
     const data = await auth.getToken(token);
 
@@ -61,14 +62,14 @@ export const authUtil = {
    * Set auth cookie to res
    * @param res Response
    */
-  setAuthCookie(res: NextApiResponse, cookie: string): any {
+  setAuthCookie(res: NextApiResponse, cookie: string): void {
     res.setHeader('Set-Cookie', [cookie]);
   },
 
   /**
    * Delete cookies
    */
-  clearCookie(res: NextApiResponse): any {
+  clearCookie(res: NextApiResponse): void {
     const cookie = serialize('authorization', '', {
       httpOnly: true,
       secure: true,
@@ -100,7 +101,7 @@ export const authUtil = {
   /**
    * Generate password
    */
-  genPassword() {
+  genPassword(): string {
     const password = generate({
       length: +passwordSalt,
       numbers: true,
