@@ -1,4 +1,5 @@
 import { NextApiResponse } from 'next';
+import { withMethod } from '../../../libs/withMethod';
 import { NextApiRequestWithUser } from '../../../libs/withUser';
 import { categoryModel } from '../../../models/category';
 
@@ -33,4 +34,4 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   }
 }
 
-export default handler;
+export default withMethod(handler, 'GET');
