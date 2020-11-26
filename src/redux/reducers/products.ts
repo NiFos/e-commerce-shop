@@ -1,4 +1,6 @@
 import Axios from 'axios';
+import { ThunkAction } from 'redux-thunk';
+import { RootState } from '../store';
 
 const axiosInstance = Axios.create({
   baseURL: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -38,13 +40,13 @@ const initialState: IProductsReducer = {};
  */
 export const productsReducer = (
   state = initialState,
-  { type, payload }: any
-) => {
+  { type, payload }: ProductsAction
+): IProductsReducer => {
   switch (type) {
     case productsReducerTypes.getProducts: {
       return {
         ...state,
-        products: payload,
+        products: payload as any[],
       };
     }
 
@@ -52,7 +54,7 @@ export const productsReducer = (
       return {
         ...state,
         newProduct: {
-          id: payload,
+          id: +payload,
         },
       };
     }
@@ -61,7 +63,7 @@ export const productsReducer = (
       return {
         ...state,
         newProduct: {
-          photo: payload,
+          photo: payload.toString(),
         },
       };
     }
@@ -69,49 +71,49 @@ export const productsReducer = (
     case productsReducerTypes.search: {
       return {
         ...state,
-        search: payload,
+        search: payload as any[],
       };
     }
 
     case productsReducerTypes.uploadPhotoLoadingStatus: {
       return {
         ...state,
-        uploadPhotoLoadingStatus: payload,
+        uploadPhotoLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case productsReducerTypes.createLoadingStatus: {
       return {
         ...state,
-        createLoadingStatus: payload,
+        createLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case productsReducerTypes.deleteLoadingStatus: {
       return {
         ...state,
-        deleteLoadingStatus: payload,
+        deleteLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case productsReducerTypes.editLoadingStatus: {
       return {
         ...state,
-        editLoadingStatus: payload,
+        editLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case productsReducerTypes.getProductsLoadingStatus: {
       return {
         ...state,
-        getProductsLoadingStatus: payload,
+        getProductsLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case productsReducerTypes.addReviewLoadingStatus: {
       return {
         ...state,
-        addReviewLoadingStatus: payload,
+        addReviewLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
@@ -122,10 +124,15 @@ export const productsReducer = (
 };
 
 // Actions
+interface GetProducts {
+  type: typeof productsReducerTypes.getProducts;
+  payload: any[];
+}
+
 /**
  * Get products action
  */
-export const getProducts = (products: any[]) => {
+export const getProducts = (products: any[]): GetProducts => {
   return {
     type: productsReducerTypes.getProducts,
     payload: products,
@@ -138,7 +145,11 @@ export const getProducts = (products: any[]) => {
  * @param title - product title
  * @param description - product description
  */
-export const editProduct = (data: any) => async (dispatch: any) => {
+export const editProduct = (
+  data: any
+): ThunkAction<void, RootState, unknown, ProductsAction> => async (
+  dispatch
+) => {
   try {
     dispatch({
       type: productsReducerTypes.editLoadingStatus,
@@ -156,11 +167,16 @@ export const editProduct = (data: any) => async (dispatch: any) => {
     });
   }
 };
+
 /**
  * Delete product action
  * @param id - product id
  */
-export const deleteProduct = (id: number) => async (dispatch: any) => {
+export const deleteProduct = (
+  id: number
+): ThunkAction<void, RootState, unknown, ProductsAction> => async (
+  dispatch
+) => {
   try {
     dispatch({
       type: productsReducerTypes.deleteLoadingStatus,
@@ -179,6 +195,11 @@ export const deleteProduct = (id: number) => async (dispatch: any) => {
   }
 };
 
+interface CreateProductAction {
+  type: typeof productsReducerTypes.createProduct;
+  payload: number;
+}
+
 /**
  * Create product action
  * @param title - product title
@@ -195,7 +216,9 @@ export const createProduct = (
   price: number,
   quantity: number,
   subcategoryId: number
-) => async (dispatch: any) => {
+): ThunkAction<void, RootState, unknown, ProductsAction> => async (
+  dispatch
+) => {
   try {
     dispatch({
       type: productsReducerTypes.createLoadingStatus,
@@ -225,6 +248,11 @@ export const createProduct = (
   }
 };
 
+interface UploadProductPhotoAction {
+  type: typeof productsReducerTypes.uploadPhoto;
+  payload: string;
+}
+
 /**
  * Upload photo to product
  * @param id - product id
@@ -235,7 +263,9 @@ export const uploadProductPhoto = (
   id: number,
   file: any,
   mod: boolean
-) => async (dispatch: any) => {
+): ThunkAction<void, RootState, unknown, ProductsAction> => async (
+  dispatch
+) => {
   try {
     dispatch({
       type: productsReducerTypes.uploadPhotoLoadingStatus,
@@ -271,7 +301,9 @@ export const sendReview = (
   rating: number,
   text: string,
   productId: number
-) => async (dispatch: any) => {
+): ThunkAction<void, RootState, unknown, ProductsAction> => async (
+  dispatch
+) => {
   try {
     dispatch({
       type: productsReducerTypes.addReviewLoadingStatus,
@@ -293,3 +325,9 @@ export const sendReview = (
     });
   }
 };
+
+export type ProductsAction =
+  | UploadProductPhotoAction
+  | GetProducts
+  | UploadProductPhotoAction
+  | CreateProductAction;

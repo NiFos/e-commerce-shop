@@ -1,4 +1,6 @@
 import Axios from 'axios';
+import { ThunkAction } from 'redux-thunk';
+import { RootState } from '../store';
 
 const axiosInstance = Axios.create({
   baseURL: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -18,19 +20,22 @@ const initialState: ISearchReducer = {};
 /**
  * Search reducer
  */
-export const searchReducer = (state = initialState, { type, payload }: any) => {
+export const searchReducer = (
+  state = initialState,
+  { type, payload }: SearchAction
+): ISearchReducer => {
   switch (type) {
     case searchReducerTypes.searchProducts: {
       return {
         ...state,
-        products: payload,
+        products: payload as any[],
       };
     }
 
     case searchReducerTypes.searchProductsLoadingStatus: {
       return {
         ...state,
-        searchProductsLoadingStatus: payload,
+        searchProductsLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
@@ -41,11 +46,23 @@ export const searchReducer = (state = initialState, { type, payload }: any) => {
 };
 
 // Actions
+interface SearchProductsAction {
+  type: typeof searchReducerTypes.searchProducts;
+  payload: any[];
+}
+
+interface SearchProductsLoadingStatusAction {
+  type: typeof searchReducerTypes.searchProductsLoadingStatus;
+  payload: 'loading' | 'loaded' | 'error';
+}
+
 /**
  * Get products in search
  * @param search - Search value
  */
-export const searchProducts = (search: string) => async (dispatch: any) => {
+export const searchProducts = (
+  search: string
+): ThunkAction<void, RootState, unknown, SearchAction> => async (dispatch) => {
   try {
     dispatch({
       type: searchReducerTypes.searchProductsLoadingStatus,
@@ -68,3 +85,7 @@ export const searchProducts = (search: string) => async (dispatch: any) => {
     });
   }
 };
+
+export type SearchAction =
+  | SearchProductsAction
+  | SearchProductsLoadingStatusAction;

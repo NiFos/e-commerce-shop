@@ -1,4 +1,7 @@
 import Axios from 'axios';
+import { ThunkAction } from 'redux-thunk';
+import { RootState } from '../store';
+import { CategoryAction } from './category';
 
 const axiosInstance = Axios.create({
   baseURL: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -33,62 +36,68 @@ const initialState: ICategoriesReducer = {};
  */
 export const categoriesReducer = (
   state = initialState,
-  { type, payload }: any
-) => {
+  { type, payload }: CategoryAction
+): ICategoriesReducer => {
   switch (type) {
     case categoriesReducerTypes.getCategories: {
       return {
         ...state,
-        categories: payload,
+        categories: payload as any[],
       };
     }
 
     case categoriesReducerTypes.getSubcategories: {
       return {
         ...state,
-        subCategories: payload,
+        subCategories: payload as any[],
       };
     }
 
     case categoriesReducerTypes.getPublicCategories: {
       return {
         ...state,
-        publicCategories: payload,
+        publicCategories: payload as any[],
       };
     }
 
     case categoriesReducerTypes.getPublicCategoriesLoadingStatus: {
       return {
         ...state,
-        getPublicCategoriesLoadingStatus: payload,
+        getPublicCategoriesLoadingStatus: payload as
+          | 'loading'
+          | 'loaded'
+          | 'error',
       };
     }
 
     case categoriesReducerTypes.editLoadingStatus: {
       return {
         ...state,
-        editLoadingStatus: payload,
+        editLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case categoriesReducerTypes.deleteLoadingStatus: {
       return {
         ...state,
-        deleteLoadingStatus: payload,
+        deleteLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case categoriesReducerTypes.createLoadingStatus: {
       return {
         ...state,
-        createLoadingStatus: payload,
+        createLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case categoriesReducerTypes.getSubcategoriesLoadingStatus: {
       return {
         ...state,
-        getSubcategoriesLoadingStatus: payload,
+        getSubcategoriesLoadingStatus: payload as
+          | 'loading'
+          | 'loaded'
+          | 'error',
       };
     }
 
@@ -99,6 +108,11 @@ export const categoriesReducer = (
 };
 
 // Actions
+interface GetCategoriesAction {
+  type: typeof categoriesReducerTypes.getCategories;
+  payload: any[];
+}
+
 /**
  * Get categories action
  */
@@ -109,10 +123,24 @@ export const getCategories = (categories: any[]) => {
   };
 };
 
+interface GetPublicSubcategoriesAction {
+  type: typeof categoriesReducerTypes.getPublicCategories;
+  payload: any[];
+}
+interface GetPublicCategoriesLoadingStatusAction {
+  type: typeof categoriesReducerTypes.getPublicCategoriesLoadingStatus;
+  payload: 'loading' | 'loaded' | 'error';
+}
+
 /**
  * Get categories action
  */
-export const getPublicCategories = () => async (dispatch: any) => {
+export const getPublicCategories = (): ThunkAction<
+  void,
+  RootState,
+  unknown,
+  CategoriesAction
+> => async (dispatch) => {
   try {
     dispatch({
       type: categoriesReducerTypes.getPublicCategoriesLoadingStatus,
@@ -135,11 +163,18 @@ export const getPublicCategories = () => async (dispatch: any) => {
   }
 };
 
+interface GetSubcategoriesAction {
+  type: typeof categoriesReducerTypes.getSubcategories;
+  payload: any[];
+}
+
 /**
  * Get categories action
  */
-export const getSubcategories = (categoryId: number) => async (
-  dispatch: any
+export const getSubcategories = (
+  categoryId: number
+): ThunkAction<void, RootState, unknown, CategoriesAction> => async (
+  dispatch
 ) => {
   try {
     dispatch({
@@ -172,7 +207,9 @@ export const editCategory = (
   isCategory: boolean,
   id: number,
   title: string
-) => async (dispatch: any) => {
+): ThunkAction<void, RootState, unknown, CategoriesAction> => async (
+  dispatch
+) => {
   try {
     dispatch({
       type: categoriesReducerTypes.editLoadingStatus,
@@ -196,8 +233,11 @@ export const editCategory = (
 /**
  * Delete category action
  */
-export const deleteCategory = (isCategory: boolean, id: number) => async (
-  dispatch: any
+export const deleteCategory = (
+  isCategory: boolean,
+  id: number
+): ThunkAction<void, RootState, unknown, CategoriesAction> => async (
+  dispatch
 ) => {
   try {
     dispatch({
@@ -228,7 +268,9 @@ export const createCategory = (
   isCategory: boolean,
   title: string,
   categoryId?: number
-) => async (dispatch: any) => {
+): ThunkAction<void, RootState, unknown, CategoriesAction> => async (
+  dispatch
+) => {
   try {
     dispatch({
       type: categoriesReducerTypes.createLoadingStatus,
@@ -250,3 +292,9 @@ export const createCategory = (
     });
   }
 };
+
+export type CategoriesAction =
+  | GetSubcategoriesAction
+  | GetPublicSubcategoriesAction
+  | GetCategoriesAction
+  | GetPublicCategoriesLoadingStatusAction;

@@ -1,4 +1,6 @@
 import Axios from 'axios';
+import { ThunkAction } from 'redux-thunk';
+import { RootState } from '../store';
 
 const axiosInstance = Axios.create({
   baseURL: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -40,7 +42,15 @@ export interface IUserReducer {
       created_on?: string;
     };
   };
-  promocode?: any;
+  promocode?: {
+    discount?: {
+      percentage: number;
+      promocode: string;
+      title: string;
+      description: string;
+      dateTo: Date;
+    };
+  };
   checkoutId?: string;
   authError?: string;
   checkoutLoadingStatus?: 'loading' | 'loaded' | 'error';
@@ -57,7 +67,7 @@ const initialState: IUserReducer = {};
  */
 export const userReducer = (
   state = initialState,
-  { type, payload }: any
+  { type, payload }: UserAction
 ): IUserReducer => {
   switch (type) {
     case userReducerTypes.auth: {
@@ -169,13 +179,28 @@ export const userReducer = (
 };
 
 // Actions
+
+interface AuthAction {
+  type: typeof userReducerTypes.auth;
+  payload: {
+    user?: {
+      userid: number;
+      username: string;
+      admin: {
+        isAdmin: boolean;
+        fullAccess?: boolean;
+      };
+    };
+  };
+}
 /**
  * Login action
  * @param data - Login data
  */
-export const login = (data: { email: string; password: string }) => async (
-  dispatch: any
-) => {
+export const login = (data: {
+  email: string;
+  password: string;
+}): ThunkAction<void, RootState, unknown, UserAction> => async (dispatch) => {
   const response = await axiosInstance.post('/api/login', data);
   if (response?.data?.error) {
     dispatch(setAuthError(response.data?.message));
@@ -186,13 +211,19 @@ export const login = (data: { email: string; password: string }) => async (
   });
 };
 
+interface AddProductToCartAction {
+  type: typeof userReducerTypes.addToCart;
+  payload: { productId: number; quantity: number }[];
+}
+
 /**
  * Add product to cart
  * @param productId - Product id
  */
-export const addProductToCart = (productId: number, quantity: number) => async (
-  dispatch: any
-) => {
+export const addProductToCart = (
+  productId: number,
+  quantity: number
+): ThunkAction<void, RootState, unknown, UserAction> => async (dispatch) => {
   try {
     dispatch({
       type: userReducerTypes.addToCartLoadingStatus,
@@ -231,7 +262,7 @@ export const register = (data: {
   username: string;
   email: string;
   password: string;
-}) => async (dispatch: any) => {
+}): ThunkAction<void, RootState, unknown, UserAction> => async (dispatch) => {
   const response = await axiosInstance.post('/api/register', data);
   if (response?.data?.error) {
     dispatch(setAuthError(response.data?.message));
@@ -242,22 +273,46 @@ export const register = (data: {
   });
 };
 
+interface SetAuthErrorAction {
+  type: typeof userReducerTypes.authSetError;
+  payload: string;
+}
+
 /**
  * Set auth error message
  * @param message - Message
  */
-const setAuthError = (payload: string) => {
+const setAuthError = (payload: string): SetAuthErrorAction => {
   return {
     type: userReducerTypes.authSetError,
     payload,
   };
 };
 
+interface MeUserAction {
+  type: typeof userReducerTypes.me;
+  payload: {
+    user?: {
+      userid: number;
+      username: string;
+      admin: {
+        isAdmin: boolean;
+        fullAccess?: boolean;
+      };
+    };
+  };
+}
+
 /**
  * Get information about current user
  * @param message - Message
  */
-export const meUser = () => async (dispatch: any) => {
+export const meUser = (): ThunkAction<
+  void,
+  RootState,
+  unknown,
+  UserAction
+> => async (dispatch) => {
   try {
     dispatch({
       type: userReducerTypes.meLoadingStatus,
@@ -282,10 +337,15 @@ export const meUser = () => async (dispatch: any) => {
   }
 };
 
+interface GetCart {
+  type: typeof userReducerTypes.getCart;
+  payload: any;
+}
+
 /**
  * Get cart action
  */
-export const getCart = (cart: any[]) => {
+export const getCart = (cart: any[]): GetCart => {
   return {
     type: userReducerTypes.getCart,
     payload: cart,
@@ -295,7 +355,9 @@ export const getCart = (cart: any[]) => {
 /**
  * Remove from cart action
  */
-export const removeFromCart = (productId: number) => async (dispatch: any) => {
+export const removeFromCart = (
+  productId: number
+): ThunkAction<void, RootState, unknown, UserAction> => async (dispatch) => {
   try {
     dispatch({
       type: userReducerTypes.removeFromCartLoadingStatus,
@@ -318,11 +380,26 @@ export const removeFromCart = (productId: number) => async (dispatch: any) => {
   }
 };
 
+interface GetPromocodeAction {
+  type: typeof userReducerTypes.promocode;
+  payload: {
+    discount?: {
+      percentage: number;
+      promocode: string;
+      title: string;
+      description: string;
+      dateTo: Date;
+    };
+  };
+}
+
 /**
  * Get information about promocode
  * @param promocode - Promocode
  */
-export const getPromocode = (promocode: string) => async (dispatch: any) => {
+export const getPromocode = (
+  promocode: string
+): ThunkAction<void, RootState, unknown, UserAction> => async (dispatch) => {
   try {
     dispatch({
       type: userReducerTypes.promocodeLoadingStatus,
@@ -349,11 +426,18 @@ export const getPromocode = (promocode: string) => async (dispatch: any) => {
   }
 };
 
+interface CheckoutUserAction {
+  type: typeof userReducerTypes.checkoutId;
+  payload: string;
+}
+
 /**
  * Checkout
  * @param promocode - Promocode
  */
-export const checkoutUser = (promocode: string) => async (dispatch: any) => {
+export const checkoutUser = (
+  promocode: string
+): ThunkAction<void, RootState, unknown, UserAction> => async (dispatch) => {
   try {
     dispatch({
       type: userReducerTypes.checkoutLoadingStatus,
@@ -383,7 +467,12 @@ export const checkoutUser = (promocode: string) => async (dispatch: any) => {
 /**
  * Logout user
  */
-export const logoutUser = () => async (dispatch: any) => {
+export const logoutUser = (): ThunkAction<
+  void,
+  RootState,
+  unknown,
+  UserAction
+> => async (dispatch) => {
   try {
     await axiosInstance.delete('/api/logout');
   } catch (error) {
@@ -395,6 +484,19 @@ export const logoutUser = () => async (dispatch: any) => {
     });
   }
 };
+
+interface GetProfileInfoAction {
+  type: typeof userReducerTypes.me;
+  payload: {
+    profileInfo?: {
+      orders?: any[];
+      username?: string;
+      deliveryAddress?: string;
+      phone?: string;
+      created_on?: string;
+    };
+  };
+}
 
 /**
  * Get profile information
@@ -408,7 +510,7 @@ export const getProfileInfo = (
   phone: string,
   deliveryAddress: string,
   orders?: any[]
-) => {
+): GetProfileInfoAction => {
   return {
     type: userReducerTypes.me,
     payload: {
@@ -429,7 +531,7 @@ export const getProfileInfo = (
 export const editUserInfo = (
   phone: string | undefined,
   deliveryAddress: string | undefined
-) => async (dispatch: any) => {
+): ThunkAction<void, RootState, unknown, UserAction> => async (dispatch) => {
   try {
     dispatch({
       type: userReducerTypes.editLoadingStatus,
@@ -450,3 +552,13 @@ export const editUserInfo = (
     });
   }
 };
+
+export type UserAction =
+  | GetProfileInfoAction
+  | CheckoutUserAction
+  | GetPromocodeAction
+  | GetCart
+  | MeUserAction
+  | SetAuthErrorAction
+  | AuthAction
+  | AddProductToCartAction;

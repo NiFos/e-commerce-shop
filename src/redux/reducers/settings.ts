@@ -3,7 +3,7 @@ const settingsReducerTypes = {
   currentRoute: 'settings/CHANGE_CURRENT_ROUTE',
 };
 export interface ISettingsReducer {
-  language: 'ru' | 'en';
+  language?: 'ru' | 'en';
   currentRoute?: IBreadcrum[];
 }
 export interface IBreadcrum {
@@ -21,20 +21,20 @@ const initialState: ISettingsReducer = {
  */
 export const settingsReducer = (
   state = initialState,
-  { type, payload }: any
-) => {
+  { type, payload }: SettingsAction
+): ISettingsReducer => {
   switch (type) {
     case settingsReducerTypes.changeLanguage: {
       return {
         ...state,
-        language: payload,
+        language: payload as 'ru' | 'en',
       };
     }
 
     case settingsReducerTypes.currentRoute: {
       return {
         ...state,
-        currentRoute: payload,
+        currentRoute: payload as IBreadcrum[],
       };
     }
 
@@ -45,16 +45,27 @@ export const settingsReducer = (
 };
 
 // Actions
+
+interface ChangeLanguageAction {
+  type: typeof settingsReducerTypes.changeLanguage;
+  payload: 'ru' | 'en';
+}
+
 /**
  * Change language action
  */
-export const changeLanguage = (language: 'ru' | 'en') => {
+export const changeLanguage = (language: 'ru' | 'en'): ChangeLanguageAction => {
   localStorage.setItem('language', language);
   return {
     type: settingsReducerTypes.changeLanguage,
     payload: language,
   };
 };
+
+interface ChangeRouteAction {
+  type: typeof settingsReducerTypes.currentRoute;
+  payload: IBreadcrum[];
+}
 
 /**
  * Change route action
@@ -67,7 +78,7 @@ export const changeRoute = (
     productTitle?: string;
     categoryTitle?: string;
   }
-) => {
+): ChangeRouteAction => {
   const breadcrums: IBreadcrum[] = [];
   breadcrums.push({ title: 'HOME', route: '/' });
 
@@ -106,3 +117,5 @@ export const changeRoute = (
     payload: breadcrums,
   };
 };
+
+export type SettingsAction = ChangeRouteAction | ChangeLanguageAction;

@@ -1,4 +1,6 @@
 import Axios from 'axios';
+import { ThunkAction } from 'redux-thunk';
+import { RootState } from '../store';
 
 const axiosInstance = Axios.create({
   baseURL: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -16,7 +18,7 @@ const discountsReducerTypes = {
   deleteLoadingStatus: 'discounts/DELETE_LOADING_STATUS',
   searchLoadingStatus: 'discounts/SEARCH_LOADING_STATUS',
 };
-export interface IdiscountsReducer {
+export interface IDiscountsReducer {
   discounts?: any[];
   newDiscount?: {
     id?: number;
@@ -29,20 +31,20 @@ export interface IdiscountsReducer {
   deleteLoadingStatus?: 'loading' | 'error' | 'loaded';
   searchLoadingStatus?: 'loading' | 'error' | 'loaded';
 }
-const initialState: IdiscountsReducer = {};
+const initialState: IDiscountsReducer = {};
 
 /**
  * Discounts reducer
  */
 export const discountsReducer = (
   state = initialState,
-  { type, payload }: any
-) => {
+  { type, payload }: DiscountsAction
+): IDiscountsReducer => {
   switch (type) {
     case discountsReducerTypes.getDiscounts: {
       return {
         ...state,
-        discounts: payload,
+        discounts: payload as any[],
       };
     }
 
@@ -50,7 +52,7 @@ export const discountsReducer = (
       return {
         ...state,
         newDiscount: {
-          id: payload,
+          id: +payload,
         },
       };
     }
@@ -59,7 +61,7 @@ export const discountsReducer = (
       return {
         ...state,
         newDiscount: {
-          photo: payload,
+          photo: payload as string,
         },
       };
     }
@@ -67,42 +69,42 @@ export const discountsReducer = (
     case discountsReducerTypes.search: {
       return {
         ...state,
-        search: payload,
+        search: payload as any[],
       };
     }
 
     case discountsReducerTypes.uploadPhotoLoadingStatus: {
       return {
         ...state,
-        uploadPhotoLoadingStatus: payload,
+        uploadPhotoLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case discountsReducerTypes.createLoadingStatus: {
       return {
         ...state,
-        createLoadingStatus: payload,
+        createLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case discountsReducerTypes.deleteLoadingStatus: {
       return {
         ...state,
-        deleteLoadingStatus: payload,
+        deleteLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case discountsReducerTypes.editLoadingStatus: {
       return {
         ...state,
-        editLoadingStatus: payload,
+        editLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case discountsReducerTypes.searchLoadingStatus: {
       return {
         ...state,
-        searchLoadingStatus: payload,
+        searchLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
@@ -113,6 +115,10 @@ export const discountsReducer = (
 };
 
 // Actions
+interface GetDiscounts {
+  type: typeof discountsReducerTypes.getDiscounts;
+  payload: any[];
+}
 /**
  * Get discounts action
  */
@@ -133,7 +139,9 @@ export const editDiscount = (
   discountId: number,
   title?: string,
   description?: string
-) => async (dispatch: any) => {
+): ThunkAction<void, RootState, unknown, DiscountsAction> => async (
+  dispatch
+) => {
   try {
     const data: { discountId: number; title?: string; description?: string } = {
       discountId,
@@ -160,7 +168,11 @@ export const editDiscount = (
  * Delete discount action
  * @param id - Discount id
  */
-export const deleteDiscount = (id: number) => async (dispatch: any) => {
+export const deleteDiscount = (
+  id: number
+): ThunkAction<void, RootState, unknown, DiscountsAction> => async (
+  dispatch
+) => {
   try {
     dispatch({
       type: discountsReducerTypes.deleteLoadingStatus,
@@ -193,7 +205,9 @@ export const createDiscount = (
   to: string,
   percentage: number,
   promocode: string
-) => async (dispatch: any) => {
+): ThunkAction<void, RootState, unknown, DiscountsAction> => async (
+  dispatch
+) => {
   try {
     dispatch({
       type: discountsReducerTypes.createLoadingStatus,
@@ -222,6 +236,11 @@ export const createDiscount = (
   }
 };
 
+interface UploadDiscountPhotoAction {
+  type: typeof discountsReducerTypes.uploadPhoto;
+  payload: string;
+}
+
 /**
  * Upload photo to discount
  * @param id - Discount id
@@ -232,7 +251,9 @@ export const uploadDiscountPhoto = (
   id: number,
   file: any,
   mod: boolean
-) => async (dispatch: any) => {
+): ThunkAction<void, RootState, unknown, DiscountsAction> => async (
+  dispatch
+) => {
   try {
     dispatch({
       type: discountsReducerTypes.uploadPhotoLoadingStatus,
@@ -260,3 +281,5 @@ export const uploadDiscountPhoto = (
     });
   }
 };
+
+export type DiscountsAction = UploadDiscountPhotoAction | GetDiscounts;

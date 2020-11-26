@@ -1,4 +1,6 @@
 import Axios from 'axios';
+import { ThunkAction } from 'redux-thunk';
+import { RootState } from '../store';
 
 const axiosInstance = Axios.create({
   baseURL: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -26,47 +28,50 @@ const initialState: IAdminsReducer = {};
 /**
  * Admins reducer
  */
-export const adminsReducer = (state = initialState, { type, payload }: any) => {
+export const adminsReducer = (
+  state = initialState,
+  { type, payload }: AdminsAction
+): IAdminsReducer => {
   switch (type) {
     case adminsReducerTypes.getAdmins: {
       return {
         ...state,
-        admins: payload,
+        admins: payload as any[],
       };
     }
 
     case adminsReducerTypes.search: {
       return {
         ...state,
-        search: payload,
+        search: payload as any[],
       };
     }
 
     case adminsReducerTypes.addLoadingStatus: {
       return {
         ...state,
-        addLoadingStatus: payload,
+        addLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case adminsReducerTypes.deleteLoadingStatus: {
       return {
         ...state,
-        deleteLoadingStatus: payload,
+        deleteLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case adminsReducerTypes.editLoadingStatus: {
       return {
         ...state,
-        editLoadingStatus: payload,
+        editLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case adminsReducerTypes.searchLoadingStatus: {
       return {
         ...state,
-        searchLoadingStatus: payload,
+        searchLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
@@ -77,10 +82,15 @@ export const adminsReducer = (state = initialState, { type, payload }: any) => {
 };
 
 // Actions
+interface GetAdminsAction {
+  type: typeof adminsReducerTypes.getAdmins;
+  payload: any[];
+}
+
 /**
  * Get admins action
  */
-export const getAdmins = (admins: any[]) => {
+export const getAdmins = (admins: any[]): GetAdminsAction => {
   return {
     type: adminsReducerTypes.getAdmins,
     payload: admins,
@@ -92,9 +102,10 @@ export const getAdmins = (admins: any[]) => {
  * @param id - User id
  * @param fullAccess - Only view access or full access
  */
-export const editAdmin = (id: number, fullAccess: boolean) => async (
-  dispatch: any
-) => {
+export const editAdmin = (
+  id: number,
+  fullAccess: boolean
+): ThunkAction<void, RootState, unknown, AdminsAction> => async (dispatch) => {
   try {
     dispatch({
       type: adminsReducerTypes.editLoadingStatus,
@@ -118,7 +129,9 @@ export const editAdmin = (id: number, fullAccess: boolean) => async (
 /**
  * Delete admin action
  */
-export const deleteAdmin = (id: number) => async (dispatch: any) => {
+export const deleteAdmin = (
+  id: number
+): ThunkAction<void, RootState, unknown, AdminsAction> => async (dispatch) => {
   try {
     dispatch({
       type: adminsReducerTypes.deleteLoadingStatus,
@@ -142,9 +155,10 @@ export const deleteAdmin = (id: number) => async (dispatch: any) => {
  * @param id - User id
  * @param fullAccess - Only view access or full access
  */
-export const addAdmin = (id: number, fullAccess: boolean) => async (
-  dispatch: any
-) => {
+export const addAdmin = (
+  id: number,
+  fullAccess: boolean
+): ThunkAction<void, RootState, unknown, AdminsAction> => async (dispatch) => {
   try {
     dispatch({
       type: adminsReducerTypes.addLoadingStatus,
@@ -166,11 +180,23 @@ export const addAdmin = (id: number, fullAccess: boolean) => async (
   }
 };
 
+interface SearchUsersAction {
+  type: typeof adminsReducerTypes.search;
+  payload: any[];
+}
+
+interface SearchLoadingStatusAction {
+  type: typeof adminsReducerTypes.searchLoadingStatus;
+  payload: 'loading' | 'loaded' | 'error';
+}
+
 /**
  * Search users by username action
  * @param search - Username
  */
-export const searchUsers = (search: string) => async (dispatch: any) => {
+export const searchUsers = (
+  search: string
+): ThunkAction<void, RootState, unknown, AdminsAction> => async (dispatch) => {
   try {
     dispatch({
       type: adminsReducerTypes.searchLoadingStatus,
@@ -194,3 +220,8 @@ export const searchUsers = (search: string) => async (dispatch: any) => {
     });
   }
 };
+
+export type AdminsAction =
+  | SearchUsersAction
+  | GetAdminsAction
+  | SearchLoadingStatusAction;

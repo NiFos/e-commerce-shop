@@ -159,7 +159,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (typeof userData?.user?.id === 'undefined')
     return { props: { error: 'unauth' } };
 
-  const reduxStore = initializeStore({});
+  const reduxStore = initializeStore();
 
   const cart = await cartModel.getUserCart(userData.user.id);
   const userInformation = await userModel.findUserById(userData.user.id);

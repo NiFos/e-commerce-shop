@@ -1,4 +1,6 @@
 import Axios from 'axios';
+import { ThunkAction } from 'redux-thunk';
+import { RootState } from '../store';
 
 const axiosInstance = Axios.create({
   baseURL: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -25,7 +27,10 @@ const initialState: IOrdersReducer = {};
 /**
  * Orders reducer
  */
-export const ordersReducer = (state = initialState, { type, payload }: any) => {
+export const ordersReducer = (
+  state = initialState,
+  { type, payload }: OrdersAction
+): IOrdersReducer => {
   switch (type) {
     case ordersReducerTypes.getOrders: {
       return {
@@ -79,41 +84,63 @@ export const ordersReducer = (state = initialState, { type, payload }: any) => {
 };
 
 // Actions
+
+interface GetOrdersAction {
+  type: typeof ordersReducerTypes.getOrders;
+  payload: any[];
+}
 /**
  * Get orders action
  */
-export const getOrders = (orders: any[]) => {
+export const getOrders = (orders: any[]): GetOrdersAction => {
   return {
     type: ordersReducerTypes.getOrders,
     payload: orders,
   };
 };
 
+interface GetFeedAction {
+  type: typeof ordersReducerTypes.getFeed;
+  payload: any[];
+}
+
 /**
  * Get orders action
  */
-export const getFeed = (feedItems: any[]) => {
+export const getFeed = (feedItems: any[]): GetFeedAction => {
   return {
     type: ordersReducerTypes.getFeed,
     payload: feedItems,
   };
 };
 
+interface GetChartAction {
+  type: typeof ordersReducerTypes.getChartData;
+  payload: any[];
+}
+
 /**
  * Get orders action
  */
-export const getChartData = (chartData: any[]) => {
+export const getChartData = (chartData: any[]): GetChartAction => {
   return {
     type: ordersReducerTypes.getChartData,
     payload: chartData,
   };
 };
 
+interface GetOrderAction {
+  type: typeof ordersReducerTypes.getOrder;
+  payload: any;
+}
+
 /**
  * Get order information
  * @param orderId - Order id
  */
-export const getOrder = (orderId: number) => async (dispatch: any) => {
+export const getOrder = (
+  orderId: number
+): ThunkAction<void, RootState, unknown, OrdersAction> => async (dispatch) => {
   try {
     dispatch({
       type: ordersReducerTypes.getOrderLoadingStatus,
@@ -142,13 +169,19 @@ export const getOrder = (orderId: number) => async (dispatch: any) => {
   }
 };
 
+interface EditOrderStatusAction {
+  type: typeof ordersReducerTypes.editOrderStatus;
+  payload: number;
+}
+
 /**
  * Edit order status
  * @param status - Status number
  */
-export const editOrderStatus = (orderId: number, status: number) => async (
-  dispatch: any
-) => {
+export const editOrderStatus = (
+  orderId: number,
+  status: number
+): ThunkAction<void, RootState, unknown, OrdersAction> => async (dispatch) => {
   try {
     await axiosInstance.post('api/admin/orders/edit', {
       orderId,
@@ -162,3 +195,10 @@ export const editOrderStatus = (orderId: number, status: number) => async (
     console.log(error);
   }
 };
+
+export type OrdersAction =
+  | EditOrderStatusAction
+  | GetOrderAction
+  | GetChartAction
+  | GetFeedAction
+  | GetOrdersAction;

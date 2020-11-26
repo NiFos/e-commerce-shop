@@ -1,7 +1,15 @@
 import { useMemo } from 'react';
-import { applyMiddleware, compose, createStore } from 'redux';
+import { applyMiddleware, CombinedState, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { rootReducer } from './reducers';
+import { AdminsAction } from './reducers/admins';
+import { CategoryAction } from './reducers/category';
+import { DiscountsAction } from './reducers/discounts';
+import { OrdersAction } from './reducers/orders';
+import { ProductsAction } from './reducers/products';
+import { SearchAction } from './reducers/search';
+import { SettingsAction } from './reducers/settings';
+import { UserAction } from './reducers/user';
 
 let store: any;
 
@@ -21,10 +29,10 @@ const composeEnhancers =
 /**
  * Init redux store
  */
-function initStore(initialState: any) {
+function initStore(initialState?: RootState) {
   return createStore(
     rootReducer,
-    initialState,
+    initialState || {},
     composeEnhancers(applyMiddleware(thunk))
   );
 }
@@ -32,7 +40,9 @@ function initStore(initialState: any) {
 /**
  * Initialize store
  */
-export const initializeStore = (preloadedState: any) => {
+export const initializeStore = (
+  preloadedState?: RootState
+): CombinedState<RootState> => {
   let _store = store ?? initStore(preloadedState);
 
   if (preloadedState && store) {
@@ -50,11 +60,20 @@ export const initializeStore = (preloadedState: any) => {
 };
 
 export type RootState = ReturnType<typeof rootReducer>;
+export type RootActions =
+  | UserAction
+  | SettingsAction
+  | SearchAction
+  | ProductsAction
+  | OrdersAction
+  | DiscountsAction
+  | CategoryAction
+  | AdminsAction;
 
 /**
  * useStore hook
  */
-export const useStore = (initialState: any) => {
+export const useStore = (initialState: RootState): CombinedState<RootState> => {
   const store = useMemo(() => initializeStore(initialState), [initialState]);
   return store;
 };
