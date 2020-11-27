@@ -1,5 +1,7 @@
 import Axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
+import { IUserCart } from '../../models/cart';
+import { IUserOrderModel } from '../../models/order';
 import { RootState } from '../store';
 
 const axiosInstance = Axios.create({
@@ -7,7 +9,7 @@ const axiosInstance = Axios.create({
   withCredentials: true,
 });
 
-const userReducerTypes = {
+export const userReducerTypes = {
   auth: 'user/AUTH',
   me: 'user/ME',
   promocode: 'user/PROMOCODE',
@@ -23,34 +25,40 @@ const userReducerTypes = {
   authSetError: 'user/SET_ERROR',
 };
 
+interface IPromocode {
+  discount?: {
+    percentage: number;
+    promocode: string;
+    title: string;
+    description: string;
+    dateTo: Date;
+  };
+}
+
+export interface IMeData {
+  user?: IUserData;
+  cart?: IUserCart[];
+  profileInfo?: {
+    orders?: IUserOrderModel[];
+    username?: string;
+    deliveryAddress?: string;
+    phone?: string;
+    created_on?: string;
+  };
+}
+
+interface IUserData {
+  userid: number;
+  username: string;
+  admin: {
+    isAdmin: boolean;
+    fullAccess?: boolean;
+  };
+}
+
 export interface IUserReducer {
-  me?: {
-    user?: {
-      userid: number;
-      username: string;
-      admin: {
-        isAdmin: boolean;
-        fullAccess?: boolean;
-      };
-    };
-    cart?: any;
-    profileInfo?: {
-      orders?: any[];
-      username?: string;
-      deliveryAddress?: string;
-      phone?: string;
-      created_on?: string;
-    };
-  };
-  promocode?: {
-    discount?: {
-      percentage: number;
-      promocode: string;
-      title: string;
-      description: string;
-      dateTo: Date;
-    };
-  };
+  me?: IMeData;
+  promocode?: IPromocode;
   checkoutId?: string;
   authError?: string;
   checkoutLoadingStatus?: 'loading' | 'loaded' | 'error';
@@ -74,7 +82,7 @@ export const userReducer = (
       return {
         ...state,
         me: {
-          user: payload.user,
+          user: payload as IUserData,
         },
       };
     }
@@ -84,7 +92,7 @@ export const userReducer = (
         ...state,
         me: {
           ...state.me,
-          ...payload,
+          ...(payload as IMeData),
         },
       };
     }
@@ -94,7 +102,7 @@ export const userReducer = (
         ...state,
         me: {
           ...state.me,
-          cart: [...state.me?.cart, payload],
+          cart: [...(state.me?.cart || []), payload] as IUserCart[],
         },
       };
     }
@@ -104,7 +112,7 @@ export const userReducer = (
         ...state,
         me: {
           ...state.me,
-          cart: payload,
+          cart: payload as IUserCart[],
         },
       };
     }
@@ -112,63 +120,63 @@ export const userReducer = (
     case userReducerTypes.promocode: {
       return {
         ...state,
-        promocode: payload,
+        promocode: payload as IPromocode,
       };
     }
 
     case userReducerTypes.checkoutId: {
       return {
         ...state,
-        checkoutId: payload,
+        checkoutId: payload as string,
       };
     }
 
     case userReducerTypes.checkoutLoadingStatus: {
       return {
         ...state,
-        checkoutLoadingStatus: payload,
+        checkoutLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case userReducerTypes.removeFromCartLoadingStatus: {
       return {
         ...state,
-        removeFromCartLoadingStatus: payload,
+        removeFromCartLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case userReducerTypes.promocodeLoadingStatus: {
       return {
         ...state,
-        promocodeLoadingStatus: payload,
+        promocodeLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case userReducerTypes.addToCartLoadingStatus: {
       return {
         ...state,
-        addToCartLoadingStatus: payload,
+        addToCartLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case userReducerTypes.meLoadingStatus: {
       return {
         ...state,
-        meLoadingStatus: payload,
+        meLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case userReducerTypes.editLoadingStatus: {
       return {
         ...state,
-        editLoadingStatus: payload,
+        editLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
     case userReducerTypes.authSetError: {
       return {
         ...state,
-        authError: payload,
+        authError: payload as string,
       };
     }
 
@@ -269,7 +277,7 @@ export const register = (data: {
   }
   dispatch({
     type: userReducerTypes.auth,
-    payload: response.data,
+    payload: response.data.user,
   });
 };
 
@@ -337,15 +345,15 @@ export const meUser = (): ThunkAction<
   }
 };
 
-interface GetCart {
+interface GetCartAction {
   type: typeof userReducerTypes.getCart;
-  payload: any;
+  payload: IUserCart[];
 }
 
 /**
  * Get cart action
  */
-export const getCart = (cart: any[]): GetCart => {
+export const getCart = (cart: IUserCart[]): GetCartAction => {
   return {
     type: userReducerTypes.getCart,
     payload: cart,
@@ -489,7 +497,7 @@ interface GetProfileInfoAction {
   type: typeof userReducerTypes.me;
   payload: {
     profileInfo?: {
-      orders?: any[];
+      orders?: IUserOrderModel[];
       username?: string;
       deliveryAddress?: string;
       phone?: string;
@@ -509,7 +517,7 @@ export const getProfileInfo = (
   username: string,
   phone: string,
   deliveryAddress: string,
-  orders?: any[]
+  orders?: IUserOrderModel[]
 ): GetProfileInfoAction => {
   return {
     type: userReducerTypes.me,
@@ -557,7 +565,7 @@ export type UserAction =
   | GetProfileInfoAction
   | CheckoutUserAction
   | GetPromocodeAction
-  | GetCart
+  | GetCartAction
   | MeUserAction
   | SetAuthErrorAction
   | AuthAction

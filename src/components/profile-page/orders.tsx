@@ -1,8 +1,9 @@
 import { Typography } from '@material-ui/core';
 import React from 'react';
+import { IUserOrderModel } from '../../models/order';
 
 interface Props {
-  orders: any[];
+  orders: IUserOrderModel[];
 }
 
 /**
@@ -25,7 +26,7 @@ export function Orders(props: Props): JSX.Element {
             <div>Total price {order.totalPrice}</div>
           </div>
           <div>
-            {order.products.map((product: any) => (
+            {order.products.map((product) => (
               <div key={product.product_id}>
                 <div>
                   <div>{product.price_one}</div>

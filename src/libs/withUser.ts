@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextApiRequest, NextApiResponse } from 'next';
 import jwt from 'jsonwebtoken';
+import { IncomingMessage } from 'http';
 
 const jwtSecret = process.env.JWT_SECRET || 'secret';
 
@@ -29,7 +32,7 @@ export const withUser = (handler: any) => (
     const cookie = req.cookies.authorization;
     if (typeof cookie === 'undefined') return handler(req, res);
 
-    const cookiePayload = jwt.verify(cookie, jwtSecret) as any;
+    const cookiePayload = jwt.verify(cookie, jwtSecret) as IUser;
     req.user = cookiePayload?.user;
 
     return handler(req, res);
@@ -42,11 +45,11 @@ export const withUser = (handler: any) => (
  * Check user
  * @param req - Context req
  */
-export const checkUser = (req: any): IUser => {
-  const cookie = parseAuthCookie(req.headers.cookie);
+export const checkUser = (req: IncomingMessage): IUser => {
+  const cookie = parseAuthCookie(req.headers.cookie || '');
   if (!cookie) return {};
 
-  const cookiePayload = jwt.verify(cookie, jwtSecret) as any;
+  const cookiePayload = jwt.verify(cookie, jwtSecret) as IUser;
   return cookiePayload;
 };
 
@@ -56,11 +59,11 @@ export const checkUser = (req: any): IUser => {
  */
 const parseAuthCookie = (cookie: string): string => {
   const splitCookie = cookie.split(';');
-  const cookies: any = {};
+  const cookies: { authorization?: string } = {};
   splitCookie.forEach((item) => {
     const [key, value] = item.split('=');
     Object.assign(cookies, { [key]: value });
   });
 
-  return cookies.authorization;
+  return cookies.authorization || '';
 };

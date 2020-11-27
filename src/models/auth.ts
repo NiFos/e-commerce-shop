@@ -1,6 +1,6 @@
 import { database } from '../libs/db';
 import { compare, hash } from 'bcrypt';
-import { userModel, usersTable } from './user';
+import { IUserModel, userModel, usersTable } from './user';
 
 const cookieTable = 'users_cookie';
 const usersCredentialsTable = 'users_credentials';
@@ -25,7 +25,7 @@ export const authModel = {
    * @param email - User email
    * @param password - User password
    */
-  async login(email: string, password: string): Promise<any> {
+  async login(email: string, password: string): Promise<IUserModel[]> {
     const response = await database()
       .select('*')
       .from(usersCredentialsTable)
@@ -52,7 +52,7 @@ export const authModel = {
     email: string,
     username: string,
     password: string
-  ): Promise<any> {
+  ): Promise<IUserModel[]> {
     const isExist = await authModel.isUserExist(email);
     if (typeof isExist === 'undefined') return [];
 

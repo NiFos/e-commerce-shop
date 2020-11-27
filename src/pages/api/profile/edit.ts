@@ -13,7 +13,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
 
     const { phone, deliveryaddress } = req.body;
 
-    const payload: any = {};
+    const payload: { phone?: string; delivery_address?: string } = {};
     if (phone) payload.phone = phone;
     if (deliveryaddress) payload.delivery_address = deliveryaddress;
 

@@ -18,7 +18,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
         fullAccess: user?.admin?.fullAccess,
       },
     },
-    cart: cart.map((item: any) => ({
+    cart: cart.map((item) => ({
       productId: item.product_id,
       quantity: item.quantity,
     })),

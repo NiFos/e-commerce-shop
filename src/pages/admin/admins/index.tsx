@@ -15,7 +15,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkUser } from '../../../libs/withUser';
-import { adminModel } from '../../../models/admin';
+import { adminModel, IAdmin } from '../../../models/admin';
 import {
   addAdmin,
   deleteAdmin,
@@ -26,8 +26,8 @@ import {
 import { initializeStore, RootState } from '../../../redux/store';
 
 interface Props {
-  children?: any;
-  admins: any[];
+  children?: JSX.Element[];
+  admins: IAdmin[];
 }
 
 /**
@@ -122,7 +122,7 @@ export default function Component(props: Props): JSX.Element {
   function renderUsers() {
     return (
       state?.search &&
-      state?.search.map((searchUser: any) => {
+      state?.search.map((searchUser) => {
         const isAlreadyAdmin = props.admins.findIndex(
           (admin) => admin.user_id === searchUser.user_id
         );
@@ -239,11 +239,11 @@ export default function Component(props: Props): JSX.Element {
           <div>Total admins: {props.admins.length}</div>
           <div>
             Admins with full access:{' '}
-            {props.admins.filter((item: any) => item.full_access).length}
+            {props.admins.filter((item) => item.full_access).length}
           </div>
           <div>
             Admins with view access:{' '}
-            {props.admins.filter((item: any) => !item.full_access).length}
+            {props.admins.filter((item) => !item.full_access).length}
           </div>
           <Button
             onClick={addNewHandler}
@@ -279,9 +279,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   )
     return { props: { error: 'unauth' } };
 
-  const reduxStore = initializeStore({});
+  const reduxStore = initializeStore();
   const admins = await adminModel.getAllAdmins();
-  const adminsData = admins.map((item: any) => ({
+  const adminsData = admins.map((item) => ({
     ...item,
     created_on: new Date(item.created_on).toString(),
   }));

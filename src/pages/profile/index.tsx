@@ -7,18 +7,18 @@ import { useSelector } from 'react-redux';
 import { Orders } from '../../components/profile-page/orders';
 import { Settings } from '../../components/profile-page/settings';
 import { checkUser } from '../../libs/withUser';
-import { orderModel } from '../../models/order';
+import { IUserOrderModel, orderModel } from '../../models/order';
 import { userModel } from '../../models/user';
 import { getProfileInfo } from '../../redux/reducers/user';
 import { initializeStore, RootState } from '../../redux/store';
 
 interface Props {
-  children?: any;
+  children?: JSX.Element[];
   userInfo: {
     username: string;
     phone: string;
     deliveryAddress: string;
-    orders: any[];
+    orders: IUserOrderModel[];
     createdOn: string;
   };
 }
@@ -79,7 +79,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const reduxStore = initializeStore();
   const orders = await orderModel.getUserOrders(userData.user.id);
-  const ordersData = orders.map((item: any) => ({
+  const ordersData = orders.map((item) => ({
     ...item,
     created_on: new Date(item.created_on).toString(),
   }));
@@ -88,8 +88,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   await reduxStore.dispatch(
     getProfileInfo(
       userInformation[0].username,
-      userInformation[0].phone,
-      userInformation[0].delivery_address,
+      userInformation[0].phone || '',
+      userInformation[0].delivery_address || '',
       ordersData
     )
   );

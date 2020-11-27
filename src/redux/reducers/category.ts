@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
+import { IProductModel } from '../../models/product';
 import { RootState } from '../store';
 
 const axiosInstance = Axios.create({
@@ -7,12 +8,12 @@ const axiosInstance = Axios.create({
   withCredentials: true,
 });
 
-const categoryReducerTypes = {
+export const categoryReducerTypes = {
   getProducts: 'category/GET_CATEGORY',
   getProductsLoadingStatus: 'category/GET_PRODUCTS_LOADING_STATUS',
 };
 export interface ICategoryReducer {
-  products?: any[];
+  products?: IProductModel[];
   getProductsLoadingStatus?: 'loading' | 'error' | 'loaded';
 }
 const initialState: ICategoryReducer = {};
@@ -28,7 +29,7 @@ export const categoryReducer = (
     case categoryReducerTypes.getProducts: {
       return {
         ...state,
-        products: payload as any[],
+        products: payload as IProductModel[],
       };
     }
 
@@ -48,7 +49,7 @@ export const categoryReducer = (
 // Actions
 interface GetProductsInCategory {
   type: typeof categoryReducerTypes.getProducts;
-  payload: any[];
+  payload: IProductModel[];
 }
 
 interface GetProductsLoadingStatusAction {

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkUser } from '../../libs/withUser';
-import { cartModel } from '../../models/cart';
+import { cartModel, IUserCart } from '../../models/cart';
 import { userModel } from '../../models/user';
 import { changeRoute } from '../../redux/reducers/settings';
 import {
@@ -18,8 +18,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { GetServerSideProps } from 'next';
 
 interface Props {
-  children?: any;
-  cart: any[];
+  children?: JSX.Element[];
+  cart: IUserCart[];
   stripeKey: string;
 }
 
@@ -97,10 +97,10 @@ export default function Component(props: Props): JSX.Element {
    * Render products
    */
   function renderProducts() {
-    return props.cart.map((item: any) => {
+    return props.cart.map((item) => {
       return (
         <div key={item.product_id}>
-          <img src={item.photo} alt="" />
+          <img src={item.photo || ''} alt="" />
           <div>
             <div>{item.title}</div>
             <div>{item.quantity}</div>
@@ -167,8 +167,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   await reduxStore.dispatch(
     getProfileInfo(
       userInformation[0].username,
-      userInformation[0].phone,
-      userInformation[0].delivery_address
+      userInformation[0].phone || '',
+      userInformation[0].delivery_address || ''
     )
   );
   await reduxStore.dispatch(getCart(cart));

@@ -24,9 +24,9 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     const { promocode } = req.body;
     const discount = await discountModel.getDiscountByPromocode(promocode);
     const stripeProducts = products.map(
-      (item: any): stripe.Checkout.SessionCreateParams.LineItem => ({
+      (item): stripe.Checkout.SessionCreateParams.LineItem => ({
         quantity: item.quantity,
-        description: item.product_id,
+        description: '' + item.product_id,
         price_data: {
           product_data: {
             name: item.title,

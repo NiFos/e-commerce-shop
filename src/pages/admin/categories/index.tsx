@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   Container,
@@ -14,7 +15,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkUser } from '../../../libs/withUser';
-import { categoryModel } from '../../../models/category';
+import { categoryModel, ICategoryModel } from '../../../models/category';
 import {
   createCategory,
   deleteCategory,
@@ -25,9 +26,8 @@ import {
 import { initializeStore, RootState } from '../../../redux/store';
 
 interface Props {
-  children?: any;
-  categories: any[];
-  subcategories: any[];
+  children?: JSX.Element[];
+  categories: ICategoryModel[];
 }
 
 /**
@@ -64,13 +64,13 @@ export default function Component(props: Props): JSX.Element {
     setIsCategory(isCategory);
 
     const data = isCategory ? props.categories : state.subCategories;
-    const currentIndex = data.findIndex((item: any) => {
+    const currentIndex = (data || []).findIndex((item: any) => {
       if (isCategory) return item.category_id === id;
       else return item.subcategory_id === id;
     });
     const value = isCategory
       ? props.categories[currentIndex].title
-      : state.subCategories[currentIndex].title;
+      : (state.subCategories || [])[currentIndex].title;
     setCurrentValue(value);
   }
 
@@ -152,7 +152,7 @@ export default function Component(props: Props): JSX.Element {
    * Render subcategories
    */
   function renderSubcategories() {
-    return state.subCategories.map((item: any) => (
+    return (state.subCategories || []).map((item) => (
       <div key={item.subcategory_id}>
         <span>Id - {item.subcategory_id}</span> <span>{item.title}</span>
         <Button
@@ -257,9 +257,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   )
     return { props: { error: 'unauth' } };
 
-  const reduxStore = initializeStore({});
+  const reduxStore = initializeStore();
   const categories = await categoryModel.getAllCategories();
-  const categoriesData = categories.map((item: any) => ({
+  const categoriesData = categories.map((item) => ({
     ...item,
     created_on: new Date(item.created_on).toString(),
   }));

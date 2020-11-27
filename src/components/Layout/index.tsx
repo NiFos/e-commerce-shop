@@ -9,7 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { changeLanguage } from '../../redux/reducers/settings';
 
 interface Props {
-  children: any;
+  children?: JSX.Element;
 }
 
 /**

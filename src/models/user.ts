@@ -1,6 +1,18 @@
 import { database } from '../libs/db';
 import { adminsTable } from './admin';
 
+export interface IUserModel {
+  user_id: number;
+  username: string;
+  created_on: Date;
+  delivery_address?: string;
+  phone?: string;
+  admin?: {
+    isAdmin?: boolean;
+    fullAccess?: boolean;
+  };
+}
+
 export const usersTable = 'users';
 
 export const userModel = {
@@ -8,7 +20,7 @@ export const userModel = {
    * Search users by username (limited 10 users)
    * @param username - Username to search
    */
-  async findUsers(username: string): Promise<any[]> {
+  async findUsers(username: string): Promise<IUserModel[]> {
     if (!username) return [];
     return await database()
       .select('*')
@@ -21,7 +33,7 @@ export const userModel = {
    * Find user by id
    * @param userId - User id
    */
-  async findUserById(userId: number): Promise<any> {
+  async findUserById(userId: number): Promise<IUserModel[]> {
     if (typeof userId === 'undefined') return [];
     const user = await database()
       .select('*')
@@ -51,7 +63,10 @@ export const userModel = {
    * Edit user information
    * @param payload - Update payload (phone, deliveryaddress)
    */
-  async editUserInformation(userId: number, payload: any): Promise<any> {
+  async editUserInformation(
+    userId: number,
+    payload: { delivery_ddress?: string; phone?: string }
+  ): Promise<number> {
     if (JSON.stringify(payload) === '{}') return 0;
 
     return await database()

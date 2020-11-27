@@ -21,7 +21,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
 
     const discount = await discountModel.getDiscountById(+discountId);
 
-    if (!discount[0]?.product_id) throw 'Not found!';
+    if (!discount[0]?.discount_id) throw 'Not found!';
 
     return res.json({
       discount: {

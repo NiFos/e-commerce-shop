@@ -8,11 +8,11 @@ import {
 import React from 'react';
 
 interface Props {
-  children?: any;
+  children?: JSX.Element[];
   isOpen: boolean;
   imageSrc: string;
   submitHandler: () => void;
-  uploadHandler: (files: any) => void;
+  uploadHandler: (files: FileList | null) => void;
 }
 
 /**

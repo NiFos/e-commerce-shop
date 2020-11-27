@@ -1,5 +1,16 @@
 import { database } from '../libs/db';
 
+export interface IDiscountModel {
+  discount_id: number;
+  title: string;
+  description: string;
+  date_to: string;
+  created_on: string;
+  percent_discount: number;
+  promocode: string;
+  photo?: string;
+}
+
 export interface IDiscountInsert {
   title: string;
   description: string;
@@ -19,14 +30,14 @@ export const discountModel = {
   /**
    * Get all discounts (without affected products)
    */
-  async getAllDiscounts(): Promise<any> {
+  async getAllDiscounts(): Promise<IDiscountModel[]> {
     return await database().select('*').from(discountsTable);
   },
 
   /**
    * Get random discount
    */
-  async getRandomDiscount(): Promise<any> {
+  async getRandomDiscount(): Promise<IDiscountModel[]> {
     return await database()
       .select('*')
       .from(discountsTable)
@@ -38,7 +49,7 @@ export const discountModel = {
    * Get discount by id
    * @param discountId - Discount id
    */
-  async getDiscountById(discountId: number): Promise<any> {
+  async getDiscountById(discountId: number): Promise<IDiscountModel[]> {
     if (typeof discountId === 'undefined') return [];
     const discounts = await database()
       .select('*')
@@ -46,18 +57,14 @@ export const discountModel = {
       .where('discount_id', '=', discountId);
     if (discounts[0]?.discount_id) return [];
 
-    return [
-      {
-        discount: discounts[0],
-      },
-    ];
+    return discounts;
   },
 
   /**
    * Get discount by promocode
    * @param promocode - Promocode
    */
-  async getDiscountByPromocode(promocode: string): Promise<any> {
+  async getDiscountByPromocode(promocode: string): Promise<IDiscountModel[]> {
     if (typeof promocode === 'undefined') return [];
     const discounts = await database()
       .select('*')
@@ -70,9 +77,9 @@ export const discountModel = {
    * Create discount
    * @param data - Discount data
    */
-  async createDiscount(data: IDiscountInsert): Promise<any> {
+  async createDiscount(data: IDiscountInsert): Promise<IDiscountModel[]> {
     if (JSON.stringify(data) === '{}') return [];
-    const discount: any = await database()
+    const discount = await database()
       .insert({
         title: data.title,
         description: data.description,
@@ -92,7 +99,10 @@ export const discountModel = {
    * Update discount (without editing products)
    * @param data - Update discount data
    */
-  async editDiscount(discountId: number, data: IDiscountUpdate): Promise<any> {
+  async editDiscount(
+    discountId: number,
+    data: IDiscountUpdate
+  ): Promise<number> {
     if (typeof discountId === 'undefined' || JSON.stringify(data) === '{}')
       return 0;
     return database()
@@ -105,7 +115,7 @@ export const discountModel = {
    * Delete discount by id (with products)
    * @param discountId Id discount to delete
    */
-  async deleteDiscount(discountId: number): Promise<any> {
+  async deleteDiscount(discountId: number): Promise<number> {
     if (typeof discountId === 'undefined') return 0;
     const deletedDiscount = await database()
       .delete()

@@ -1,6 +1,13 @@
 import { database } from '../libs/db';
 import { usersTable } from './user';
 
+export interface IAdmin {
+  user_id: number;
+  username?: string;
+  full_access: boolean;
+  created_on: string;
+}
+
 export const adminsTable = 'admins';
 
 /**
@@ -10,7 +17,7 @@ export const adminModel = {
   /**
    * Get all in admins list
    */
-  async getAllAdmins(): Promise<any> {
+  async getAllAdmins(): Promise<IAdmin[]> {
     return await database()
       .select('*')
       .from(adminsTable)
@@ -36,7 +43,10 @@ export const adminModel = {
    * @param userId - User id
    * @param fullAccess - level of access for user (false - only view permissions, true - full access)
    */
-  async addUserToAdmins(userId: number, fullAccess: boolean): Promise<any> {
+  async addUserToAdmins(
+    userId: number,
+    fullAccess: boolean
+  ): Promise<IAdmin[]> {
     if (typeof userId === 'undefined') return [];
     return await database()
       .insert({
@@ -55,7 +65,7 @@ export const adminModel = {
   async editAdminAccessLevel(
     userId: number,
     fullAccess: boolean
-  ): Promise<any> {
+  ): Promise<number> {
     if (typeof userId === 'undefined') return 0;
     return await database()
       .update({ full_access: fullAccess })
@@ -67,7 +77,7 @@ export const adminModel = {
    * Delete user from admins list
    * @param userId - User id
    */
-  async deleteAdmin(userId: number): Promise<any> {
+  async deleteAdmin(userId: number): Promise<number> {
     if (typeof userId === 'undefined') return 0;
     return await database()
       .delete()

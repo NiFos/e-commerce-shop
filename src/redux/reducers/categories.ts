@@ -1,14 +1,18 @@
 import Axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
+import {
+  IPublicCategory,
+  ICategory,
+  ISubcategory,
+} from '../../pages/api/category/getAll';
 import { RootState } from '../store';
-import { CategoryAction } from './category';
 
 const axiosInstance = Axios.create({
   baseURL: process.env.FRONTEND_URL || 'http://localhost:3000',
   withCredentials: true,
 });
 
-const categoriesReducerTypes = {
+export const categoriesReducerTypes = {
   getCategories: 'categories/GET_CATEGORIES',
   getPublicCategories: 'categories/GET_PUBLIC_CATEGORIES',
   getSubcategories: 'categories/GET_SUBCATEGORIES',
@@ -20,9 +24,9 @@ const categoriesReducerTypes = {
   deleteLoadingStatus: 'categories/DELETE_LOADING_STATUS',
 };
 export interface ICategoriesReducer {
-  categories?: any[];
-  publicCategories?: any[];
-  subCategories?: any[];
+  categories?: ICategory[];
+  publicCategories?: IPublicCategory[];
+  subCategories?: ISubcategory[];
   getPublicCategoriesLoadingStatus?: 'loading' | 'error' | 'loaded';
   getSubcategoriesLoadingStatus?: 'loading' | 'error' | 'loaded';
   createLoadingStatus?: 'loading' | 'error' | 'loaded';
@@ -36,27 +40,27 @@ const initialState: ICategoriesReducer = {};
  */
 export const categoriesReducer = (
   state = initialState,
-  { type, payload }: CategoryAction
+  { type, payload }: CategoriesAction
 ): ICategoriesReducer => {
   switch (type) {
     case categoriesReducerTypes.getCategories: {
       return {
         ...state,
-        categories: payload as any[],
+        categories: payload as ICategory[],
       };
     }
 
     case categoriesReducerTypes.getSubcategories: {
       return {
         ...state,
-        subCategories: payload as any[],
+        subCategories: payload as ISubcategory[],
       };
     }
 
     case categoriesReducerTypes.getPublicCategories: {
       return {
         ...state,
-        publicCategories: payload as any[],
+        publicCategories: payload as IPublicCategory[],
       };
     }
 
@@ -110,13 +114,13 @@ export const categoriesReducer = (
 // Actions
 interface GetCategoriesAction {
   type: typeof categoriesReducerTypes.getCategories;
-  payload: any[];
+  payload: ICategory[];
 }
 
 /**
  * Get categories action
  */
-export const getCategories = (categories: any[]) => {
+export const getCategories = (categories: ICategory[]): GetCategoriesAction => {
   return {
     type: categoriesReducerTypes.getCategories,
     payload: categories,
@@ -125,7 +129,7 @@ export const getCategories = (categories: any[]) => {
 
 interface GetPublicSubcategoriesAction {
   type: typeof categoriesReducerTypes.getPublicCategories;
-  payload: any[];
+  payload: IPublicCategory[];
 }
 interface GetPublicCategoriesLoadingStatusAction {
   type: typeof categoriesReducerTypes.getPublicCategoriesLoadingStatus;
@@ -165,7 +169,7 @@ export const getPublicCategories = (): ThunkAction<
 
 interface GetSubcategoriesAction {
   type: typeof categoriesReducerTypes.getSubcategories;
-  payload: any[];
+  payload: ISubcategory[];
 }
 
 /**

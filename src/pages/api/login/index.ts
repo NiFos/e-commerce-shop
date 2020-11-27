@@ -24,8 +24,8 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
         id: user[0].user_id,
         username: user[0].username,
         admin: {
-          isAdmin: user[0].admin.isAdmin,
-          fullAccess: user[0].admin.fullAccess,
+          isAdmin: user[0]?.admin?.isAdmin,
+          fullAccess: user[0]?.admin?.fullAccess,
         },
       },
     };

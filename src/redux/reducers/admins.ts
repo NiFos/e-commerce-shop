@@ -1,5 +1,7 @@
 import Axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
+import { IAdmin } from '../../models/admin';
+import { IUserModel } from '../../models/user';
 import { RootState } from '../store';
 
 const axiosInstance = Axios.create({
@@ -7,7 +9,7 @@ const axiosInstance = Axios.create({
   withCredentials: true,
 });
 
-const adminsReducerTypes = {
+export const adminsReducerTypes = {
   getAdmins: 'admins/GET_ADMINS',
   search: 'admins/SEARCH',
   addLoadingStatus: 'admins/ADD_LOADING_STATUS',
@@ -16,8 +18,8 @@ const adminsReducerTypes = {
   searchLoadingStatus: 'admins/SEARCH_LOADING_STATUS',
 };
 export interface IAdminsReducer {
-  admins?: any[];
-  search?: any[];
+  admins?: IAdmin[];
+  search?: IUserModel[];
   addLoadingStatus?: 'loading' | 'error' | 'loaded';
   editLoadingStatus?: 'loading' | 'error' | 'loaded';
   deleteLoadingStatus?: 'loading' | 'error' | 'loaded';
@@ -36,14 +38,14 @@ export const adminsReducer = (
     case adminsReducerTypes.getAdmins: {
       return {
         ...state,
-        admins: payload as any[],
+        admins: payload as IAdmin[],
       };
     }
 
     case adminsReducerTypes.search: {
       return {
         ...state,
-        search: payload as any[],
+        search: payload as IUserModel[],
       };
     }
 
@@ -84,13 +86,13 @@ export const adminsReducer = (
 // Actions
 interface GetAdminsAction {
   type: typeof adminsReducerTypes.getAdmins;
-  payload: any[];
+  payload: IAdmin[];
 }
 
 /**
  * Get admins action
  */
-export const getAdmins = (admins: any[]): GetAdminsAction => {
+export const getAdmins = (admins: IAdmin[]): GetAdminsAction => {
   return {
     type: adminsReducerTypes.getAdmins,
     payload: admins,
@@ -182,7 +184,7 @@ export const addAdmin = (
 
 interface SearchUsersAction {
   type: typeof adminsReducerTypes.search;
-  payload: any[];
+  payload: IUserModel[];
 }
 
 interface SearchLoadingStatusAction {

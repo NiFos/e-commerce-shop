@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
+import { IProductModel } from '../../models/product';
 import { RootState } from '../store';
 
 const axiosInstance = Axios.create({
@@ -7,12 +8,12 @@ const axiosInstance = Axios.create({
   withCredentials: true,
 });
 
-const searchReducerTypes = {
+export const searchReducerTypes = {
   searchProducts: 'search/SEARCH_PRODUCTS',
   searchProductsLoadingStatus: 'search/SEARCH_PRODUCTS_LOADING_STATUS',
 };
 export interface ISearchReducer {
-  products?: any[];
+  products?: IProductModel[];
   searchProductsLoadingStatus?: 'loading' | 'error' | 'loaded';
 }
 const initialState: ISearchReducer = {};
@@ -28,7 +29,7 @@ export const searchReducer = (
     case searchReducerTypes.searchProducts: {
       return {
         ...state,
-        products: payload as any[],
+        products: payload as IProductModel[],
       };
     }
 
@@ -48,7 +49,7 @@ export const searchReducer = (
 // Actions
 interface SearchProductsAction {
   type: typeof searchReducerTypes.searchProducts;
-  payload: any[];
+  payload: IProductModel[];
 }
 
 interface SearchProductsLoadingStatusAction {

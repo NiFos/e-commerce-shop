@@ -33,12 +33,19 @@ interface IOrder {
   created_on: number;
 }
 interface Props {
-  children?: any;
+  children?: JSX.Element[];
   orders: IOrder[];
   hasMore: boolean;
   page: number;
-  feed: any[];
-  chartData: any[];
+  feed: {
+    status: number;
+    count: number;
+  }[];
+  chartData: {
+    name: string;
+    uv: number;
+    pv: number;
+  }[];
 }
 
 /**
@@ -156,8 +163,8 @@ export default function Component(props: Props): JSX.Element {
           {/* Feed */}
           <div>Feed</div>
           {props.feed.map((item) => (
-            <div key={item.statusId}>
-              {item.statusId} - {item.count}
+            <div key={item.status}>
+              {item.status} - {item.count}
             </div>
           ))}
         </div>
@@ -207,12 +214,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   )
     return { props: { error: 'unauth' } };
 
-  const reduxStore = initializeStore({});
+  const reduxStore = initializeStore();
   const pageSize = +(context.query.pageSize || 5);
   const page = +(context.query.page || 1);
 
   const orders = await orderModel.getAllOrders(+pageSize, +page);
-  const ordersData = orders.map((item: any) => {
+  const ordersData = orders.map((item) => {
     return {
       ...item,
       created_on: new Date(item.created_on).toString(),
@@ -227,15 +234,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const feed = await orderModel.getFeed();
   await reduxStore.dispatch(
     getFeed(
-      feed.map((item: any) => ({
-        statusId: item.status || 0,
+      feed.map((item) => ({
+        status: item.status || 0,
         count: item.count,
       }))
     )
   );
 
   const ordersByMonth = await orderModel.getOrdersByMonth();
-  const chartData = ordersByMonth.map((item: any, index: number) => ({
+  const chartData = ordersByMonth.map((item, index: number) => ({
     name: moment(new Date(item.date_trunc).toString()).format('MMMM'),
     uv: item.count,
     pv: index,

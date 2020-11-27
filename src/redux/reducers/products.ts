@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
+import { IProductModel } from '../../models/product';
 import { RootState } from '../store';
 
 const axiosInstance = Axios.create({
@@ -7,7 +8,7 @@ const axiosInstance = Axios.create({
   withCredentials: true,
 });
 
-const productsReducerTypes = {
+export const productsReducerTypes = {
   getProducts: 'products/GET_products',
   createProduct: 'products/CREATE_PRODUCT',
   uploadPhoto: 'products/UPLOAD_PHOTO',
@@ -20,12 +21,11 @@ const productsReducerTypes = {
   addReviewLoadingStatus: 'products/ADD_REVIEW_LOADING_STATUS',
 };
 export interface IProductsReducer {
-  products?: any[];
+  products?: IProductModel[];
   newProduct?: {
     id?: number;
     photo?: string;
   };
-  search?: any[];
   createLoadingStatus?: 'loading' | 'error' | 'loaded';
   editLoadingStatus?: 'loading' | 'error' | 'loaded';
   uploadPhotoLoadingStatus?: 'loading' | 'error' | 'loaded';
@@ -46,7 +46,7 @@ export const productsReducer = (
     case productsReducerTypes.getProducts: {
       return {
         ...state,
-        products: payload as any[],
+        products: payload as IProductModel[],
       };
     }
 
@@ -65,13 +65,6 @@ export const productsReducer = (
         newProduct: {
           photo: payload.toString(),
         },
-      };
-    }
-
-    case productsReducerTypes.search: {
-      return {
-        ...state,
-        search: payload as any[],
       };
     }
 
@@ -126,13 +119,13 @@ export const productsReducer = (
 // Actions
 interface GetProducts {
   type: typeof productsReducerTypes.getProducts;
-  payload: any[];
+  payload: IProductModel[];
 }
 
 /**
  * Get products action
  */
-export const getProducts = (products: any[]): GetProducts => {
+export const getProducts = (products: IProductModel[]): GetProducts => {
   return {
     type: productsReducerTypes.getProducts,
     payload: products,
@@ -145,9 +138,15 @@ export const getProducts = (products: any[]): GetProducts => {
  * @param title - product title
  * @param description - product description
  */
-export const editProduct = (
-  data: any
-): ThunkAction<void, RootState, unknown, ProductsAction> => async (
+export const editProduct = (data: {
+  productId?: number;
+  title?: string;
+  description?: string;
+  techspecs?: string;
+  price?: number;
+  quantity?: number;
+  subcategoryId?: number;
+}): ThunkAction<void, RootState, unknown, ProductsAction> => async (
   dispatch
 ) => {
   try {
@@ -261,7 +260,7 @@ interface UploadProductPhotoAction {
  */
 export const uploadProductPhoto = (
   id: number,
-  file: any,
+  file: File,
   mod: boolean
 ): ThunkAction<void, RootState, unknown, ProductsAction> => async (
   dispatch

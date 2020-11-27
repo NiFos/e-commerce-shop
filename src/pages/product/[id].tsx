@@ -17,17 +17,17 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPhotoUrl } from '../../libs/storage';
-import { productModel } from '../../models/product';
-import { reviewModel } from '../../models/review';
+import { IProductModel, productModel } from '../../models/product';
+import { IReviewModel, reviewModel } from '../../models/review';
 import { sendReview } from '../../redux/reducers/products';
 import { changeRoute } from '../../redux/reducers/settings';
 import { addProductToCart } from '../../redux/reducers/user';
 import { RootState } from '../../redux/store';
 
 interface Props {
-  children?: any;
-  product: any;
-  reviews: any[];
+  children?: JSX.Element[];
+  product: IProductModel;
+  reviews: IReviewModel[];
 }
 
 /**
@@ -88,7 +88,7 @@ export default function Component(props: Props): JSX.Element {
    * Render reviews
    */
   function renderReviews() {
-    return props.reviews.map((item: any) => {
+    return props.reviews.map((item) => {
       return (
         <div key={item.review_id}>
           <div>
@@ -198,11 +198,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const productData = {
     ...product[0],
     created_on: new Date(product[0].created_on).toString(),
-    photo: getPhotoUrl('products', product[0].product_id),
+    photo: getPhotoUrl('products', '' + product[0].product_id),
   };
 
   const reviews = await reviewModel.getProductReviews(id);
-  const reviewsData = reviews.map((item: any) => ({
+  const reviewsData = reviews.map((item) => ({
     ...item,
     created_on: new Date(item.created_on).toString(),
   }));
@@ -215,7 +215,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
  */
 export const getStaticPaths: GetStaticPaths = async () => {
   const products = await productModel.getIds();
-  const paths = products.map((item: any) => ({
+  const paths = products.map((item) => ({
     params: { id: item.product_id.toString() },
   }));
 

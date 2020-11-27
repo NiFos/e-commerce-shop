@@ -3,6 +3,20 @@ import { withMethod } from '../../../libs/withMethod';
 import { NextApiRequestWithUser } from '../../../libs/withUser';
 import { categoryModel } from '../../../models/category';
 
+export interface ICategory {
+  title: string;
+  category_id: number;
+}
+export interface IPublicCategory {
+  title: string;
+  id: number;
+  subcategories: { title: string; id: number }[];
+}
+export interface ISubcategory {
+  title: string;
+  subcategory_id: number;
+}
+
 /**
  * Get all categories with subcategories
  */
@@ -10,11 +24,11 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
     const categories = await categoryModel.getAllCategories();
     const subCategories = await categoryModel.getAllSubcategories();
-    const categoriesData = categories.map((category: any) => {
+    const categoriesData = categories.map((category) => {
       return {
         title: category.title,
         id: category.category_id,
-        subcategories: subCategories.map((subcategory: any) => {
+        subcategories: subCategories.map((subcategory) => {
           if (subcategory.category_id === category.category_id)
             return {
               title: subcategory.title,

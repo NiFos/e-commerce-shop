@@ -15,7 +15,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPhotoUrl } from '../../../libs/storage';
 import { checkUser } from '../../../libs/withUser';
-import { productModel } from '../../../models/product';
+import { IProductModel, productModel } from '../../../models/product';
 import {
   createProduct,
   deleteProduct,
@@ -30,8 +30,8 @@ import { Pagination } from '../../../components/Pagination';
 import { GetServerSideProps } from 'next';
 
 interface Props {
-  children?: any;
-  products: any[];
+  children?: JSX.Element[];
+  products: IProductModel[];
   hasMore: boolean;
   page: number;
 }
@@ -167,7 +167,7 @@ export default function Component(props: Props): JSX.Element {
         title:
           productData.title !== props.products[currentProductIndex].title
             ? productData.title
-            : undefined,
+            : 'undefined',
         description:
           productData.description !==
           props.products[currentProductIndex].description
@@ -215,9 +215,13 @@ export default function Component(props: Props): JSX.Element {
    * Upload photo
    * @param file - Image
    */
-  function uploadPhotoHandler(file: any) {
+  function uploadPhotoHandler(files: FileList) {
     dispatch(
-      uploadProductPhoto(currentProductId, file[0], !!state.newProduct?.id)
+      uploadProductPhoto(
+        currentProductId,
+        files[0] as File,
+        !!state.newProduct?.id
+      )
     );
   }
 
@@ -359,8 +363,8 @@ export default function Component(props: Props): JSX.Element {
       <UploadPhotoModal
         isOpen={openUploadPhoto}
         submitHandler={cleanUploadPhoto}
-        uploadHandler={uploadPhotoHandler}
-        imageSrc={state.newProduct?.photo}
+        uploadHandler={(files) => uploadPhotoHandler(files as FileList)}
+        imageSrc={state.newProduct?.photo || ''}
       />
       {/* Information */}
       <div>
@@ -398,17 +402,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const page = +(context.query.page || 1);
   const pageSize = 5;
 
-  const reduxStore = initializeStore({});
+  const reduxStore = initializeStore();
   const products = await productModel.getAllProducts(pageSize, page);
   const hasMore = products.length > +pageSize;
   if (hasMore) {
     products.splice(products.length - 1, 1);
   }
 
-  const productsData = products.map((item: any) => ({
+  const productsData = products.map((item) => ({
     ...item,
-    photo: getPhotoUrl('products', item.product_id),
-    created_on: Date.parse(item.created_on).toString(),
+    photo: getPhotoUrl('products', '' + item.product_id),
+    created_on: Date.parse('' + item.created_on).toString(),
   }));
   await reduxStore.dispatch(getProducts(productsData));
   return {

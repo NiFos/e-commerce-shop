@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getPublicCategories } from '../../../redux/reducers/categories';
 import { RootState } from '../../../redux/store';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { ISubcategory } from '../../../pages/api/category/getAll';
 
 interface Props {
   open: boolean;
@@ -38,7 +39,7 @@ export function Categories(props: Props): JSX.Element {
    * Render categories
    */
   function renderCategories() {
-    return state.publicCategories.map((item: any) => {
+    return (state.publicCategories || []).map((item) => {
       return (
         <Accordion key={item.id}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -55,8 +56,8 @@ export function Categories(props: Props): JSX.Element {
   /**
    * Render subcategories
    */
-  function renderSubcategories(subcategories: any[]) {
-    return subcategories.map((item: any) => {
+  function renderSubcategories(subcategories: { title: string; id: number }[]) {
+    return subcategories.map((item) => {
       return (
         <ButtonGroup key={item.id}>
           <Button

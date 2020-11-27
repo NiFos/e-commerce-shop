@@ -14,7 +14,7 @@ export function RouteBreadcrums(): JSX.Element {
    * Render breadcrums
    */
   function renderBreadcrums() {
-    return state.currentRoute.map((item: IBreadcrum) => {
+    return (state.currentRoute || []).map((item: IBreadcrum) => {
       return (
         <Link href={item.route} key={item.route}>
           {item.title}

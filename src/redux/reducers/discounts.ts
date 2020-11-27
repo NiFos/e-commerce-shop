@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
+import { IDiscountModel } from '../../models/discount';
 import { RootState } from '../store';
 
 const axiosInstance = Axios.create({
@@ -7,7 +8,7 @@ const axiosInstance = Axios.create({
   withCredentials: true,
 });
 
-const discountsReducerTypes = {
+export const discountsReducerTypes = {
   getDiscounts: 'discounts/GET_DISCOUNTS',
   createDiscount: 'discounts/CREATE_DISCOUNT',
   uploadPhoto: 'discounts/UPLOAD_PHOTO',
@@ -19,17 +20,15 @@ const discountsReducerTypes = {
   searchLoadingStatus: 'discounts/SEARCH_LOADING_STATUS',
 };
 export interface IDiscountsReducer {
-  discounts?: any[];
+  discounts?: IDiscountModel[];
   newDiscount?: {
     id?: number;
     photo?: string;
   };
-  search?: any[];
   createLoadingStatus?: 'loading' | 'error' | 'loaded';
   editLoadingStatus?: 'loading' | 'error' | 'loaded';
   uploadPhotoLoadingStatus?: 'loading' | 'error' | 'loaded';
   deleteLoadingStatus?: 'loading' | 'error' | 'loaded';
-  searchLoadingStatus?: 'loading' | 'error' | 'loaded';
 }
 const initialState: IDiscountsReducer = {};
 
@@ -44,7 +43,7 @@ export const discountsReducer = (
     case discountsReducerTypes.getDiscounts: {
       return {
         ...state,
-        discounts: payload as any[],
+        discounts: payload as IDiscountModel[],
       };
     }
 
@@ -63,13 +62,6 @@ export const discountsReducer = (
         newDiscount: {
           photo: payload as string,
         },
-      };
-    }
-
-    case discountsReducerTypes.search: {
-      return {
-        ...state,
-        search: payload as any[],
       };
     }
 
@@ -101,13 +93,6 @@ export const discountsReducer = (
       };
     }
 
-    case discountsReducerTypes.searchLoadingStatus: {
-      return {
-        ...state,
-        searchLoadingStatus: payload as 'loading' | 'loaded' | 'error',
-      };
-    }
-
     default: {
       return state;
     }
@@ -115,14 +100,18 @@ export const discountsReducer = (
 };
 
 // Actions
+
+interface IDiscountData extends IDiscountModel {
+  photo: string;
+}
 interface GetDiscounts {
   type: typeof discountsReducerTypes.getDiscounts;
-  payload: any[];
+  payload: IDiscountData[];
 }
 /**
  * Get discounts action
  */
-export const getDiscounts = (discounts: any[]) => {
+export const getDiscounts = (discounts: IDiscountData[]): GetDiscounts => {
   return {
     type: discountsReducerTypes.getDiscounts,
     payload: discounts,
@@ -249,7 +238,7 @@ interface UploadDiscountPhotoAction {
  */
 export const uploadDiscountPhoto = (
   id: number,
-  file: any,
+  file: File,
   mod: boolean
 ): ThunkAction<void, RootState, unknown, DiscountsAction> => async (
   dispatch

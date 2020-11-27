@@ -6,11 +6,26 @@ import { discountModel } from '../models/discount';
 import { getPhotoUrl } from '../libs/storage';
 import { GetStaticProps } from 'next';
 
+interface Product {
+  productId: number;
+  title: string;
+  price: number;
+  photo: string;
+  rating?: number;
+}
+
 interface Props {
-  mainDiscount: any;
-  lastNewProduct: any;
-  popular: any[];
-  topRated: any[];
+  mainDiscount: {
+    discountId: number;
+    title: string;
+    description: string;
+    percentDiscount: number;
+    to: Date;
+    photo: string;
+  };
+  lastNewProduct: Product;
+  popular: Product[];
+  topRated: Product[];
 }
 
 /**
@@ -21,7 +36,7 @@ export default function Component(props: Props): JSX.Element {
    * Render popular section
    */
   function renderPopular() {
-    return props.popular.map((item: any) => {
+    return props.popular.map((item) => {
       return (
         <Link href={`/product/${item.productId}`} key={item.productId}>
           <div>
@@ -38,7 +53,7 @@ export default function Component(props: Props): JSX.Element {
    * Render top rated section
    */
   function renderTopRated() {
-    return props.topRated.map((item: any) => {
+    return props.topRated.map((item) => {
       return (
         <Link href={`/product/${item.productId}`} key={item.productId}>
           <div>
@@ -85,26 +100,26 @@ export const getStaticProps: GetStaticProps = async () => {
         description: mainDiscount[0]?.description,
         percentDiscount: mainDiscount[0]?.percent_discount,
         to: new Date(mainDiscount[0]?.date_to).toString(),
-        photo: getPhotoUrl('discounts', mainDiscount[0].discount_id),
+        photo: getPhotoUrl('discounts', '' + mainDiscount[0].discount_id),
       },
       lastNewProduct: {
         productId: lastNewProduct[0]?.product_id,
         title: lastNewProduct[0]?.title,
         price: lastNewProduct[0]?.price,
-        photo: getPhotoUrl('products', lastNewProduct[0]?.product_id),
+        photo: getPhotoUrl('products', '' + lastNewProduct[0]?.product_id),
       },
-      popular: popular.map((item: any) => ({
+      popular: popular.map((item) => ({
         productId: item?.product_id,
         title: item?.title,
         price: item?.price,
-        photo: getPhotoUrl('products', item?.product_id),
+        photo: getPhotoUrl('products', '' + item?.product_id),
       })),
-      topRated: topRated.map((item: any) => ({
+      topRated: topRated.map((item) => ({
         productId: item?.product_id,
         title: item?.title,
         price: item?.price,
         rating: item?.rating,
-        photo: getPhotoUrl('products', item?.product_id),
+        photo: getPhotoUrl('products', '' + item?.product_id),
       })),
     },
   };

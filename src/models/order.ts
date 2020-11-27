@@ -1,6 +1,46 @@
+import Stripe from 'stripe';
 import { database } from '../libs/db';
 import { discountModel } from './discount';
 import { productsSalesTable } from './product';
+
+export interface IOrderModel {
+  order_id: number;
+  created_on: string;
+  delivery_address: string;
+  status: number;
+  ordered_by: number;
+}
+
+export interface IUserOrderModel {
+  order_id: number;
+  created_on: string;
+  delivery_address: string;
+  status: number;
+  ordered_by: number;
+  totalPrice: number;
+  products: {
+    product_id: number;
+    quantity: number;
+    price_one: number;
+  }[];
+}
+
+export interface INewOrderModel {
+  orderId: number;
+  status: number;
+  deliveryAddress: string;
+  products: { productId: number; quantity: number; priceOne: number }[];
+}
+
+export interface IFeed {
+  status: number;
+  count: number;
+}
+
+export interface IChart {
+  date_trunc: Date;
+  count: number;
+}
 
 export const ordersTable = 'orders';
 export const orderDetailsTable = 'order_detail';
@@ -11,7 +51,7 @@ export const orderModel = {
    * @param pageSize - Limit orders to return
    * @param page - Number of page
    */
-  async getAllOrders(pageSize = 5, page = 1): Promise<any> {
+  async getAllOrders(pageSize = 5, page = 1): Promise<IOrderModel[]> {
     const offSet = page === 1 ? 0 : page * pageSize - pageSize;
 
     return await database()
@@ -26,7 +66,7 @@ export const orderModel = {
    * @param pageSize - Limit orders to return
    * @param page - Number of page
    */
-  async getFeed(): Promise<any> {
+  async getFeed(): Promise<IFeed[]> {
     return await database()
       .select('status', database().raw('COUNT(*)'))
       .from(ordersTable)
@@ -36,7 +76,7 @@ export const orderModel = {
   /**
    * Get orders by month (last year)
    */
-  async getOrdersByMonth(): Promise<any> {
+  async getOrdersByMonth(): Promise<IChart[]> {
     return await database()
       .select(database().raw(`${'date_trunc'}('month', created_on), COUNT(*)`))
       .from(ordersTable)
@@ -46,7 +86,7 @@ export const orderModel = {
    * Get all information about order
    * @param orderId - Order id
    */
-  async getOrderById(orderId: number): Promise<any> {
+  async getOrderById(orderId: number): Promise<IOrderModel[]> {
     if (typeof orderId === 'undefined') return [];
     const order = await database()
       .select('*')
@@ -69,7 +109,7 @@ export const orderModel = {
    * @param orderId - Order id
    * @param status - Status of order
    */
-  async editOrderStatus(orderId: number, status: number): Promise<any> {
+  async editOrderStatus(orderId: number, status: number): Promise<number> {
     if (typeof orderId === 'undefined') return 0;
     return await database()
       .update({ status })
@@ -86,8 +126,8 @@ export const orderModel = {
     deliveryAddress: string,
     status: number,
     promocode: string,
-    products: any[]
-  ): Promise<any> {
+    products: Stripe.LineItem[]
+  ): Promise<INewOrderModel[]> {
     if (typeof userId === 'undefined') return [];
 
     const order = await database()
@@ -104,7 +144,8 @@ export const orderModel = {
     const productsData = products.map((product) => {
       const discountPercentage = discount[0]?.percent_discount || 0;
       const price =
-        (product.price.unit_amount / 100) * ((100 - discountPercentage) / 100);
+        ((product.price.unit_amount || 0) / 100) *
+        ((100 - discountPercentage) / 100);
 
       return {
         order_id: order[0].order_id,
@@ -147,7 +188,7 @@ export const orderModel = {
    * Delete order with returning ordered products amount to quantity
    * @param orderId - Order id
    */
-  async deleteOrder(orderId: number): Promise<any> {
+  async deleteOrder(orderId: number): Promise<number> {
     if (typeof orderId === 'undefined') return 0;
     const deletedOrder = await database()
       .delete()
@@ -164,7 +205,7 @@ export const orderModel = {
    * Get all user orders
    * @param userId - User id
    */
-  async getUserOrders(userId: number): Promise<any> {
+  async getUserOrders(userId: number): Promise<IUserOrderModel[]> {
     const orders = await database()
       .select('*')
       .from(ordersTable)

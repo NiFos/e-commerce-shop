@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo } from 'react';
-import { applyMiddleware, CombinedState, compose, createStore } from 'redux';
-import thunk from 'redux-thunk';
+import { applyMiddleware, compose, createStore, Store } from 'redux';
+import thunk, { ThunkMiddleware } from 'redux-thunk';
 import { rootReducer } from './reducers';
 import { AdminsAction } from './reducers/admins';
 import { CategoryAction } from './reducers/category';
@@ -33,16 +34,16 @@ function initStore(initialState?: RootState) {
   return createStore(
     rootReducer,
     initialState || {},
-    composeEnhancers(applyMiddleware(thunk))
+    composeEnhancers(
+      applyMiddleware(thunk as ThunkMiddleware<RootState, RootActions>)
+    )
   );
 }
 
 /**
  * Initialize store
  */
-export const initializeStore = (
-  preloadedState?: RootState
-): CombinedState<RootState> => {
+export const initializeStore = (preloadedState?: RootState): any => {
   let _store = store ?? initStore(preloadedState);
 
   if (preloadedState && store) {
@@ -73,7 +74,9 @@ export type RootActions =
 /**
  * useStore hook
  */
-export const useStore = (initialState: RootState): CombinedState<RootState> => {
+export const useStore = (
+  initialState: RootState
+): Store<RootState, RootActions> => {
   const store = useMemo(() => initializeStore(initialState), [initialState]);
   return store;
 };

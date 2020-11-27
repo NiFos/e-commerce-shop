@@ -30,7 +30,7 @@ export function Search(props: Props): JSX.Element {
    * Render products
    */
   function renderProducts() {
-    return state.products.map((item: any) => {
+    return (state.products || []).map((item) => {
       return (
         <Link href={`/product/${item.product_id}`} key={item.product_id}>
           <div>{item.title}</div>

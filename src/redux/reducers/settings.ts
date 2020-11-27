@@ -1,4 +1,4 @@
-const settingsReducerTypes = {
+export const settingsReducerTypes = {
   changeLanguage: 'settings/CHANGE_LANGUAGE',
   currentRoute: 'settings/CHANGE_CURRENT_ROUTE',
 };

@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { UploadPhotoModal } from '../../../components/Modals/uploadPhoto';
 import { getPhotoUrl } from '../../../libs/storage';
 import { checkUser } from '../../../libs/withUser';
-import { discountModel } from '../../../models/discount';
+import { discountModel, IDiscountModel } from '../../../models/discount';
 import {
   createDiscount,
   deleteDiscount,
@@ -33,8 +33,8 @@ import {
 import { initializeStore, RootState } from '../../../redux/store';
 
 interface Props {
-  children?: any;
-  discounts: any[];
+  children?: JSX.Element[];
+  discounts: IDiscountModel[];
 }
 
 interface IDiscountData {
@@ -79,7 +79,7 @@ export default function Component(props: Props): JSX.Element {
    * @param name - Name of property
    * @param value - Value
    */
-  function discountDataHandler(name: string, value: string) {
+  function discountDataHandler(name: string, value?: string) {
     const data = {
       ...discountData,
       [name]: value,
@@ -134,9 +134,9 @@ export default function Component(props: Props): JSX.Element {
    * Upload photo
    * @param file - Image
    */
-  function uploadPhotoHandler(file: any) {
+  function uploadPhotoHandler(files: FileList) {
     dispatch(
-      uploadDiscountPhoto(currentDiscountId, file[0], !!state.newDiscount?.id)
+      uploadDiscountPhoto(currentDiscountId, files[0], !!state.newDiscount?.id)
     );
   }
 
@@ -242,12 +242,16 @@ export default function Component(props: Props): JSX.Element {
               format="dd/MM/yyyy"
               label="Date to"
               value={discountData.to}
-              onChange={(value: any) => discountDataHandler('to', value)}
+              onChange={(value) =>
+                discountDataHandler('to', value?.toDateString())
+              }
             />
             <KeyboardTimePicker
               label="Time to"
               value={discountData.to}
-              onChange={(value: any) => discountDataHandler('to', value)}
+              onChange={(value) =>
+                discountDataHandler('to', value?.toDateString())
+              }
             />
           </MuiPickersUtilsProvider>
           <div>
@@ -283,8 +287,8 @@ export default function Component(props: Props): JSX.Element {
       <UploadPhotoModal
         isOpen={openUploadPhoto}
         submitHandler={cleanUploadPhoto}
-        uploadHandler={uploadPhotoHandler}
-        imageSrc={state.newDiscount?.photo}
+        uploadHandler={(files) => uploadPhotoHandler(files as FileList)}
+        imageSrc={state.newDiscount?.photo || ''}
       />
 
       {/* Edit discount modal */}
@@ -340,13 +344,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   )
     return { props: { error: 'unauth' } };
 
-  const reduxStore = initializeStore({});
+  const reduxStore = initializeStore();
   const discounts = await discountModel.getAllDiscounts();
-  const discountsData = discounts.map((item: any) => ({
+  const discountsData = discounts.map((item) => ({
     ...item,
     created_on: new Date(item.created_on).toString(),
     date_to: new Date(item.date_to).toString(),
-    photo: getPhotoUrl('discounts', item.discount_id),
+    photo: getPhotoUrl('discounts', '' + item.discount_id),
   }));
   await reduxStore.dispatch(getDiscounts(discountsData));
   return {

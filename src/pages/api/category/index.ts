@@ -20,9 +20,9 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     );
 
     return res.json({
-      products: products.map((item: any) => ({
+      products: products.map((item) => ({
         ...item,
-        photo: getPhotoUrl('products', item.product_id),
+        photo: getPhotoUrl('products', '' + item.product_id),
       })),
     });
   } catch (error) {

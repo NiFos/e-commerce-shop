@@ -1,6 +1,24 @@
 import { database } from '../libs/db';
 import { productsTable, productsTagsTable, tagsTable } from './product';
 
+export interface ICategoryModel {
+  category_id: number;
+  created_on: Date;
+  title: string;
+}
+
+export interface ISubcategoryModel {
+  category_id: number;
+  subcategory_id: number;
+  created_on: Date;
+  title: string;
+}
+
+export interface ISubcategoryData {
+  prices: [number, number];
+  tags: { tag_id: number; title: string }[];
+}
+
 export const categoriesTable = 'categories';
 export const subCategoriesTable = 'subcategories';
 
@@ -11,13 +29,13 @@ export const categoryModel = {
   /**
    * Get all categories from database
    */
-  async getAllCategories(): Promise<any> {
+  async getAllCategories(): Promise<ICategoryModel[]> {
     return await database().select('*').from(categoriesTable);
   },
   /**
    * Get all categories from database
    */
-  async getAllSubcategories(categoryId?: number): Promise<any> {
+  async getAllSubcategories(categoryId?: number): Promise<ISubcategoryModel[]> {
     if (typeof categoryId === 'undefined') {
       return await database().select('*').from(subCategoriesTable);
     }
@@ -31,7 +49,7 @@ export const categoryModel = {
    * Get subcategory by id
    * @param subcategoryId - Subcategory id
    */
-  async getSubcategory(subcategoryId: number): Promise<any> {
+  async getSubcategory(subcategoryId: number): Promise<ISubcategoryModel[]> {
     return await database()
       .select('*')
       .from(subCategoriesTable)
@@ -42,8 +60,8 @@ export const categoryModel = {
    * Get subcategory data, such as: tags, prices
    * @param subcategoryId - Subcategory id
    */
-  async getSubcategoryData(subcategoryId: number): Promise<any> {
-    const pricesData: any = await database()
+  async getSubcategoryData(subcategoryId: number): Promise<ISubcategoryData> {
+    const pricesData: { min?: number; max?: number }[] = await database()
       .min({ min: 'price' })
       .max({ max: 'price' })
       .from(productsTable)
@@ -62,7 +80,7 @@ export const categoryModel = {
         `${tagsTable}.tag_id`
       );
     return {
-      prices: [pricesData[0].min, pricesData[0].max],
+      prices: [pricesData[0].min || 0, pricesData[0].max || 0],
       tags,
     };
   },
@@ -71,7 +89,10 @@ export const categoryModel = {
    * Create new category
    * @param title - name of new category
    */
-  async createCategory(createdBy: number, title: string): Promise<any> {
+  async createCategory(
+    createdBy: number,
+    title: string
+  ): Promise<ICategoryModel[]> {
     if (typeof createdBy === 'undefined' || !title) return [];
     return await database()
       .insert({ created_by: createdBy, title })
@@ -83,7 +104,7 @@ export const categoryModel = {
    * @param categoryId Id category to update
    * @param newTitle New title of category
    */
-  async editCategory(categoryId: number, newTitle: string): Promise<any> {
+  async editCategory(categoryId: number, newTitle: string): Promise<number> {
     if (typeof categoryId === 'undefined' || !newTitle) return 0;
     return await database()
       .update({ title: newTitle })
@@ -95,7 +116,7 @@ export const categoryModel = {
    * Delete category
    * @param categoryId Id category
    */
-  async deleteCategory(categoryId: number): Promise<any> {
+  async deleteCategory(categoryId: number): Promise<number> {
     if (typeof categoryId === 'undefined') return 0;
     return await database()
       .delete()
@@ -106,7 +127,7 @@ export const categoryModel = {
    * Delete category
    * @param categoryId Id category
    */
-  async deleteSubcategory(subcategoryId: number): Promise<any> {
+  async deleteSubcategory(subcategoryId: number): Promise<number> {
     if (typeof subcategoryId === 'undefined') return 0;
     return await database()
       .delete()
@@ -122,13 +143,13 @@ export const categoryModel = {
     createdBy: number,
     categoryId: number,
     title: string
-  ): Promise<any> {
+  ): Promise<ISubcategoryModel[]> {
     if (
       typeof createdBy === 'undefined' ||
       typeof categoryId === 'undefined' ||
       !title
     )
-      return 0;
+      return [];
     return await database()
       .insert({ category_id: categoryId, created_by: createdBy, title })
       .into(subCategoriesTable)
@@ -139,7 +160,10 @@ export const categoryModel = {
    * @param categoryId Id category to update
    * @param newTitle New title of category
    */
-  async editSubcategory(subcategoryId: number, newTitle: string): Promise<any> {
+  async editSubcategory(
+    subcategoryId: number,
+    newTitle: string
+  ): Promise<number> {
     if (typeof subcategoryId === 'undefined' || !newTitle) return 0;
     return await database()
       .update({ title: newTitle })

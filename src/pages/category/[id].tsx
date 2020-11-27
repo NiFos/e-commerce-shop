@@ -15,13 +15,13 @@ import { getProductsInCategory } from '../../redux/reducers/category';
 import { RootState } from '../../redux/store';
 
 interface Props {
-  children?: any;
+  children?: JSX.Element[];
   data: {
     subcategoryData: {
       id: number;
       title: string;
     };
-    tags: any[];
+    tags: { tag_id: number; title: number }[];
     prices: [number, number];
   };
 }
@@ -68,7 +68,7 @@ export default function Component(props: Props): JSX.Element {
    * Render products
    */
   function renderProducts() {
-    return state.products.map((item: any) => {
+    return (state.products || []).map((item) => {
       return (
         <Link href={`/product/${item.product_id}`} key={item.product_id}>
           <img width={300} height={300} src={item.photo} alt="" />
@@ -130,7 +130,7 @@ export default function Component(props: Props): JSX.Element {
 export const getStaticPaths: GetStaticPaths = async () => {
   const subcategories = await categoryModel.getAllSubcategories();
 
-  const paths = subcategories.map((item: any) => ({
+  const paths = subcategories.map((item) => ({
     params: { id: '' + item.subcategory_id },
   }));
   return { paths, fallback: false };

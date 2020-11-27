@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
+import { IFeed, IOrderModel, IUserOrderModel } from '../../models/order';
 import { RootState } from '../store';
 
 const axiosInstance = Axios.create({
@@ -7,7 +9,7 @@ const axiosInstance = Axios.create({
   withCredentials: true,
 });
 
-const ordersReducerTypes = {
+export const ordersReducerTypes = {
   getOrders: 'orders/GET_ORDERS',
   getFeed: 'orders/GET_FEED',
   getChartData: 'orders/GET_CHART_DATA',
@@ -16,12 +18,18 @@ const ordersReducerTypes = {
   editOrderStatus: 'orders/EDIT_STATUS',
 };
 export interface IOrdersReducer {
-  orders?: any;
-  currentOrder?: any;
+  orders?: IOrderModel[];
+  currentOrder?: IUserOrderModel;
   currentOrderLoadingStatus?: 'loading' | 'error' | 'loaded';
-  feed?: any;
-  chartData?: any;
+  feed?: IFeed[];
+  chartData?: IChartData[];
 }
+interface IChartData {
+  name: string;
+  uv: number;
+  pv: number;
+}
+
 const initialState: IOrdersReducer = {};
 
 /**
@@ -35,35 +43,35 @@ export const ordersReducer = (
     case ordersReducerTypes.getOrders: {
       return {
         ...state,
-        orders: payload,
+        orders: payload as IOrderModel[],
       };
     }
 
     case ordersReducerTypes.getFeed: {
       return {
         ...state,
-        feed: payload,
+        feed: payload as IFeed[],
       };
     }
 
     case ordersReducerTypes.getChartData: {
       return {
         ...state,
-        chartData: payload,
+        chartData: payload as IChartData[],
       };
     }
 
     case ordersReducerTypes.getOrder: {
       return {
         ...state,
-        currentOrder: payload,
+        currentOrder: payload as IUserOrderModel,
       };
     }
 
     case ordersReducerTypes.getOrderLoadingStatus: {
       return {
         ...state,
-        currentOrderLoadingStatus: payload,
+        currentOrderLoadingStatus: payload as 'loading' | 'loaded' | 'error',
       };
     }
 
@@ -72,8 +80,8 @@ export const ordersReducer = (
         ...state,
         currentOrder: {
           ...state.currentOrder,
-          status: payload,
-        },
+          status: +payload,
+        } as any,
       };
     }
 
@@ -87,12 +95,12 @@ export const ordersReducer = (
 
 interface GetOrdersAction {
   type: typeof ordersReducerTypes.getOrders;
-  payload: any[];
+  payload: IOrderModel[];
 }
 /**
  * Get orders action
  */
-export const getOrders = (orders: any[]): GetOrdersAction => {
+export const getOrders = (orders: IOrderModel[]): GetOrdersAction => {
   return {
     type: ordersReducerTypes.getOrders,
     payload: orders,
@@ -101,13 +109,13 @@ export const getOrders = (orders: any[]): GetOrdersAction => {
 
 interface GetFeedAction {
   type: typeof ordersReducerTypes.getFeed;
-  payload: any[];
+  payload: IFeed[];
 }
 
 /**
  * Get orders action
  */
-export const getFeed = (feedItems: any[]): GetFeedAction => {
+export const getFeed = (feedItems: IFeed[]): GetFeedAction => {
   return {
     type: ordersReducerTypes.getFeed,
     payload: feedItems,
@@ -116,13 +124,13 @@ export const getFeed = (feedItems: any[]): GetFeedAction => {
 
 interface GetChartAction {
   type: typeof ordersReducerTypes.getChartData;
-  payload: any[];
+  payload: IChartData[];
 }
 
 /**
  * Get orders action
  */
-export const getChartData = (chartData: any[]): GetChartAction => {
+export const getChartData = (chartData: IChartData[]): GetChartAction => {
   return {
     type: ordersReducerTypes.getChartData,
     payload: chartData,
@@ -131,7 +139,12 @@ export const getChartData = (chartData: any[]): GetChartAction => {
 
 interface GetOrderAction {
   type: typeof ordersReducerTypes.getOrder;
-  payload: any;
+  payload: IUserOrderModel;
+}
+
+interface GetOrderLoadingStatus {
+  type: typeof ordersReducerTypes.getOrderLoadingStatus;
+  payload: 'loading' | 'loaded' | 'error';
 }
 
 /**
@@ -161,10 +174,6 @@ export const getOrder = (
     dispatch({
       type: ordersReducerTypes.getOrderLoadingStatus,
       payload: 'error',
-    });
-    dispatch({
-      type: ordersReducerTypes.getOrder,
-      payload: {},
     });
   }
 };
@@ -201,4 +210,5 @@ export type OrdersAction =
   | GetOrderAction
   | GetChartAction
   | GetFeedAction
-  | GetOrdersAction;
+  | GetOrdersAction
+  | GetOrderLoadingStatus;

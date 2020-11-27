@@ -1,6 +1,19 @@
 import { database } from '../libs/db';
 import { productsTable } from './product';
 
+export interface IUserCart {
+  product_id: number;
+  quantity: number;
+  title: string;
+  price: number;
+  photo?: string;
+}
+
+interface IAddToCart {
+  product_id: number;
+  quantity: number;
+}
+
 export const cartTable = 'users_cart';
 export const cartModel = {
   /**
@@ -12,7 +25,7 @@ export const cartModel = {
     userId: number,
     productId: number,
     quantity: number
-  ): Promise<any> {
+  ): Promise<IAddToCart[]> {
     if (
       typeof productId === 'undefined' ||
       typeof userId === 'undefined' ||
@@ -39,7 +52,7 @@ export const cartModel = {
    * Get user products in cart
    * @param userId - User id
    */
-  async getUserCart(userId: number | undefined): Promise<any> {
+  async getUserCart(userId: number | undefined): Promise<IUserCart[]> {
     if (typeof userId === 'undefined') return [];
     return await database()
       .select(
@@ -61,7 +74,7 @@ export const cartModel = {
    * @param userId - User id
    * @param productId - Product id
    */
-  async removeFromCart(userId: number, productId: number): Promise<any> {
+  async removeFromCart(userId: number, productId: number): Promise<number> {
     if (typeof userId === 'undefined' || typeof productId === 'undefined')
       return 0;
     return await database().delete().from(cartTable).where({
@@ -74,7 +87,7 @@ export const cartModel = {
    * Clean cart
    * @param userId - User id
    */
-  async cleanUserCart(userId: number): Promise<any> {
+  async cleanUserCart(userId: number): Promise<number> {
     if (typeof userId === 'undefined') return 0;
     return await database()
       .delete()
@@ -92,7 +105,7 @@ export const cartModel = {
     userId: number,
     productId: number,
     quantity: number
-  ): Promise<any> {
+  ): Promise<number> {
     if (
       typeof userId === 'undefined' ||
       typeof productId === 'undefined' ||

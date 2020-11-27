@@ -23,7 +23,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
 
     const order = await orderModel.createOrder(
       userInfo[0].user_id,
-      userInfo[0].delivery_address,
+      userInfo[0].delivery_address || '',
       orderStatus.paymentConfirmed.id,
       session?.metadata?.promocode || '',
       lineItems.data

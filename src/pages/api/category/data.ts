@@ -5,7 +5,10 @@ import { categoryModel } from '../../../models/category';
 /**
  * Category data, such as: tags, prices
  */
-async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
+async function handler(
+  req: NextApiRequestWithUser,
+  res: NextApiResponse
+): Promise<void> {
   try {
     const { prodsubcategoryId } = req.body;
     const subcategory = await categoryModel.getSubcategory(+prodsubcategoryId);
