@@ -10,6 +10,7 @@ import { OrdersAction } from './reducers/orders';
 import { ProductsAction } from './reducers/products';
 import { SearchAction } from './reducers/search';
 import { SettingsAction } from './reducers/settings';
+import { TagsAction } from './reducers/tags';
 import { UserAction } from './reducers/user';
 
 let store: any;
@@ -69,7 +70,8 @@ export type RootActions =
   | OrdersAction
   | DiscountsAction
   | CategoryAction
-  | AdminsAction;
+  | AdminsAction
+  | TagsAction;
 
 /**
  * useStore hook

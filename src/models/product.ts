@@ -1,4 +1,5 @@
 import { database } from '../libs/db';
+import { ITag } from '../pages/admin/products/tags';
 import { subCategoriesTable } from './category';
 import { reviewsTable } from './review';
 
@@ -31,6 +32,7 @@ export interface IProductDataInsert {
   subcategory_id: number;
   quantity: number;
   created_by: number;
+  tags?: number[];
 }
 export interface IProductDataUpdate {
   title?: string;
@@ -165,17 +167,28 @@ export const productModel = {
    * @param data - Product data: title, number, quantity, tech specs, description, created by
    */
   async createProduct(data: IProductDataInsert): Promise<IProductModel[]> {
-    if (JSON.stringify(data) === '{}') return [];
+    const productData = { ...data };
+    delete productData.tags;
+
+    if (JSON.stringify(productData) === '{}') return [];
     const product = await database()
-      .insert(data)
+      .insert(productData)
       .into(productsTable)
       .returning('*');
     if (product.length <= 0) return [];
+    const tagsData = (data.tags || []).map((item) => ({
+      product_id: product[0].product_id,
+      tag_id: item,
+    }));
+    const tags = await database()
+      .insert(tagsData)
+      .into(productsTagsTable)
+      .returning('*');
     const sales = await database()
       .insert({ product_id: product[0].product_id })
       .into(productsSalesTable)
       .returning('*');
-    if (sales.length <= 0) {
+    if (sales.length <= 0 || tags.length <= 0) {
       await database()
         .delete()
         .from(productsTable)
@@ -245,5 +258,26 @@ export const productModel = {
       .select('*')
       .from(productsTable)
       .where('title', 'ilike', `%${name}%`);
+  },
+
+  /**
+   * Create tag
+   * @param title - Tag title
+   */
+  async createTag(title: string): Promise<ITag[]> {
+    if (typeof title === 'undefined') return [];
+    return await database()
+      .insert({
+        title,
+      })
+      .into(tagsTable)
+      .returning('*');
+  },
+
+  /**
+   * Get tags
+   */
+  async getTags(): Promise<ITag[]> {
+    return await database().select('*').from(tagsTable);
   },
 };

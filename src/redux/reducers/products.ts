@@ -214,7 +214,8 @@ export const createProduct = (
   techspecs: string,
   price: number,
   quantity: number,
-  subcategoryId: number
+  subcategoryId: number,
+  tags: number[]
 ): ThunkAction<void, RootState, unknown, ProductsAction> => async (
   dispatch
 ) => {
@@ -229,7 +230,8 @@ export const createProduct = (
       techspecs,
       price,
       quantity,
-      subcategoryid: subcategoryId,
+      subcategoryId,
+      tags,
     });
     dispatch({
       type: productsReducerTypes.createLoadingStatus,

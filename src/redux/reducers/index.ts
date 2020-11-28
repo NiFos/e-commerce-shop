@@ -8,6 +8,7 @@ import { adminsReducer } from './admins';
 import { discountsReducer } from './discounts';
 import { productsReducer } from './products';
 import { searchReducer } from './search';
+import { tagsReducer } from './tags';
 
 export const rootReducer = combineReducers({
   user: userReducer,
@@ -19,4 +20,5 @@ export const rootReducer = combineReducers({
   discounts: discountsReducer,
   products: productsReducer,
   search: searchReducer,
+  tags: tagsReducer,
 });

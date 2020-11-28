@@ -28,6 +28,7 @@ import { UploadPhotoModal } from '../../../components/Modals/uploadPhoto';
 import moment from 'moment';
 import { Pagination } from '../../../components/Pagination';
 import { GetServerSideProps } from 'next';
+import { Tags } from './tags';
 
 interface Props {
   children?: JSX.Element[];
@@ -43,6 +44,7 @@ interface IProductData {
   price?: number;
   quantity?: number;
   subcategory_id?: number;
+  tags?: number[];
 }
 
 /**
@@ -102,12 +104,28 @@ export default function Component(props: Props): JSX.Element {
    * @param name - Name of property
    * @param value - Value
    */
-  function discountDataHandler(name: string, value: string) {
-    const data = {
-      ...productData,
-      [name]: value,
-    };
-    setProductData(data);
+  function productDataHandler(name: string, value: string | number) {
+    if (name !== 'tags') {
+      const data = {
+        ...productData,
+        [name]: value,
+      };
+      setProductData(data);
+    } else {
+      const tags = productData.tags || [];
+      let newSelected;
+      if (tags?.includes(+value)) {
+        newSelected = tags.filter((item) => item !== +value);
+      } else {
+        newSelected = [...(tags as number[])];
+        newSelected.push(+value);
+      }
+      const data = {
+        ...productData,
+        tags: newSelected,
+      };
+      setProductData(data);
+    }
   }
 
   /**
@@ -152,7 +170,8 @@ export default function Component(props: Props): JSX.Element {
           productData.techspecs,
           productData.price,
           productData.quantity,
-          productData.subcategory_id
+          productData.subcategory_id,
+          productData.tags || []
         )
       );
   }
@@ -276,7 +295,7 @@ export default function Component(props: Props): JSX.Element {
               name="title"
               defaultValue={currentProductId === -1 ? '' : productData.title}
               onChange={(e) =>
-                discountDataHandler(e.target.name, e.target.value)
+                productDataHandler(e.target.name, e.target.value)
               }
               placeholder="Title"
             />
@@ -288,7 +307,7 @@ export default function Component(props: Props): JSX.Element {
                 currentProductId === -1 ? '' : productData.description
               }
               onChange={(e) =>
-                discountDataHandler(e.target.name, e.target.value)
+                productDataHandler(e.target.name, e.target.value)
               }
               placeholder="Description"
             />
@@ -300,34 +319,37 @@ export default function Component(props: Props): JSX.Element {
                 currentProductId === -1 ? '' : productData.techspecs
               }
               onChange={(e) =>
-                discountDataHandler(e.target.name, e.target.value)
+                productDataHandler(e.target.name, e.target.value)
               }
               placeholder="Tech specs"
             />
           </div>
           <div>
+            <span>Price </span>
             <Input
               type="number"
               name="price"
               defaultValue={currentProductId === -1 ? 0 : productData.price}
               onChange={(e) =>
-                discountDataHandler(e.target.name, e.target.value)
+                productDataHandler(e.target.name, e.target.value)
               }
               placeholder="Price"
             />
           </div>
           <div>
+            <span>Quantity </span>
             <Input
               type="number"
               name="quantity"
               defaultValue={currentProductId === -1 ? 0 : productData.quantity}
               onChange={(e) =>
-                discountDataHandler(e.target.name, e.target.value)
+                productDataHandler(e.target.name, e.target.value)
               }
               placeholder="Quantity"
             />
           </div>
           <div>
+            <span>Subcategory id </span>
             <Input
               type="number"
               name="subcategory_id"
@@ -335,11 +357,15 @@ export default function Component(props: Props): JSX.Element {
                 currentProductId === -1 ? 0 : productData.subcategory_id
               }
               onChange={(e) =>
-                discountDataHandler(e.target.name, e.target.value)
+                productDataHandler(e.target.name, e.target.value)
               }
               placeholder="Subcategory id"
             />
           </div>
+          <Tags
+            selectHandler={productDataHandler}
+            selected={productData.tags || []}
+          />
         </DialogContent>
         <DialogActions>
           {currentProductId !== -1 && (

@@ -4,7 +4,7 @@ import { NextApiRequestWithUser, withUser } from '../../../../libs/withUser';
 import { productModel } from '../../../../models/product';
 
 /**
- * Delete product
+ * Create tag
  */
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
@@ -16,34 +16,17 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
     )
       throw 'Unauthorized';
 
-    const {
-      title,
-      price,
-      quantity,
-      techspecs,
-      description,
-      subcategoryId,
-      tags,
-    } = req.body;
+    const { title } = req.body;
 
-    const product = await productModel.createProduct({
-      created_by: user.id,
-      price,
-      quantity,
-      subcategory_id: subcategoryId,
-      title,
-      description,
-      techspecs,
-      tags,
-    });
+    const tag = await productModel.createTag(title);
 
-    if (!product[0]?.product_id) throw 'Not create!';
+    if (!tag[0]?.tag_id) throw 'Not created!';
 
-    return res.json({ product: product[0] });
+    return res.json(tag);
   } catch (error) {
     return res.status(400).json({
       error: true,
-      message: error.toString(),
+      message: error,
     });
   }
 }
