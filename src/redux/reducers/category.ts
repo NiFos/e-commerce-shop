@@ -64,6 +64,7 @@ interface GetProductsLoadingStatusAction {
 export const getProductsInCategory = (
   subcategoryId: number,
   prices: [number, number],
+  tags: number[],
   pageSize: number,
   after: number
 ): ThunkAction<void, RootState, unknown, CategoryAction> => async (
@@ -76,7 +77,7 @@ export const getProductsInCategory = (
     });
     const response = await axiosInstance.post('/api/category', {
       subcategoryId,
-      tags: [],
+      tags,
       prices,
       pageSize,
       after,

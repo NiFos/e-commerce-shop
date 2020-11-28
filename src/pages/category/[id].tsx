@@ -1,4 +1,6 @@
 import {
+  Button,
+  Checkbox,
   Container,
   Divider,
   Link,
@@ -13,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { categoryModel } from '../../models/category';
 import { getProductsInCategory } from '../../redux/reducers/category';
 import { RootState } from '../../redux/store';
+import { ITag } from '../admin/products/tags';
 
 interface Props {
   children?: JSX.Element[];
@@ -21,7 +24,7 @@ interface Props {
       id: number;
       title: string;
     };
-    tags: { tag_id: number; title: number }[];
+    tags: ITag[];
     prices: [number, number];
   };
 }
@@ -36,6 +39,7 @@ export default function Component(props: Props): JSX.Element {
   const [prices, setPrices] = React.useState<[number, number]>(
     props.data.prices
   );
+  const [tags, setTags] = React.useState<number[]>([]);
 
   React.useEffect(() => {
     getProductsHandler();
@@ -51,6 +55,21 @@ export default function Component(props: Props): JSX.Element {
   }
 
   /**
+   * Change page size
+   * @param value - Page size
+   */
+  function selectTag(id: number) {
+    if (tags.includes(id)) {
+      const newTags = tags.filter((item) => item !== id);
+      setTags(newTags);
+    } else {
+      const newTags = [...tags];
+      newTags.push(id);
+      setTags(newTags);
+    }
+  }
+
+  /**
    * Get products
    */
   function getProductsHandler() {
@@ -58,6 +77,7 @@ export default function Component(props: Props): JSX.Element {
       getProductsInCategory(
         props.data.subcategoryData.id,
         prices,
+        tags,
         perPage,
         /* state?.products[state.products.length - 1]?.product_id || */ 0
       )
@@ -85,10 +105,27 @@ export default function Component(props: Props): JSX.Element {
     });
   }
 
+  /**
+   * Render tags
+   */
+  function renderTags() {
+    return (props.data.tags || []).map((item) => {
+      return (
+        <div onClick={() => selectTag(item.tag_id)} key={item.tag_id}>
+          <Checkbox
+            checked={tags.includes(item.tag_id)}
+            onChange={() => selectTag(item.tag_id)}
+          />
+          {item.title}
+        </div>
+      );
+    });
+  }
+
   return (
     <Container>
       <Typography variant={'h5'}>{props.data.subcategoryData.title}</Typography>
-      <div>Tags</div>
+      <div>{renderTags()}</div>
       <div>
         <div>
           <div>
@@ -105,6 +142,7 @@ export default function Component(props: Props): JSX.Element {
             />
           </div>
         </div>
+        <Button onClick={getProductsHandler}>Apply filters</Button>
         <div>
           <div>
             <span>Products per page</span>

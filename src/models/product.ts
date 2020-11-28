@@ -119,16 +119,24 @@ export const productModel = {
     after = 0
   ): Promise<IProductModel[]> {
     if (typeof subcategoryId === 'undefined') return [];
+    if (tags.length > 0) {
+      return await database()
+        .select('*')
+        .from(productsTable)
+        .whereBetween('price', prices)
+        .innerJoin(
+          productsTagsTable,
+          `${productsTagsTable}.product_id`,
+          `${productsTable}.product_id`
+        )
+        .whereIn(`${productsTagsTable}.tag_id`, tags)
+        .andWhere('products.product_id', '>', after)
+        .limit(pageSize);
+    }
     return await database()
       .select('*')
       .from(productsTable)
       .whereBetween('price', prices)
-      /* .innerJoin(
-        productsTagsTable,
-        `${productsTagsTable}.product_id`,
-        `${productsTable}.product_id`
-      )
-      .whereIn(`${productsTagsTable}.tag_id`, tags) */
       .andWhere('products.product_id', '>', after)
       .limit(pageSize);
   },
