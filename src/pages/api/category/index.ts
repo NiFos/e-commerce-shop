@@ -9,21 +9,28 @@ import { productModel } from '../../../models/product';
  */
 async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   try {
-    const { subcategoryId, tags, prices, pageSize, after } = req.body;
+    const { subcategoryId, tags, prices, pageSize, page } = req.body;
 
     const products = await productModel.getAllProductsInSubcategory(
       +subcategoryId,
       tags,
       prices,
       +pageSize,
-      +after
+      +page
     );
+    const hasMore = products.length > pageSize;
+    if (hasMore) {
+      products.splice(products.length - 1, 1);
+    }
 
     return res.json({
       products: products.map((item) => ({
         ...item,
         photo: getPhotoUrl('products', '' + item.product_id),
       })),
+      hasMore,
+      page: page || 1,
+      pageSize,
     });
   } catch (error) {
     return res.status(400).json({

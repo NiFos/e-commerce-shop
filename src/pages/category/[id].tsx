@@ -12,6 +12,8 @@ import {
 import { GetStaticPaths, GetStaticProps } from 'next';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Pagination } from '../../components/Pagination';
+import { ProductLink } from '../../components/ProductLink';
 import { categoryModel } from '../../models/category';
 import { getProductsInCategory } from '../../redux/reducers/category';
 import { RootState } from '../../redux/store';
@@ -36,6 +38,7 @@ export default function Component(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state.category);
   const [perPage, setPerPage] = React.useState(5);
+  const [filtersOpen, setFiltersOpen] = React.useState(false);
   const [prices, setPrices] = React.useState<[number, number]>(
     props.data.prices
   );
@@ -72,14 +75,14 @@ export default function Component(props: Props): JSX.Element {
   /**
    * Get products
    */
-  function getProductsHandler() {
+  function getProductsHandler(page?: number) {
     dispatch(
       getProductsInCategory(
         props.data.subcategoryData.id,
         prices,
         tags,
         perPage,
-        /* state?.products[state.products.length - 1]?.product_id || */ 0
+        page || state?.category?.page || 1
       )
     );
   }
@@ -88,19 +91,16 @@ export default function Component(props: Props): JSX.Element {
    * Render products
    */
   function renderProducts() {
-    return (state.products || []).map((item) => {
+    return (state?.category?.products || []).map((item) => {
       return (
-        <Link href={`/product/${item.product_id}`} key={item.product_id}>
-          <img width={300} height={300} src={item.photo} alt="" />
-          <Divider orientation={'vertical'} />
-          <div>
-            <div>
-              <div>{item.title}</div>
-              <div>{item.price}</div>
-            </div>
-            <div>{item.description}</div>
-          </div>
-        </Link>
+        <ProductLink
+          title={item.title}
+          key={item.product_id}
+          price={item.price}
+          photo={item.photo || ''}
+          productId={item.product_id}
+          description={item.description}
+        />
       );
     });
   }
@@ -125,38 +125,60 @@ export default function Component(props: Props): JSX.Element {
   return (
     <Container>
       <Typography variant={'h5'}>{props.data.subcategoryData.title}</Typography>
-      <div>{renderTags()}</div>
+      <Button onClick={() => setFiltersOpen(!filtersOpen)}>
+        {filtersOpen ? 'Close filters' : 'Filters'}
+      </Button>
+      {filtersOpen && (
+        <div>
+          <div>{renderTags()}</div>
+          <div>
+            <div>
+              <div>
+                <Typography>Prices</Typography>
+                <Slider
+                  valueLabelDisplay="auto"
+                  value={prices}
+                  disabled={props.data.prices[0] === props.data.prices[1]}
+                  min={props.data.prices[0]}
+                  max={props.data.prices[1]}
+                  onChange={(e, newValue) =>
+                    setPrices(newValue as [number, number])
+                  }
+                />
+              </div>
+            </div>
+            <Button onClick={() => getProductsHandler()}>Apply filters</Button>
+          </div>
+        </div>
+      )}
+
       <div>
         <div>
-          <div>
-            <Typography>Prices</Typography>
-            <Slider
-              valueLabelDisplay="auto"
-              value={prices}
-              disabled={props.data.prices[0] === props.data.prices[1]}
-              min={props.data.prices[0]}
-              max={props.data.prices[1]}
-              onChange={(e, newValue) =>
-                setPrices(newValue as [number, number])
-              }
-            />
-          </div>
+          <span>Products per page</span>
+          <Select
+            value={perPage}
+            onChange={(e) => changePageSize(e.target.value as number)}
+          >
+            <MenuItem value={5}>5</MenuItem>
+            <MenuItem value={10}>10</MenuItem>
+            <MenuItem value={20}>20</MenuItem>
+          </Select>
         </div>
-        <Button onClick={getProductsHandler}>Apply filters</Button>
-        <div>
-          <div>
-            <span>Products per page</span>
-            <Select
-              value={perPage}
-              onChange={(e) => changePageSize(e.target.value as number)}
-            >
-              <MenuItem value={5}>5</MenuItem>
-              <MenuItem value={10}>10</MenuItem>
-              <MenuItem value={20}>20</MenuItem>
-            </Select>
-          </div>
-          <div>{state.products && renderProducts()}</div>
-        </div>
+        <div>{state?.category?.products && renderProducts()}</div>
+        <Pagination
+          currentPage={state.category?.page || 1}
+          hasMore={state.category?.hasMore || false}
+          next={() =>
+            getProductsHandler(
+              state?.category?.page && state?.category?.page + 1
+            )
+          }
+          prev={() =>
+            getProductsHandler(
+              state?.category?.page && state?.category?.page - 1
+            )
+          }
+        />
       </div>
     </Container>
   );

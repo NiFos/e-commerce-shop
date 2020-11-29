@@ -116,9 +116,10 @@ export const productModel = {
     tags: number[],
     prices: [number, number],
     pageSize = 5,
-    after = 0
+    page = 1
   ): Promise<IProductModel[]> {
     if (typeof subcategoryId === 'undefined') return [];
+    const offSet = page === 1 ? 0 : page * pageSize - pageSize;
     if (tags.length > 0) {
       return await database()
         .select('*')
@@ -130,15 +131,15 @@ export const productModel = {
           `${productsTable}.product_id`
         )
         .whereIn(`${productsTagsTable}.tag_id`, tags)
-        .andWhere('products.product_id', '>', after)
-        .limit(pageSize);
+        .limit(pageSize + 1)
+        .offset(offSet);
     }
     return await database()
       .select('*')
       .from(productsTable)
       .whereBetween('price', prices)
-      .andWhere('products.product_id', '>', after)
-      .limit(pageSize);
+      .limit(pageSize + 1)
+      .offset(offSet);
   },
   /**
    * Get product by id
@@ -164,11 +165,7 @@ export const productModel = {
    * Get last new product
    */
   async getLastNewProduct(): Promise<IProductModel[]> {
-    return await database()
-      .select('*')
-      .from(productsTable)
-      .orderByRaw('RANDOM()')
-      .limit(1);
+    return await database().select('*').from(productsTable).limit(1);
   },
   /**
    * Insert product into products table

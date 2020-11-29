@@ -12,8 +12,14 @@ export const categoryReducerTypes = {
   getProducts: 'category/GET_CATEGORY',
   getProductsLoadingStatus: 'category/GET_PRODUCTS_LOADING_STATUS',
 };
-export interface ICategoryReducer {
+
+interface ICategoryData {
   products?: IProductModel[];
+  hasMore?: boolean;
+  page?: number;
+}
+export interface ICategoryReducer {
+  category?: ICategoryData;
   getProductsLoadingStatus?: 'loading' | 'error' | 'loaded';
 }
 const initialState: ICategoryReducer = {};
@@ -29,7 +35,10 @@ export const categoryReducer = (
     case categoryReducerTypes.getProducts: {
       return {
         ...state,
-        products: payload as IProductModel[],
+        category: {
+          ...state.category,
+          ...(payload as ICategoryData),
+        },
       };
     }
 
@@ -49,7 +58,11 @@ export const categoryReducer = (
 // Actions
 interface GetProductsInCategory {
   type: typeof categoryReducerTypes.getProducts;
-  payload: IProductModel[];
+  payload: {
+    products: IProductModel[];
+    hasMore: boolean;
+    page: number;
+  };
 }
 
 interface GetProductsLoadingStatusAction {
@@ -59,14 +72,18 @@ interface GetProductsLoadingStatusAction {
 
 /**
  * Get products in category
- * @param id - Discount id
+ * @param subcategoryId - Subcategory id
+ * @param prices - prices [min, max]
+ * @param tags - tags ids [0, 1, ...]
+ * @param pageSize - page size
+ * @param page - page
  */
 export const getProductsInCategory = (
   subcategoryId: number,
   prices: [number, number],
   tags: number[],
   pageSize: number,
-  after: number
+  page: number
 ): ThunkAction<void, RootState, unknown, CategoryAction> => async (
   dispatch
 ) => {
@@ -80,12 +97,12 @@ export const getProductsInCategory = (
       tags,
       prices,
       pageSize,
-      after,
+      page,
     });
 
     dispatch({
       type: categoryReducerTypes.getProducts,
-      payload: response.data.products,
+      payload: response.data,
     });
     dispatch({
       type: categoryReducerTypes.getProductsLoadingStatus,
