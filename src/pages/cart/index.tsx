@@ -1,4 +1,12 @@
-import { Button, Container, Input, Typography } from '@material-ui/core';
+import {
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Input,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,6 +24,42 @@ import {
 import { initializeStore, RootState } from '../../redux/store';
 import { loadStripe } from '@stripe/stripe-js';
 import { GetServerSideProps } from 'next';
+import { getPhotoUrl } from '../../libs/storage';
+
+const useStyles = makeStyles({
+  cart: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: '10px',
+  },
+  product: {},
+  productContent: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  productText: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  productInfo: {
+    width: '50%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  cartList: {
+    width: '60%',
+  },
+  checkout: {},
+  img: {
+    '& > *': {
+      height: 'auto',
+      width: '100%',
+      maxWidth: '300px',
+      objectFit: 'cover',
+    },
+  },
+});
 
 interface Props {
   children?: JSX.Element[];
@@ -29,6 +73,7 @@ interface Props {
 export default function Component(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const router = useRouter();
+  const classes = useStyles();
   const userState = useSelector((state: RootState) => state.user);
   const [promoValue, setPromoValue] = React.useState('');
   const [totalPrice, setTotalPrice] = React.useState(0);
@@ -99,19 +144,25 @@ export default function Component(props: Props): JSX.Element {
   function renderProducts() {
     return props.cart.map((item) => {
       return (
-        <div key={item.product_id}>
-          <img src={item.photo || ''} alt="" />
-          <div>
-            <div>{item.title}</div>
-            <div>{item.quantity}</div>
-          </div>
-          <div>
-            <div>Total price: {item.quantity * item.price}</div>
-            <Button onClick={() => removeHandler(item.product_id)}>
-              Remove
-            </Button>
-          </div>
-        </div>
+        <Card key={item.product_id} className={classes.product}>
+          <CardContent className={classes.productContent}>
+            <div className={classes.img}>
+              <img src={item.photo || ''} alt="" />
+            </div>
+            <div className={classes.productInfo}>
+              <div className={classes.productText}>
+                <div>{item.title}</div>
+                <div>Quantity: {item.quantity}</div>
+              </div>
+              <div className={classes.productText}>
+                <div>Total price: {item.quantity * item.price}</div>
+                <Button onClick={() => removeHandler(item.product_id)}>
+                  Remove
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       );
     });
   }
@@ -119,30 +170,33 @@ export default function Component(props: Props): JSX.Element {
     <Container>
       <Typography variant="h5">Cart</Typography>
       {(props?.cart?.length || []) > 0 ? (
-        <div>
-          <div>{renderProducts()}</div>
-          <div>
-            <div>
-              Total price: {totalPrice}{' '}
-              {typeof userState?.promocode?.discount?.promocode !== 'undefined'
-                ? `(Applied promocode: ${userState?.promocode?.discount?.promocode.toUpperCase()} - ${
-                    userState?.promocode?.discount?.percentage
-                  }% )`
-                : ''}
-            </div>
-            <div>
-              Delivery address: {userState.me?.profileInfo?.deliveryAddress}
-            </div>
-            <div>
-              <span>Promocode: </span>
-              <Input
-                value={promoValue}
-                onChange={(e) => setPromoValue(e.target.value)}
-              />
-              <Button onClick={applyPromoHandler}>Apply</Button>
-            </div>
-            <Button onClick={checkoutHandler}>Checkout</Button>
-          </div>
+        <div className={classes.cart}>
+          <div className={classes.cartList}>{renderProducts()}</div>
+          <Card>
+            <CardContent className={classes.checkout}>
+              <div>
+                Total price: {totalPrice}{' '}
+                {typeof userState?.promocode?.discount?.promocode !==
+                'undefined'
+                  ? `(Applied promocode: ${userState?.promocode?.discount?.promocode.toUpperCase()} - ${
+                      userState?.promocode?.discount?.percentage
+                    }% )`
+                  : ''}
+              </div>
+              <div>
+                Delivery address: {userState.me?.profileInfo?.deliveryAddress}
+              </div>
+              <div>
+                <span>Promocode: </span>
+                <Input
+                  value={promoValue}
+                  onChange={(e) => setPromoValue(e.target.value)}
+                />
+                <Button onClick={applyPromoHandler}>Apply</Button>
+              </div>
+              <Button onClick={checkoutHandler}>Checkout</Button>
+            </CardContent>
+          </Card>
         </div>
       ) : (
         <div>There is nothing yet.</div>
@@ -172,9 +226,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     )
   );
   await reduxStore.dispatch(getCart(cart));
+  const cartData = cart.map((item) => ({
+    ...item,
+    photo: getPhotoUrl('products', '' + item.product_id),
+  }));
   return {
     props: {
-      cart: cart,
+      cart: cartData,
       stripeKey: process.env.STRIPE_PUBLIC_KEY || '',
     },
   };

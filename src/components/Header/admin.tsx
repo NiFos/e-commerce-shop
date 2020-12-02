@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Button,
   Container,
   Divider,
   makeStyles,
@@ -7,6 +8,8 @@ import {
 } from '@material-ui/core';
 import Link from 'next/link';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 
 const name = 'Online shop';
 const useStyles = makeStyles({
@@ -28,20 +31,34 @@ const useStyles = makeStyles({
  */
 export default function Component(): JSX.Element {
   const classes = useStyles();
+  const userState = useSelector((state: RootState) => state.user);
+
   return (
     <Container className={classes.header}>
       <div className={classes.content}>
         <div className={classes.items}>
           <Typography variant={'h4'}>{name}</Typography>
           <Divider orientation="vertical" />
-          <Link href="/">Main page</Link>
-          <Link href="/admin/categories">Categories</Link>
-          <Link href="/admin/products">Products</Link>
-          <Link href="/admin/orders">Orders</Link>
-          <Link href="/admin/admins">Admins</Link>
-          <Link href="/admin/discounts">Discounts</Link>
+          <Link href="/">
+            <Button>Main page</Button>
+          </Link>
+          <Link href="/admin/categories">
+            <Button>Categories</Button>
+          </Link>
+          <Link href="/admin/products">
+            <Button>Products</Button>
+          </Link>
+          <Link href="/admin/orders">
+            <Button>Orders</Button>
+          </Link>
+          <Link href="/admin/admins">
+            <Button>Admins</Button>
+          </Link>
+          <Link href="/admin/discounts">
+            <Button>Discounts</Button>
+          </Link>
         </div>
-        <Avatar>NiFos</Avatar>
+        <Avatar>{userState.me?.user?.username}</Avatar>
       </div>
       <Divider />
     </Container>

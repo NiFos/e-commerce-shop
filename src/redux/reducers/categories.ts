@@ -17,7 +17,7 @@ export const categoriesReducerTypes = {
   getPublicCategories: 'categories/GET_PUBLIC_CATEGORIES',
   getSubcategories: 'categories/GET_SUBCATEGORIES',
   getPublicCategoriesLoadingStatus:
-    'categories/GET_SUBCATEGORIES_LOADING_STATUS',
+    'categories/GET_PUBLIC_CATEGORIES_LOADING_STATUS',
   getSubcategoriesLoadingStatus: 'categories/GET_SUBCATEGORIES_LOADING_STATUS',
   createLoadingStatus: 'categories/CREATE_LOADING_STATUS',
   editLoadingStatus: 'categories/EDIT_LOADING_STATUS',
@@ -186,7 +186,7 @@ export const getSubcategories = (
       payload: 'loading',
     });
     const response = await axiosInstance.get(
-      `/api/admin/subcategories/?categoryId=${categoryId}`
+      `/api/admin/subcategories?categoryId=${categoryId}`
     );
     dispatch({
       type: categoriesReducerTypes.getSubcategories,

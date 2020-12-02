@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
+  Card,
+  CardContent,
   Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   Input,
+  makeStyles,
   Typography,
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -25,6 +29,24 @@ import {
 } from '../../../redux/reducers/categories';
 import { initializeStore, RootState } from '../../../redux/store';
 
+const useStyles = makeStyles({
+  content: {
+    display: 'flex',
+  },
+  flexSpaceBetween: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  headerTitle: {
+    '& > *': {
+      marginRight: '10px',
+    },
+  },
+  subcategory: {
+    marginLeft: '20px',
+  },
+});
+
 interface Props {
   children?: JSX.Element[];
   categories: ICategoryModel[];
@@ -34,6 +56,7 @@ interface Props {
  * Categories page
  */
 export default function Component(props: Props): JSX.Element {
+  const classes = useStyles();
   const [categoryEdit, setCategoryEdit] = React.useState(-1);
   const [isCategory, setIsCategory] = React.useState(true);
   const [newCategory, setNewCategory] = React.useState(false);
@@ -136,15 +159,18 @@ export default function Component(props: Props): JSX.Element {
   function renderCategories() {
     return props.categories.map((item) => (
       <div key={item.category_id}>
-        <Button onClick={() => getSubcategoriesHandler(item.category_id)}>
-          {item.title}
-        </Button>
-        <Button
-          onClick={() => editHandler(true, item.category_id)}
-          disabled={!userState.me?.user?.admin.fullAccess}
-        >
-          Edit
-        </Button>
+        <div className={classes.flexSpaceBetween}>
+          <Button onClick={() => getSubcategoriesHandler(item.category_id)}>
+            {item.title}
+          </Button>
+          <Button
+            onClick={() => editHandler(true, item.category_id)}
+            disabled={!userState.me?.user?.admin.fullAccess}
+          >
+            Edit
+          </Button>
+        </div>
+        <Divider />
       </div>
     ));
   }
@@ -154,13 +180,17 @@ export default function Component(props: Props): JSX.Element {
   function renderSubcategories() {
     return (state.subCategories || []).map((item) => (
       <div key={item.subcategory_id}>
-        <span>Id - {item.subcategory_id}</span> <span>{item.title}</span>
-        <Button
-          onClick={() => editHandler(false, item.subcategory_id)}
-          disabled={!userState?.me?.user?.admin?.fullAccess}
-        >
-          Edit
-        </Button>
+        <Typography variant={'h6'}>{item.title}</Typography>
+        <div className={classes.flexSpaceBetween}>
+          <span>Id - {item.subcategory_id}</span>
+          <Button
+            onClick={() => editHandler(false, item.subcategory_id)}
+            disabled={!userState?.me?.user?.admin?.fullAccess}
+          >
+            Edit
+          </Button>
+        </div>
+        <Divider />
       </div>
     ));
   }
@@ -207,39 +237,52 @@ export default function Component(props: Props): JSX.Element {
 
       {/* Main */}
       <Typography variant={'h5'}>Categories</Typography>
-      <div>
+      <div className={classes.content}>
         {/* Categories */}
-        <div>
-          <div>
-            <Typography variant={'body1'}>Categories</Typography>
-            <Button
-              onClick={() => createHandler(true)}
-              disabled={!userState?.me?.user?.admin?.fullAccess}
+        <Card>
+          <CardContent>
+            <div
+              className={[classes.flexSpaceBetween, classes.headerTitle].join(
+                ' '
+              )}
             >
-              Add new category
-            </Button>
-          </div>
-          {props.categories && renderCategories()}
-        </div>
-
-        {/* Subcategories */}
-        {state.getSubcategoriesLoadingStatus === 'loaded' ? (
-          <div>
-            <div>
-              <Typography variant={'body1'}>Subcategories</Typography>
+              <Typography variant={'h6'}>Categories</Typography>
               <Button
-                onClick={() => createHandler(false)}
+                onClick={() => createHandler(true)}
                 disabled={!userState?.me?.user?.admin?.fullAccess}
               >
-                Add new subcategory
+                Add new category
               </Button>
             </div>
-            {state.subCategories && renderSubcategories()}
-          </div>
+            {props.categories && renderCategories()}
+          </CardContent>
+        </Card>
+        {/* Subcategories */}
+        {state.getSubcategoriesLoadingStatus === 'loaded' ? (
+          <Card className={classes.subcategory}>
+            <CardContent>
+              <div
+                className={[classes.flexSpaceBetween, classes.headerTitle].join(
+                  ' '
+                )}
+              >
+                <Typography variant={'h6'}>Subcategories</Typography>
+                <Button
+                  onClick={() => createHandler(false)}
+                  disabled={!userState?.me?.user?.admin?.fullAccess}
+                >
+                  Add new subcategory
+                </Button>
+              </div>
+              {(state.subCategories || [])?.length > 0 && renderSubcategories()}
+            </CardContent>
+          </Card>
         ) : state.getSubcategoriesLoadingStatus === 'loading' ? (
           <CircularProgress />
+        ) : state.getSubcategoriesLoadingStatus === 'error' ? (
+          <div>Something went wrong!</div>
         ) : (
-          currentCategory !== -1 && <div>Something went wrong</div>
+          <div></div>
         )}
       </div>
     </Container>

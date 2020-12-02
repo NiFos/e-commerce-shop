@@ -1,12 +1,14 @@
 import {
   Button,
+  Card,
+  CardContent,
   Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
   Input,
+  makeStyles,
   Typography,
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -28,7 +30,40 @@ import { UploadPhotoModal } from '../../../components/Modals/uploadPhoto';
 import moment from 'moment';
 import { Pagination } from '../../../components/Pagination';
 import { GetServerSideProps } from 'next';
-import { Tags } from './tags';
+import { Tags } from '../../../components/tags';
+
+const useStyles = makeStyles({
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  product: {
+    marginTop: '10px',
+    marginBottom: '10px',
+    '& > *': {
+      display: 'flex',
+      justifyContent: 'space-between',
+    },
+  },
+  productInfo: {
+    width: '70%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+  },
+  flexSpaceBetween: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  img: {
+    '& > *': {
+      height: 'auto',
+      width: '100%',
+      maxWidth: '300px',
+      objectFit: 'cover',
+    },
+  },
+});
 
 interface Props {
   children?: JSX.Element[];
@@ -51,6 +86,7 @@ interface IProductData {
  * Products page
  */
 export default function Component(props: Props): JSX.Element {
+  const classes = useStyles();
   const [loading, setLoading] = React.useState(false);
   const [currentProductId, setCurrentProductId] = React.useState(-1);
   const [currentProductIndex, setCurrentProductIndex] = React.useState(-1);
@@ -249,32 +285,33 @@ export default function Component(props: Props): JSX.Element {
    */
   function renderProducts() {
     return props.products.map((item) => (
-      <div key={item.product_id}>
-        <div>
-          <img src={item.photo} width={300} height={300} alt="" />
-          <Divider orientation={'vertical'} />
-        </div>
-        <div>
-          <div>
-            <div>
-              {item.product_id} - {item.title}
-            </div>
-            <Button
-              onClick={() => productHandler(false, item.product_id)}
-              disabled={!userState.me?.user?.admin.fullAccess}
-            >
-              Edit
-            </Button>
+      <Card key={item.product_id} className={classes.product}>
+        <CardContent>
+          <div className={classes.img}>
+            <img src={item.photo} alt="" />
           </div>
-          <div>
-            <div>Price - {item.price}</div>
-            <div>
-              Created -{' '}
-              {moment(new Date(+item.created_on).toString()).format('lll')}
+          <div className={classes.productInfo}>
+            <div className={classes.flexSpaceBetween}>
+              <div>
+                {item.product_id} - {item.title}
+              </div>
+              <Button
+                onClick={() => productHandler(false, item.product_id)}
+                disabled={!userState.me?.user?.admin.fullAccess}
+              >
+                Edit
+              </Button>
+            </div>
+            <div className={classes.flexSpaceBetween}>
+              <div>Price - {item.price}</div>
+              <div>
+                Created -{' '}
+                {moment(new Date(+item.created_on).toString()).format('lll')}
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     ));
   }
   return (
@@ -362,10 +399,12 @@ export default function Component(props: Props): JSX.Element {
               placeholder="Subcategory id"
             />
           </div>
-          <Tags
-            selectHandler={productDataHandler}
-            selected={productData.tags || []}
-          />
+          {currentProductId === -1 && (
+            <Tags
+              selectHandler={productDataHandler}
+              selected={productData.tags || []}
+            />
+          )}
         </DialogContent>
         <DialogActions>
           {currentProductId !== -1 && (
@@ -393,7 +432,7 @@ export default function Component(props: Props): JSX.Element {
         imageSrc={state.newProduct?.photo || ''}
       />
       {/* Information */}
-      <div>
+      <div className={classes.header}>
         <Typography variant="h5">Products</Typography>
         <Button
           onClick={() => productHandler(true)}

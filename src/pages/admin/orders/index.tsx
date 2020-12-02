@@ -1,10 +1,13 @@
 import {
   Button,
+  Card,
+  CardContent,
   Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  makeStyles,
   MenuItem,
   Select,
   Typography,
@@ -27,8 +30,38 @@ import { Pagination } from '../../../components/Pagination';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 
+const useStyles = makeStyles({
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: '20px',
+    marginBottom: '20px',
+  },
+  feed: {
+    width: '22%',
+  },
+  chart: {
+    width: '75%',
+  },
+  ordersHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    '& > *': {
+      width: '25%',
+      textAlign: 'left',
+    },
+  },
+  order: {
+    marginTop: '10px',
+    '& > *': {
+      display: 'flex',
+      justifyContent: 'space-between',
+    },
+  },
+});
+
 interface IOrder {
-  orderId: number;
+  order_id: number;
   status: number;
   created_on: number;
 }
@@ -52,6 +85,7 @@ interface Props {
  * Orders page
  */
 export default function Component(props: Props): JSX.Element {
+  const classes = useStyles();
   const [currentOrder, setCurrentOrder] = React.useState(-1);
   const [currentOrderStatus, setCurrentOrderStatus] = React.useState(-1);
   const dispatch = useDispatch();
@@ -108,17 +142,31 @@ export default function Component(props: Props): JSX.Element {
    * Render orders
    */
   function renderOrders() {
-    return props.orders.map((order) => (
-      <div key={order.orderId}>
-        <div>{order.orderId}</div>
-        <div>{order.status}</div>
-        <div>{moment(order.created_on).format('lll')}</div>
-        <Button
-          onClick={() => editHandler(order.orderId)}
-          disabled={!userState.me?.user?.admin.fullAccess}
-        >
-          Edit
-        </Button>
+    return (props.orders || []).map((order) => (
+      <Card key={order.order_id} className={classes.order}>
+        <CardContent>
+          <div>{order.order_id}</div>
+          <div>{order.status}</div>
+          <div>{moment(order.created_on).format('lll')}</div>
+          <Button
+            onClick={() => editHandler(order.order_id)}
+            disabled={!userState.me?.user?.admin.fullAccess}
+          >
+            Edit
+          </Button>
+        </CardContent>
+      </Card>
+    ));
+  }
+
+  /**
+   * Render products in order modal
+   */
+  function renderProducts() {
+    return (state.currentOrder?.products || []).map((item) => (
+      <div key={item.product_id}>
+        <Typography>{item.title}</Typography>
+        <Typography>Quantity: {item.quantity}</Typography>
       </div>
     ));
   }
@@ -130,14 +178,24 @@ export default function Component(props: Props): JSX.Element {
         <DialogTitle>Order id - {currentOrder}</DialogTitle>
         <DialogContent>
           {state?.currentOrderLoadingStatus === 'loaded' ? (
-            <Select
-              value={currentOrderStatus}
-              onChange={(e) => setCurrentOrderStatus(e.target.value as number)}
-            >
-              <MenuItem value={0}>0</MenuItem>
-              <MenuItem value={1}>1</MenuItem>
-              <MenuItem value={2}>2</MenuItem>
-            </Select>
+            <div>
+              <Typography variant={'h6'}>Status</Typography>
+              <Select
+                value={currentOrderStatus}
+                onChange={(e) =>
+                  setCurrentOrderStatus(e.target.value as number)
+                }
+              >
+                <MenuItem value={0}>0</MenuItem>
+                <MenuItem value={1}>1</MenuItem>
+                <MenuItem value={2}>2</MenuItem>
+              </Select>
+              <Typography variant={'h6'}>Products</Typography>
+              {renderProducts()}
+              <Typography variant={'h6'}>
+                Total price: {state.currentOrder?.totalPrice}
+              </Typography>
+            </div>
           ) : state?.currentOrderLoadingStatus === 'loading' ? (
             <div>Loading...</div>
           ) : (
@@ -157,40 +215,46 @@ export default function Component(props: Props): JSX.Element {
 
       {/* Component */}
       <Typography variant={'h5'}>Orders</Typography>
-      <div>
+      <div className={classes.header}>
         {/* Header */}
-        <div>
-          {/* Feed */}
-          <div>Feed</div>
-          {props.feed.map((item) => (
-            <div key={item.status}>
-              {item.status} - {item.count}
-            </div>
-          ))}
-        </div>
+        <Card className={classes.feed}>
+          <CardContent>
+            {/* Feed */}
+            <Typography variant={'h6'}>Feed</Typography>
+            {(props.feed || []).map((item) => (
+              <div key={item.status}>
+                {item.status} - {item.count}
+              </div>
+            ))}
+          </CardContent>
+        </Card>
 
         {/* Chart */}
-        <div>
-          <div>Last year data</div>
-          <div>
-            <LineChart width={500} height={300} data={props?.chartData}>
-              <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-              <CartesianGrid stroke="#ccc" />
-              <XAxis dataKey="name" />
-              <YAxis />
-            </LineChart>
-          </div>
-        </div>
+        <Card className={classes.chart}>
+          <CardContent>
+            <Typography variant={'h6'}>Last year data</Typography>
+            <div>
+              <LineChart width={600} height={150} data={props?.chartData}>
+                <Line type="monotone" dataKey="uv" stroke="#8884d8" />
+                <CartesianGrid stroke="#ccc" />
+                <XAxis dataKey="name" />
+                <YAxis />
+              </LineChart>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Orders */}
       <div>
-        <div>
-          <span>Order id</span>
-          <span>Status</span>
-          <span>Order date</span>
-          <span></span>
-        </div>
+        <Card>
+          <CardContent className={classes.ordersHeader}>
+            <span>Order id</span>
+            <span>Status</span>
+            <span>Order date</span>
+            <span></span>
+          </CardContent>
+        </Card>
         <div>{renderOrders()}</div>
       </div>
       <Pagination
@@ -232,14 +296,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   await reduxStore.dispatch(getOrders(ordersData));
 
   const feed = await orderModel.getFeed();
-  await reduxStore.dispatch(
-    getFeed(
-      feed.map((item) => ({
-        status: item.status || 0,
-        count: item.count,
-      }))
-    )
-  );
+  feed.splice(0, 1);
+  const feedData = (feed || []).map((item) => ({
+    status: item.status || 0,
+    count: item.count || 0,
+  }));
+  await reduxStore.dispatch(getFeed(feedData));
 
   const ordersByMonth = await orderModel.getOrdersByMonth();
   const chartData = ordersByMonth.map((item, index: number) => ({

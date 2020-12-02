@@ -6,12 +6,25 @@ import {
   Divider,
   Input,
   Link,
+  makeStyles,
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { searchProducts } from '../../../redux/reducers/search';
 import { RootState } from '../../../redux/store';
+
+const useStyles = makeStyles({
+  list: {
+    marginTop: '5px',
+  },
+  item: {
+    paddingBottom: '3px',
+  },
+  results: {
+    marginBottom: '5px',
+  },
+});
 
 interface Props {
   open: boolean;
@@ -25,6 +38,7 @@ export function Search(props: Props): JSX.Element {
   const [value, setValue] = React.useState('');
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state.search);
+  const classes = useStyles();
 
   /**
    * Render products
@@ -32,7 +46,11 @@ export function Search(props: Props): JSX.Element {
   function renderProducts() {
     return (state.products || []).map((item) => {
       return (
-        <Link href={`/product/${item.product_id}`} key={item.product_id}>
+        <Link
+          href={`/product/${item.product_id}`}
+          key={item.product_id}
+          className={classes.item}
+        >
           <div>{item.title}</div>
           <Divider />
         </Link>
@@ -51,7 +69,6 @@ export function Search(props: Props): JSX.Element {
       <DialogTitle>Search</DialogTitle>
       <DialogContent dividers>
         <div>
-          <span>Search: </span>
           <form onSubmit={searchHandler}>
             <Input
               value={value}
@@ -62,7 +79,10 @@ export function Search(props: Props): JSX.Element {
           </form>
         </div>
         {state.searchProductsLoadingStatus === 'loaded' ? (
-          renderProducts()
+          <div className={classes.list}>
+            <div className={classes.results}>Results</div>
+            {renderProducts()}
+          </div>
         ) : state.searchProductsLoadingStatus === 'loading' ? (
           <CircularProgress />
         ) : state.searchProductsLoadingStatus === 'error' ? (

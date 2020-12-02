@@ -1,6 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
 import React from 'react';
+
+const useStyles = makeStyles({
+  container: {
+    position: 'absolute',
+    top: '10px',
+    right: '0',
+    background: '#ffffff',
+    borderRadius: '2px',
+  },
+});
 
 interface Props {
   handleClick: (route: '/profile' | '/cart' | '/logout') => void;
@@ -13,6 +23,8 @@ interface Props {
  */
 export function ProfilePopup(props: Props): JSX.Element {
   const node = React.useRef<HTMLDivElement>(null);
+  const classes = useStyles();
+
   React.useEffect(() => {
     document.addEventListener('mousedown', handleClick);
     return () => {
@@ -29,7 +41,7 @@ export function ProfilePopup(props: Props): JSX.Element {
     }
   }
   return (
-    <div ref={node}>
+    <div ref={node} className={classes.container}>
       <Button onClick={() => props.handleClick('/profile')}>Profile</Button>
       <Button onClick={() => props.handleClick('/cart')}>
         Cart

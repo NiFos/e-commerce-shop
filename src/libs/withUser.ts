@@ -60,8 +60,10 @@ export const checkUser = (req: IncomingMessage): IUser => {
 const parseAuthCookie = (cookie: string): string => {
   const splitCookie = cookie.split(';');
   const cookies: { authorization?: string } = {};
+
   splitCookie.forEach((item) => {
-    const [key, value] = item.split('=');
+    const str = item.trim();
+    const [key, value] = str.split('=');
     Object.assign(cookies, { [key]: value });
   });
 

@@ -32,6 +32,12 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  cursorPointer: {
+    cursor: 'pointer',
+  },
+  profile: {
+    position: 'relative',
+  },
 });
 
 /**
@@ -45,6 +51,12 @@ export default function Component(): JSX.Element {
   const [profileOpen, setProfileOpen] = React.useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    if (JSON.stringify(userState.me) === '{}') {
+      router.reload();
+    }
+  }, [userState]);
 
   /**
    * Open / Close categories modal on click
@@ -86,7 +98,9 @@ export default function Component(): JSX.Element {
       <div className={classes.content}>
         <div className={classes.items}>
           <Link href="/">
-            <Typography variant={'h4'}>{name}</Typography>
+            <Typography variant={'h4'} className={classes.cursorPointer}>
+              {name}
+            </Typography>
           </Link>
           <Divider orientation="vertical" />
           <Button onClick={handleCategoryBtnClick}>Categories</Button>
@@ -104,8 +118,13 @@ export default function Component(): JSX.Element {
             <SearchIcon />
           </IconButton>
           {userState.me?.user?.userid ? (
-            <div>
-              <Avatar onClick={handleProfileBtnClick}>NiFos</Avatar>
+            <div className={classes.profile}>
+              <Avatar
+                onClick={handleProfileBtnClick}
+                className={classes.cursorPointer}
+              >
+                {userState?.me?.user.username}
+              </Avatar>
               {profileOpen && (
                 <ProfilePopup
                   closeHandler={handleProfileBtnClick}

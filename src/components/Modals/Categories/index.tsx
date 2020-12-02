@@ -16,7 +16,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getPublicCategories } from '../../../redux/reducers/categories';
 import { RootState } from '../../../redux/store';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { ISubcategory } from '../../../pages/api/category/getAll';
 
 interface Props {
   open: boolean;
@@ -54,16 +53,22 @@ export function Categories(props: Props): JSX.Element {
   }
 
   /**
+   * Click subcategory handler
+   * @param id - Category id
+   */
+  function clickHandler(id: number) {
+    router.push(`/category/${id}`);
+    props.onClose();
+  }
+
+  /**
    * Render subcategories
    */
   function renderSubcategories(subcategories: { title: string; id: number }[]) {
     return subcategories.map((item) => {
       return (
         <ButtonGroup key={item.id}>
-          <Button
-            onClick={() => router.push(`/category/${item.id}`)}
-            key={item.id}
-          >
+          <Button onClick={() => clickHandler(item.id)} key={item.id}>
             {item.title}
           </Button>
         </ButtonGroup>

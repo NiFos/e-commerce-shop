@@ -1,7 +1,9 @@
+import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import { AppProps } from 'next/dist/next-server/lib/router/router';
 import React from 'react';
 import { Provider } from 'react-redux';
 import Layout from '../components/Layout';
+import { theme } from '../libs/theme';
 import { useStore } from '../redux/store';
 import '../styles/global.css';
 
@@ -13,9 +15,12 @@ export default function App({ Component, pageProps }: AppProps): JSX.Element {
 
   return (
     <Provider store={store}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ThemeProvider>
     </Provider>
   );
 }

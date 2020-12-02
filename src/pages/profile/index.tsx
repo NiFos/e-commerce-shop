@@ -1,4 +1,11 @@
-import { Container, Divider, Typography } from '@material-ui/core';
+import {
+  Card,
+  CardContent,
+  Container,
+  Divider,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
 import moment from 'moment';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
@@ -11,6 +18,28 @@ import { IUserOrderModel, orderModel } from '../../models/order';
 import { userModel } from '../../models/user';
 import { getProfileInfo } from '../../redux/reducers/user';
 import { initializeStore, RootState } from '../../redux/store';
+
+const useStyles = makeStyles({
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  headerContent: {
+    width: '45%',
+    padding: '30px',
+  },
+  content: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: '20px',
+  },
+  orders: {
+    width: '71%',
+  },
+  settings: {
+    width: '27%',
+  },
+});
 
 interface Props {
   children?: JSX.Element[];
@@ -29,6 +58,7 @@ interface Props {
 export default function Component(props: Props): JSX.Element {
   const userState = useSelector((state: RootState) => state.user);
   const router = useRouter();
+  const classes = useStyles();
 
   React.useEffect(() => {
     if (userState.editLoadingStatus === 'loaded') {
@@ -39,30 +69,38 @@ export default function Component(props: Props): JSX.Element {
   return (
     <Container>
       <div>
-        <div>
-          <div>
-            <Typography variant={'h6'}>
-              Hello, {userState.me?.user?.username}
-            </Typography>
-            <Typography variant={'subtitle1'}>
-              You have been registered:{' '}
-              {moment(props.userInfo.createdOn).format('lll')}
-            </Typography>
+        <Card>
+          <CardContent className={classes.header}>
+            <div className={classes.headerContent}>
+              <Typography variant={'h6'}>
+                Hello, {userState.me?.user?.username}
+              </Typography>
+              <Typography variant={'subtitle1'}>
+                You have been registered:{' '}
+                {moment(props.userInfo.createdOn).format('lll')}
+              </Typography>
+            </div>
+            <div>
+              <Divider orientation={'vertical'} />
+            </div>
+            <div className={classes.headerContent}>
+              <Typography variant={'h6'}>Need help?</Typography>
+              <Typography variant={'subtitle1'}>
+                Contact us in <a href={'https://t.me'}>Telegram</a>
+              </Typography>
+            </div>
+          </CardContent>
+        </Card>
+        <div className={classes.content}>
+          <div className={classes.orders}>
+            <Orders orders={props.userInfo.orders} />
           </div>
-          <Divider orientation={'vertical'} />
-          <div>
-            <Typography variant={'h6'}>Need help?</Typography>
-            <Typography variant={'subtitle1'}>
-              Contact us in <a href={'https://t.me'}>Telegram</a>
-            </Typography>
+          <div className={classes.settings}>
+            <Settings
+              phone={props.userInfo.phone || ''}
+              deliveryAddress={props.userInfo.deliveryAddress || ''}
+            />
           </div>
-        </div>
-        <div>
-          <Orders orders={props.userInfo.orders} />
-          <Settings
-            phone={props.userInfo.phone || ''}
-            deliveryAddress={props.userInfo.deliveryAddress || ''}
-          />
         </div>
       </div>
     </Container>

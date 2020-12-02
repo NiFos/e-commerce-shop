@@ -164,7 +164,7 @@ export const getOrder = (
     );
     dispatch({
       type: ordersReducerTypes.getOrder,
-      payload: response.data,
+      payload: response.data.discount,
     });
     dispatch({
       type: ordersReducerTypes.getOrderLoadingStatus,

@@ -1,5 +1,7 @@
 import {
   Button,
+  Card,
+  CardContent,
   Container,
   Dialog,
   DialogActions,
@@ -7,6 +9,7 @@ import {
   DialogTitle,
   Divider,
   Input,
+  makeStyles,
   MenuItem,
   Select,
   Snackbar,
@@ -24,6 +27,28 @@ import { changeRoute } from '../../redux/reducers/settings';
 import { addProductToCart } from '../../redux/reducers/user';
 import { RootState } from '../../redux/store';
 
+const useStyles = makeStyles({
+  product: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: '10px',
+    marginBottom: '10px',
+  },
+  photo: {},
+  info: { width: '71%' },
+  header: { display: 'flex', justifyContent: 'space-between' },
+  review: { marginTop: '10px' },
+  reviewsList: {},
+  modalContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    '& > *': {
+      width: '100%',
+      marginBottom: '10px',
+    },
+  },
+});
+
 interface Props {
   children?: JSX.Element[];
   product: IProductModel;
@@ -35,6 +60,7 @@ interface Props {
  */
 export default function Component(props: Props): JSX.Element {
   const dispatch = useDispatch();
+  const classes = useStyles();
   const [quantity, setQuantity] = React.useState<number>(1);
   const [reviewOpen, setReviewOpen] = React.useState(false);
   const [reviewText, setReviewText] = React.useState('');
@@ -90,45 +116,55 @@ export default function Component(props: Props): JSX.Element {
   function renderReviews() {
     return props.reviews.map((item) => {
       return (
-        <div key={item.review_id}>
-          <div>
-            <div>{item.username}</div>
-            <div>{moment(item.created_on).fromNow()}</div>
-            <div>{item.rating}</div>
-          </div>
-          <Divider />
-          <div>{item.text}</div>
-        </div>
+        <Card key={item.review_id} className={classes.review}>
+          <CardContent>
+            <div className={classes.header}>
+              <div>{item.username}</div>
+              <div>{moment(item.created_on).fromNow()}</div>
+              <div>Rating: {item.rating}</div>
+            </div>
+            <Divider />
+            <div>{item.text}</div>
+          </CardContent>
+        </Card>
       );
     });
   }
   return (
     <Container>
+      {/* New review modal */}
       <Dialog open={reviewOpen} onClose={reviewHandler}>
         <DialogTitle>Send review</DialogTitle>
-        <DialogContent>
-          <Input
-            multiline
-            value={reviewText}
-            onChange={(e) => setReviewText(e.target.value)}
-            placeholder="Your review text"
-          />
-          <Select
-            value={reviewRating}
-            onChange={(e) => setReviewRating(e.target.value as number)}
-          >
-            <MenuItem value={1}>1</MenuItem>
-            <MenuItem value={2}>2</MenuItem>
-            <MenuItem value={3}>3</MenuItem>
-            <MenuItem value={4}>4</MenuItem>
-            <MenuItem value={5}>5</MenuItem>
-          </Select>
+        <DialogContent className={classes.modalContent}>
+          <div>
+            <div>Review: </div>
+            <Input
+              multiline
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              placeholder="Please type the text"
+            />
+          </div>
+          <div>
+            <span>Rating: </span>
+            <Select
+              value={reviewRating}
+              onChange={(e) => setReviewRating(e.target.value as number)}
+            >
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+            </Select>
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={reviewHandler}>Cancel</Button>
           <Button onClick={submitReview}>Submit</Button>
         </DialogActions>
       </Dialog>
+      {/* Added to cart snackbar */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
@@ -139,6 +175,7 @@ export default function Component(props: Props): JSX.Element {
         }}
         message={'Product added to cart!'}
       />
+      {/* Review sent snackbar */}
       <Snackbar
         open={openReviewSnackbar}
         autoHideDuration={6000}
@@ -150,39 +187,52 @@ export default function Component(props: Props): JSX.Element {
         message={'Review sent to cart!'}
       />
       <Typography variant={'h5'}>{props.product.title}</Typography>
-      <div>
-        <div>
-          <img
-            width={300}
-            height={300}
-            src={props.product.photo}
-            alt="product photo"
-          />
-        </div>
-        <div>
-          <div>
-            <div>{props.product.price} RUB</div>
-            <div>
-              Quantity:
-              <Input
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(+e.target.value)}
-                placeholder="Enter quantity"
-              />
-            </div>
-            <Button onClick={addToCart}>Add to cart</Button>
-          </div>
-          <div>{props.product.rating}</div>
-          <div>{props.product.techspecs}</div>
-          <div>{props.product.description}</div>
-        </div>
+
+      {/* Product */}
+      <div className={classes.product}>
+        {/* Product photo */}
+        <Card>
+          <CardContent className={classes.photo}>
+            <img
+              width={300}
+              height={300}
+              src={props.product.photo}
+              alt="product photo"
+            />
+          </CardContent>
+        </Card>
+
+        {/* Product info */}
+        <Card className={classes.info}>
+          <CardContent>
+            <CardContent className={classes.header}>
+              <div>{props.product.price} RUB</div>
+              <div>
+                Quantity:
+                <Input
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(+e.target.value)}
+                  placeholder="Enter quantity"
+                />
+                <Button onClick={addToCart}>Add to cart</Button>
+              </div>
+            </CardContent>
+            <div>{props.product.rating}</div>
+            <div>{props.product.techspecs}</div>
+            <div>{props.product.description}</div>
+          </CardContent>
+        </Card>
       </div>
-      <div>
-        <div>Count reviews</div>
-        <Button onClick={reviewHandler}>Send review</Button>
-      </div>
-      <div>
+      {/* Reviews */}
+      <Card>
+        <CardContent className={classes.header}>
+          <div>Count reviews: {props.reviews.length}</div>
+          <Button onClick={reviewHandler}>Send review</Button>
+        </CardContent>
+      </Card>
+      {/* Reviews list */}
+      <div className={classes.reviewsList}>
         {props.reviews ? renderReviews() : <div>There are no reviews yet</div>}
       </div>
     </Container>

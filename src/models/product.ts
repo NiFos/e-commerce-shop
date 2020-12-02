@@ -1,5 +1,5 @@
 import { database } from '../libs/db';
-import { ITag } from '../pages/admin/products/tags';
+import { ITag } from '../components/tags';
 import { subCategoriesTable } from './category';
 import { reviewsTable } from './review';
 

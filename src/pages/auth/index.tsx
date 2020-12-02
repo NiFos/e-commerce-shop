@@ -1,4 +1,14 @@
-import { Button, Container, Divider, Input } from '@material-ui/core';
+import {
+  Button,
+  Card,
+  CardContent,
+  Checkbox,
+  Container,
+  Divider,
+  Input,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
 import { useRouter } from 'next/router';
 import Axios from 'axios';
 
@@ -7,6 +17,25 @@ import { minLength, validateEmail } from '../../libs/validation';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, register } from '../../redux/reducers/user';
 import { RootState } from '../../redux/store';
+
+const useStyles = makeStyles({
+  auth: {
+    width: '40%',
+    margin: '0 auto',
+  },
+  inputs: {
+    marginTop: '10px',
+    marginBottom: '10px',
+  },
+  input: {
+    width: '100%',
+    marginTop: '5px',
+  },
+  googleBtn: {
+    width: '100%',
+    textAlign: 'center',
+  },
+});
 
 export interface IAuthData {
   username?: {
@@ -31,6 +60,7 @@ export interface IAuthData {
  */
 export default function Component(): JSX.Element {
   const dispatch = useDispatch();
+  const classes = useStyles();
   const state = useSelector((state: RootState) => state);
   const [isReg, setIsReg] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -110,65 +140,80 @@ export default function Component(): JSX.Element {
   }
   return (
     <Container>
-      {state?.user?.authError && <span>{state?.user?.authError}</span>}
-      <label>
-        <input
-          type="checkbox"
-          name="isreg"
-          checked={isReg}
-          onChange={() => setIsReg(!isReg)}
-        />
-        <span>I will register</span>
-      </label>
-      {isReg ? (
-        /* Reg form */
-        <form onSubmit={submitForm}>
-          <Input
-            value={authData.username?.value}
-            onChange={(e) => handleForm(e.target.name, e.target.value)}
-            placeholder="Username"
-            name="username"
-          />
-          <Input
-            value={authData.email?.value}
-            onChange={(e) => handleForm(e.target.name, e.target.value)}
-            placeholder="Email"
-            name="email"
-          />
-          <Input
-            value={authData.password?.value}
-            onChange={(e) => handleForm(e.target.name, e.target.value)}
-            placeholder="Password"
-            type="password"
-            name="password"
-          />
-          <Button disabled={loading} onClick={submitForm}>
-            Register
+      <Card className={classes.auth}>
+        <CardContent>
+          <Typography variant={'h6'} align={'center'}>
+            Auth
+          </Typography>
+          {state?.user?.authError && <span>{state?.user?.authError}</span>}
+          <label>
+            <Checkbox checked={isReg} onChange={() => setIsReg(!isReg)} />
+            <span>I will register</span>
+          </label>
+          {isReg ? (
+            /* Reg form */
+            <form onSubmit={submitForm}>
+              <div className={classes.inputs}>
+                <Input
+                  value={authData.username?.value}
+                  onChange={(e) => handleForm(e.target.name, e.target.value)}
+                  placeholder="Username"
+                  name="username"
+                  className={classes.input}
+                />
+                <Input
+                  value={authData.email?.value}
+                  onChange={(e) => handleForm(e.target.name, e.target.value)}
+                  placeholder="Email"
+                  name="email"
+                  className={classes.input}
+                />
+                <Input
+                  value={authData.password?.value}
+                  onChange={(e) => handleForm(e.target.name, e.target.value)}
+                  placeholder="Password"
+                  type="password"
+                  name="password"
+                  className={classes.input}
+                />
+              </div>
+
+              <Button disabled={loading} onClick={submitForm}>
+                Register
+              </Button>
+            </form>
+          ) : (
+            /* Login form */
+            <form onSubmit={submitForm}>
+              <div className={classes.inputs}>
+                <Input
+                  value={authData.email?.value}
+                  onChange={(e) => handleForm(e.target.name, e.target.value)}
+                  placeholder="Email"
+                  name="email"
+                  className={classes.input}
+                />
+                <Input
+                  value={authData.password?.value}
+                  onChange={(e) => handleForm(e.target.name, e.target.value)}
+                  placeholder="Password"
+                  type="password"
+                  name="password"
+                  className={classes.input}
+                />
+              </div>
+
+              <Button disabled={loading} onClick={submitForm}>
+                Login
+              </Button>
+            </form>
+          )}
+          <Divider />
+          <Button onClick={oauthHandler} className={classes.googleBtn}>
+            Sign-in with Google
           </Button>
-        </form>
-      ) : (
-        /* Login form */
-        <form onSubmit={submitForm}>
-          <Input
-            value={authData.email?.value}
-            onChange={(e) => handleForm(e.target.name, e.target.value)}
-            placeholder="Email"
-            name="email"
-          />
-          <Input
-            value={authData.password?.value}
-            onChange={(e) => handleForm(e.target.name, e.target.value)}
-            placeholder="Password"
-            type="password"
-            name="password"
-          />
-          <Button disabled={loading} onClick={submitForm}>
-            Login
-          </Button>
-        </form>
-      )}
-      <Divider />
-      <Button onClick={oauthHandler}>Sign-in with Google</Button>
+        </CardContent>
+      </Card>
     </Container>
   );
 }

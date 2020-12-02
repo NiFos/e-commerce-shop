@@ -1,5 +1,7 @@
 import {
   Button,
+  Card,
+  CardContent,
   Checkbox,
   Container,
   Dialog,
@@ -8,6 +10,8 @@ import {
   DialogTitle,
   FormControlLabel,
   Input,
+  makeStyles,
+  Typography,
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { GetServerSideProps } from 'next';
@@ -25,6 +29,34 @@ import {
 } from '../../../redux/reducers/admins';
 import { initializeStore, RootState } from '../../../redux/store';
 
+const useStyles = makeStyles({
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  headerTitle: {
+    marginTop: '10px',
+    marginBottom: '10px',
+  },
+  flexSpaceBetween: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  adminsListHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: '20px',
+    marginBottom: '10px',
+    '& > *': {
+      width: '33.3%',
+      textAlign: 'left',
+    },
+  },
+  adminsInfo: {
+    width: '75%',
+  },
+});
+
 interface Props {
   children?: JSX.Element[];
   admins: IAdmin[];
@@ -34,6 +66,7 @@ interface Props {
  * Admins page
  */
 export default function Component(props: Props): JSX.Element {
+  const classes = useStyles();
   const state = useSelector((state: RootState) => state.admins);
   const userState = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
@@ -149,16 +182,18 @@ export default function Component(props: Props): JSX.Element {
       props.admins &&
       props.admins.map((item) => {
         return (
-          <div key={item.user_id}>
-            <div>{item.username}</div>
-            <div>{item.full_access ? 'Full access' : 'View access'}</div>
-            <Button
-              onClick={() => editHandler(item.user_id, item.full_access)}
-              disabled={!userState?.me?.user?.admin?.fullAccess}
-            >
-              Edit
-            </Button>
-          </div>
+          <Card key={item.user_id}>
+            <CardContent className={classes.flexSpaceBetween}>
+              <div>{item.username}</div>
+              <div>{item.full_access ? 'Full access' : 'View access'}</div>
+              <Button
+                onClick={() => editHandler(item.user_id, item.full_access)}
+                disabled={!userState?.me?.user?.admin?.fullAccess}
+              >
+                Edit
+              </Button>
+            </CardContent>
+          </Card>
         );
       })
     );
@@ -227,36 +262,47 @@ export default function Component(props: Props): JSX.Element {
         </DialogActions>
       </Dialog>
       {/* Information */}
-      <div>
+      <Typography variant={'h6'} className={classes.headerTitle}>
+        Admins
+      </Typography>
+      <div className={classes.header}>
         {/* Your access level */}
-        <div>
-          Your access:{' '}
-          {userState.me?.user?.admin.fullAccess ? 'Full access' : 'View access'}
-        </div>
+        <Card>
+          <CardContent>
+            <Typography>
+              Your access:{' '}
+              {userState.me?.user?.admin.fullAccess
+                ? 'Full access'
+                : 'View access'}
+            </Typography>
+          </CardContent>
+        </Card>
 
         {/* All admins information */}
-        <div>
-          <div>Total admins: {props.admins.length}</div>
-          <div>
-            Admins with full access:{' '}
-            {props.admins.filter((item) => item.full_access).length}
-          </div>
-          <div>
-            Admins with view access:{' '}
-            {props.admins.filter((item) => !item.full_access).length}
-          </div>
-          <Button
-            onClick={addNewHandler}
-            disabled={!userState?.me?.user?.admin?.fullAccess}
-          >
-            Add new admin
-          </Button>
-        </div>
+        <Card className={classes.adminsInfo}>
+          <CardContent className={classes.header}>
+            <Typography>Total admins: {props.admins.length}</Typography>
+            <Typography>
+              Admins with full access:{' '}
+              {props.admins.filter((item) => item.full_access).length}
+            </Typography>
+            <Typography>
+              Admins with view access:{' '}
+              {props.admins.filter((item) => !item.full_access).length}
+            </Typography>
+            <Button
+              onClick={addNewHandler}
+              disabled={!userState?.me?.user?.admin?.fullAccess}
+            >
+              Add new admin
+            </Button>
+          </CardContent>
+        </Card>
       </div>
       {/* Admin list */}
       <div>
         {/* Table header */}
-        <div>
+        <div className={classes.adminsListHeader}>
           <div>Username</div>
           <div>Access level</div>
           <div></div>

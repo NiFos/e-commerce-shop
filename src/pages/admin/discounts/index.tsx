@@ -1,13 +1,16 @@
 import DateFnsUtils from '@date-io/date-fns';
 import {
   Button,
+  Card,
+  CardContent,
   Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
   Input,
+  makeStyles,
+  Typography,
 } from '@material-ui/core';
 import {
   KeyboardDatePicker,
@@ -32,6 +35,39 @@ import {
 } from '../../../redux/reducers/discounts';
 import { initializeStore, RootState } from '../../../redux/store';
 
+const useStyles = makeStyles({
+  flexSpaceBetween: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  discount: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  discountInfo: {
+    width: '70%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+  },
+  headerTitle: {
+    marginTop: '10px',
+    marginBottom: '10px',
+  },
+  content: {
+    marginTop: '10px',
+    marginBottom: '10px',
+  },
+  img: {
+    '& > *': {
+      height: 'auto',
+      width: '100%',
+      maxWidth: '300px',
+      objectFit: 'cover',
+    },
+  },
+});
+
 interface Props {
   children?: JSX.Element[];
   discounts: IDiscountModel[];
@@ -50,6 +86,7 @@ interface IDiscountData {
  * Discounts page
  */
 export default function Component(props: Props): JSX.Element {
+  const classes = useStyles();
   const state = useSelector((state: RootState) => state.discounts);
   const userState = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
@@ -192,21 +229,28 @@ export default function Component(props: Props): JSX.Element {
    */
   function renderDiscounts() {
     return props.discounts.map((item) => (
-      <div key={item.discount_id}>
-        <img src={item.photo} width={300} height={300} alt="Photo" />
-        <Divider orientation="vertical" />
-        <div>
-          <div>{item.title}</div>
-          <Button onClick={() => editDiscountHandler(item.discount_id)}>
-            Edit
-          </Button>
-        </div>
-        <div>{item.description}</div>
-        <div>
-          <div>To: {moment(item.date_to).format('lll')}</div>
-          <div>Created: {moment(item.created_on).format('lll')}</div>
-        </div>
-      </div>
+      <Card key={item.discount_id} className={classes.content}>
+        <CardContent className={classes.discount}>
+          <div className={classes.img}>
+            <img src={item.photo} alt="Photo" />
+          </div>
+          <div className={classes.discountInfo}>
+            <div className={classes.flexSpaceBetween}>
+              <Typography>{item.title}</Typography>
+              <Button onClick={() => editDiscountHandler(item.discount_id)}>
+                Edit
+              </Button>
+            </div>
+            <Typography>{item.description}</Typography>
+            <div>
+              <Typography>To: {moment(item.date_to).format('lll')}</Typography>
+              <Typography>
+                Created: {moment(item.created_on).format('lll')}
+              </Typography>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     ));
   }
 
@@ -298,18 +342,28 @@ export default function Component(props: Props): JSX.Element {
       >
         <DialogTitle>Edit discount</DialogTitle>
         <DialogContent>
-          <Input
-            value={discountData.title}
-            onChange={(e) => discountDataHandler(e.target.name, e.target.value)}
-            name={'title'}
-            placeholder="Title"
-          />
-          <Input
-            value={discountData.description}
-            onChange={(e) => discountDataHandler(e.target.name, e.target.value)}
-            name={'description'}
-            placeholder="Description"
-          />
+          <div>
+            <span>Title </span>
+            <Input
+              value={discountData.title}
+              onChange={(e) =>
+                discountDataHandler(e.target.name, e.target.value)
+              }
+              name={'title'}
+              placeholder="Title"
+            />
+          </div>
+          <div>
+            <span>Description </span>
+            <Input
+              value={discountData.description}
+              onChange={(e) =>
+                discountDataHandler(e.target.name, e.target.value)
+              }
+              name={'description'}
+              placeholder="Description"
+            />
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={deleteDiscountHandler}>Delete</Button>
@@ -319,15 +373,20 @@ export default function Component(props: Props): JSX.Element {
         </DialogActions>
       </Dialog>
       {/* Information */}
-      <div>
-        <div>Total discounts - {props.discounts.length}</div>
-        <Button
-          onClick={addNewDiscountHandler}
-          disabled={!userState.me?.user?.admin.fullAccess}
-        >
-          Add new discount
-        </Button>
-      </div>
+      <Typography variant={'h6'} className={classes.headerTitle}>
+        Discounts
+      </Typography>
+      <Card className={classes.content}>
+        <CardContent className={classes.flexSpaceBetween}>
+          <div>Total discounts - {props.discounts.length}</div>
+          <Button
+            onClick={addNewDiscountHandler}
+            disabled={!userState.me?.user?.admin.fullAccess}
+          >
+            Add new discount
+          </Button>
+        </CardContent>
+      </Card>
       <div>{renderDiscounts()}</div>
     </Container>
   );

@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 import { database } from '../libs/db';
 import { discountModel } from './discount';
-import { productsSalesTable } from './product';
+import { productsSalesTable, productsTable } from './product';
 
 export interface IOrderModel {
   order_id: number;
@@ -19,6 +19,7 @@ export interface IUserOrderModel {
   ordered_by: number;
   totalPrice: number;
   products: {
+    title: string;
     product_id: number;
     quantity: number;
     price_one: number;
@@ -58,7 +59,8 @@ export const orderModel = {
       .select('*')
       .from(ordersTable)
       .limit(pageSize + 1)
-      .offset(offSet);
+      .offset(offSet)
+      .orderBy('created_on', 'desc');
   },
 
   /**
@@ -96,10 +98,19 @@ export const orderModel = {
     const products = await database()
       .select('*')
       .from(orderDetailsTable)
+      .innerJoin(
+        productsTable,
+        `${productsTable}.product_id`,
+        `${orderDetailsTable}.product_id`
+      )
       .where('order_id', '=', orderId);
     return [
       {
         ...order[0],
+        totalPrice: products.reduce(
+          (sum, current) => sum + current.price_one * current.quantity,
+          0
+        ),
         products,
       },
     ];
@@ -214,8 +225,13 @@ export const orderModel = {
 
     const ordersIds = orders.map((item) => item.order_id);
     const details = await database()
-      .select('*')
+      .select(`${orderDetailsTable}.*`, `${productsTable}.title`)
       .from(orderDetailsTable)
+      .innerJoin(
+        productsTable,
+        `${productsTable}.product_id`,
+        `${orderDetailsTable}.product_id`
+      )
       .whereIn('order_id', ordersIds);
     if (!orders[0]?.order_id) return [];
 

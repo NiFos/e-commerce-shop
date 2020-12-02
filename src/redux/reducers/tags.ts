@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import { ThunkAction } from 'redux-thunk';
-import { ITag } from '../../pages/admin/products/tags';
+import { ITag } from '../../components/tags';
 import { RootState } from '../store';
 
 const axiosInstance = Axios.create({

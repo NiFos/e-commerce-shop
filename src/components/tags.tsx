@@ -8,8 +8,8 @@ import {
 import { Checkbox } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
-import { createTag, getTags } from '../../../redux/reducers/tags';
+import { RootState } from '../redux/store';
+import { createTag, getTags } from '../redux/reducers/tags';
 
 export interface ITag {
   tag_id: number;
@@ -32,11 +32,6 @@ export function Tags(props: Props): JSX.Element {
   React.useEffect(() => {
     dispatch(getTags());
   }, []);
-
-  /**
-   * Add tag to selected
-   * @param id - Tag id
-   */
 
   /**
    * Create new tag handler

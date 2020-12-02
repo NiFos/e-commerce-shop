@@ -1,10 +1,59 @@
 import React from 'react';
 import Link from 'next/link';
-import { Container } from '@material-ui/core';
+import {
+  Card,
+  CardContent,
+  Container,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
 import { productModel } from '../models/product';
 import { discountModel } from '../models/discount';
 import { getPhotoUrl } from '../libs/storage';
 import { GetStaticProps } from 'next';
+import moment from 'moment';
+import { ProductLink } from '../components/ProductLink';
+
+const useStyles = makeStyles({
+  top: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  block: {
+    marginBottom: '20px',
+    marginTop: '20px',
+  },
+  mainDiscount: {
+    width: '73%',
+  },
+  lastProduct: {
+    width: '25%',
+    cursor: 'pointer',
+  },
+  discount: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  discountInfo: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  productList: {
+    display: 'flex',
+  },
+  title: {
+    marginBottom: '10px',
+  },
+  img: {
+    '& > *': {
+      height: 'auto',
+      width: '100%',
+      maxWidth: '400px',
+      objectFit: 'cover',
+    },
+  },
+});
 
 interface Product {
   productId: number;
@@ -22,6 +71,7 @@ interface Props {
     percentDiscount: number;
     to: Date;
     photo: string;
+    promocode: string;
   };
   lastNewProduct: Product;
   popular: Product[];
@@ -32,19 +82,21 @@ interface Props {
  * Home page
  */
 export default function Component(props: Props): JSX.Element {
+  const classes = useStyles();
+
   /**
    * Render popular section
    */
   function renderPopular() {
     return props.popular.map((item) => {
       return (
-        <Link href={`/product/${item.productId}`} key={item.productId}>
-          <div>
-            <img width={300} height={300} src={item.photo} alt="" />
-            <span>{item.title}</span>
-            <span>{item.price}</span>
-          </div>
-        </Link>
+        <ProductLink
+          key={item.productId}
+          photo={item.photo}
+          productId={item.productId}
+          title={item.title}
+          price={item.price}
+        />
       );
     });
   }
@@ -55,31 +107,78 @@ export default function Component(props: Props): JSX.Element {
   function renderTopRated() {
     return props.topRated.map((item) => {
       return (
-        <Link href={`/product/${item.productId}`} key={item.productId}>
-          <div>
-            <img width={300} height={300} src={item.photo} alt="" />
-            <span>{item.title}</span>
-            <span>{item.price}</span>
-          </div>
-        </Link>
+        <ProductLink
+          key={item.productId}
+          photo={item.photo}
+          productId={item.productId}
+          title={item.title}
+          price={item.price}
+        />
       );
     });
   }
 
   return (
     <Container>
-      <div>
-        <div>Discount</div>
-        <div>Last new product</div>
+      <div className={[classes.top, classes.block].join(' ')}>
+        <Card className={classes.mainDiscount}>
+          <CardContent className={classes.discount}>
+            <div className={classes.discountInfo}>
+              <div>
+                <Typography variant={'h5'}>
+                  {props.mainDiscount.title}
+                </Typography>
+                <Typography variant={'subtitle1'}>
+                  {props.mainDiscount.description}
+                </Typography>
+              </div>
+              <div>
+                <Typography variant={'subtitle2'}>
+                  Promocode - {props.mainDiscount.promocode}
+                </Typography>
+                <Typography variant={'subtitle2'}>
+                  {moment(props.mainDiscount.to).format('lll')}
+                </Typography>
+              </div>
+            </div>
+            <div className={classes.img}>
+              <img src={props.mainDiscount.photo} alt="discount" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card className={classes.lastProduct}>
+          <CardContent>
+            <Link href={`/product/${props.lastNewProduct.productId}`}>
+              <div>
+                <div className={classes.img}>
+                  <img src={props.lastNewProduct.photo} alt="" />
+                </div>
+                <Typography variant={'subtitle1'}>
+                  {props.lastNewProduct.title}
+                </Typography>
+              </div>
+            </Link>
+          </CardContent>
+        </Card>
       </div>
-      <div>
-        <div>Popular</div>
-        <div>{props?.popular && renderPopular()}</div>
-      </div>
-      <div>
-        <div>Top 5 rated</div>
-        <div>{props?.topRated && renderTopRated()}</div>
-      </div>
+      <Card className={classes.block}>
+        <CardContent>
+          <Typography variant={'h5'} className={classes.title}>
+            Popular
+          </Typography>
+          <div className={classes.productList}>
+            {props?.popular && renderPopular()}
+          </div>
+        </CardContent>
+      </Card>
+      <Card className={classes.block}>
+        <CardContent>
+          <Typography variant={'h5'} className={classes.title}>
+            Top 5 rated
+          </Typography>
+          <div>{props?.topRated && renderTopRated()}</div>
+        </CardContent>
+      </Card>
     </Container>
   );
 }
@@ -99,6 +198,7 @@ export const getStaticProps: GetStaticProps = async () => {
         title: mainDiscount[0]?.title,
         description: mainDiscount[0]?.description,
         percentDiscount: mainDiscount[0]?.percent_discount,
+        promocode: mainDiscount[0]?.promocode,
         to: new Date(mainDiscount[0]?.date_to).toString(),
         photo: getPhotoUrl('discounts', '' + mainDiscount[0].discount_id),
       },

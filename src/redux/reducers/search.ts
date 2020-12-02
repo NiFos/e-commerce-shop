@@ -69,7 +69,7 @@ export const searchProducts = (
       type: searchReducerTypes.searchProductsLoadingStatus,
       payload: 'loading',
     });
-    const response = await axiosInstance.post(`/api/search?search=${search}`);
+    const response = await axiosInstance.get(`/api/search?search=${search}`);
 
     dispatch({
       type: searchReducerTypes.searchProducts,
