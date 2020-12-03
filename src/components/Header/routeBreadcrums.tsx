@@ -4,10 +4,13 @@ import { useSelector } from 'react-redux';
 import { IBreadcrum } from '../../redux/reducers/settings';
 import { RootState } from '../../redux/store';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   container: {
     alignItems: 'center',
     display: 'flex',
+    [theme.breakpoints.down('md')]: {
+      display: 'none',
+    },
   },
   breadCrum: {
     color: '000',
@@ -15,7 +18,7 @@ const useStyles = makeStyles({
   text: {
     color: '#000000',
   },
-});
+}));
 
 /**
  * Route breadcrums component

@@ -25,23 +25,44 @@ import {
   getOrders,
 } from '../../../redux/reducers/orders';
 import { initializeStore, RootState } from '../../../redux/store';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+} from 'recharts';
 import { Pagination } from '../../../components/Pagination';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   header: {
     display: 'flex',
     justifyContent: 'space-between',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+    },
     marginTop: '20px',
     marginBottom: '20px',
   },
   feed: {
     width: '22%',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+    },
   },
   chart: {
     width: '75%',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+      marginTop: '20px',
+    },
+  },
+  chartResp: {
+    width: '500',
+    height: '150',
   },
   ordersHeader: {
     display: 'flex',
@@ -58,7 +79,7 @@ const useStyles = makeStyles({
       justifyContent: 'space-between',
     },
   },
-});
+}));
 
 interface IOrder {
   order_id: number;
@@ -233,14 +254,18 @@ export default function Component(props: Props): JSX.Element {
         <Card className={classes.chart}>
           <CardContent>
             <Typography variant={'h6'}>Last year data</Typography>
-            <div>
-              <LineChart width={600} height={150} data={props?.chartData}>
+            <ResponsiveContainer
+              height={150}
+              minWidth={300}
+              className={classes.chartResp}
+            >
+              <LineChart data={props?.chartData}>
                 <Line type="monotone" dataKey="uv" stroke="#8884d8" />
                 <CartesianGrid stroke="#ccc" />
                 <XAxis dataKey="name" />
                 <YAxis />
               </LineChart>
-            </div>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>

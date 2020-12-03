@@ -32,7 +32,7 @@ import { Pagination } from '../../../components/Pagination';
 import { GetServerSideProps } from 'next';
 import { Tags } from '../../../components/tags';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   header: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -47,6 +47,9 @@ const useStyles = makeStyles({
   },
   productInfo: {
     width: '70%',
+    [theme.breakpoints.down('md')]: {
+      marginLeft: '20px',
+    },
     display: 'flex',
     justifyContent: 'space-between',
     flexDirection: 'column',
@@ -63,7 +66,7 @@ const useStyles = makeStyles({
       objectFit: 'cover',
     },
   },
-});
+}));
 
 interface Props {
   children?: JSX.Element[];

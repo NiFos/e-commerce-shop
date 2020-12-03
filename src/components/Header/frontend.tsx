@@ -20,9 +20,13 @@ import { RouteBreadcrums } from './routeBreadcrums';
 import { Search } from '../Modals/Search';
 
 const name = 'Online shop';
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   header: {
     padding: '5px 0',
+    [theme.breakpoints.down('md')]: {
+      display: 'flex',
+      justifyContent: 'space-between',
+    },
   },
   content: {
     display: 'flex',
@@ -32,13 +36,19 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  headerTitle: {
+    cursor: 'pointer',
+    [theme.breakpoints.down('md')]: {
+      fontSize: '1.5rem',
+    },
+  },
   cursorPointer: {
     cursor: 'pointer',
   },
   profile: {
     position: 'relative',
   },
-});
+}));
 
 /**
  * Frontend header
@@ -98,7 +108,7 @@ export default function Component(): JSX.Element {
       <div className={classes.content}>
         <div className={classes.items}>
           <Link href="/">
-            <Typography variant={'h4'} className={classes.cursorPointer}>
+            <Typography variant={'h4'} className={classes.headerTitle}>
               {name}
             </Typography>
           </Link>

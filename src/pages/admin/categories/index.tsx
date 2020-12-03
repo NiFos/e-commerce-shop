@@ -29,9 +29,12 @@ import {
 } from '../../../redux/reducers/categories';
 import { initializeStore, RootState } from '../../../redux/store';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   content: {
     display: 'flex',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+    },
   },
   flexSpaceBetween: {
     display: 'flex',
@@ -44,8 +47,12 @@ const useStyles = makeStyles({
   },
   subcategory: {
     marginLeft: '20px',
+    [theme.breakpoints.down('md')]: {
+      marginLeft: '0px',
+      marginTop: '20px',
+    },
   },
-});
+}));
 
 interface Props {
   children?: JSX.Element[];

@@ -35,7 +35,7 @@ import {
 } from '../../../redux/reducers/discounts';
 import { initializeStore, RootState } from '../../../redux/store';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   flexSpaceBetween: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -49,6 +49,9 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'space-between',
     flexDirection: 'column',
+    [theme.breakpoints.down('md')]: {
+      marginLeft: '20px',
+    },
   },
   headerTitle: {
     marginTop: '10px',
@@ -66,7 +69,7 @@ const useStyles = makeStyles({
       objectFit: 'cover',
     },
   },
-});
+}));
 
 interface Props {
   children?: JSX.Element[];

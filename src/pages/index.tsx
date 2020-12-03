@@ -14,10 +14,13 @@ import { GetStaticProps } from 'next';
 import moment from 'moment';
 import { ProductLink } from '../components/ProductLink';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   top: {
     display: 'flex',
     justifyContent: 'space-between',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+    },
   },
   block: {
     marginBottom: '20px',
@@ -25,9 +28,16 @@ const useStyles = makeStyles({
   },
   mainDiscount: {
     width: '73%',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+    },
   },
   lastProduct: {
     width: '25%',
+    [theme.breakpoints.down('md')]: {
+      marginTop: '20px',
+      width: '100%',
+    },
     cursor: 'pointer',
   },
   discount: {
@@ -41,6 +51,9 @@ const useStyles = makeStyles({
   },
   productList: {
     display: 'flex',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+    },
   },
   title: {
     marginBottom: '10px',
@@ -53,7 +66,7 @@ const useStyles = makeStyles({
       objectFit: 'cover',
     },
   },
-});
+}));
 
 interface Product {
   productId: number;

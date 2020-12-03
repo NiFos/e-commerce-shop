@@ -22,9 +22,12 @@ import { getProductsInCategory } from '../../redux/reducers/category';
 import { RootState } from '../../redux/store';
 import { ITag } from '../../components/tags';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   productsList: {
     display: 'flex',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+    },
   },
   header: {
     display: 'flex',
@@ -52,7 +55,7 @@ const useStyles = makeStyles({
       borderRadius: '2px',
     },
   },
-});
+}));
 
 interface Props {
   children?: JSX.Element[];

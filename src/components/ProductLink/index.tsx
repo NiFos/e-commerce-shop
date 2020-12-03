@@ -1,11 +1,15 @@
 import React from 'react';
 import { Card, CardContent, Link, makeStyles } from '@material-ui/core';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   product: {
     width: '25%',
     display: 'block',
     marginRight: '20px',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+      marginTop: '20px',
+    },
   },
   img: {
     '& > *': {
@@ -15,7 +19,7 @@ const useStyles = makeStyles({
       objectFit: 'cover',
     },
   },
-});
+}));
 
 interface Props {
   productId: number;

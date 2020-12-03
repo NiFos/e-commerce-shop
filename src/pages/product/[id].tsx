@@ -27,15 +27,25 @@ import { changeRoute } from '../../redux/reducers/settings';
 import { addProductToCart } from '../../redux/reducers/user';
 import { RootState } from '../../redux/store';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   product: {
     display: 'flex',
     justifyContent: 'space-between',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+      justifyContent: 'start',
+    },
     marginTop: '10px',
     marginBottom: '10px',
   },
   photo: {},
-  info: { width: '71%' },
+  info: {
+    width: '71%',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+      marginTop: '20px',
+    },
+  },
   header: { display: 'flex', justifyContent: 'space-between' },
   review: { marginTop: '10px' },
   reviewsList: {},
@@ -47,7 +57,7 @@ const useStyles = makeStyles({
       marginBottom: '10px',
     },
   },
-});
+}));
 
 interface Props {
   children?: JSX.Element[];

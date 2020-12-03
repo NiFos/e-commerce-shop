@@ -29,10 +29,17 @@ import {
 } from '../../../redux/reducers/admins';
 import { initializeStore, RootState } from '../../../redux/store';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   header: {
     display: 'flex',
     justifyContent: 'space-between',
+
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+      '& > *': {
+        marginBottom: '20px',
+      },
+    },
   },
   headerTitle: {
     marginTop: '10px',
@@ -54,8 +61,11 @@ const useStyles = makeStyles({
   },
   adminsInfo: {
     width: '75%',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+    },
   },
-});
+}));
 
 interface Props {
   children?: JSX.Element[];
