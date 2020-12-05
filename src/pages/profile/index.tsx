@@ -11,6 +11,7 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import i18n from '../../../i18n';
 import { Orders } from '../../components/profile-page/orders';
 import { Settings } from '../../components/profile-page/settings';
 import { checkUser } from '../../libs/withUser';
@@ -58,6 +59,7 @@ interface Props {
 export default function Component(props: Props): JSX.Element {
   const userState = useSelector((state: RootState) => state.user);
   const router = useRouter();
+  const { t } = i18n.useTranslation();
   const classes = useStyles();
 
   React.useEffect(() => {
@@ -73,20 +75,24 @@ export default function Component(props: Props): JSX.Element {
           <CardContent className={classes.header}>
             <div className={classes.headerContent}>
               <Typography variant={'h6'}>
-                Hello, {userState.me?.user?.username}
+                {t('profile-page.hello', {
+                  username: userState.me?.user?.username,
+                })}
               </Typography>
               <Typography variant={'subtitle1'}>
-                You have been registered:{' '}
-                {moment(props.userInfo.createdOn).format('lll')}
+                {t('profile-page.registered', {
+                  date: moment(props.userInfo.createdOn).format('lll'),
+                })}
               </Typography>
             </div>
             <div>
               <Divider orientation={'vertical'} />
             </div>
             <div className={classes.headerContent}>
-              <Typography variant={'h6'}>Need help?</Typography>
+              <Typography variant={'h6'}>{t('profile-page.help')}</Typography>
               <Typography variant={'subtitle1'}>
-                Contact us in <a href={'https://t.me'}>Telegram</a>
+                {t('profile-page.contact-us')}{' '}
+                <a href={'https://t.me'}>Telegram</a>
               </Typography>
             </div>
           </CardContent>

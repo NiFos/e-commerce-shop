@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, makeStyles } from '@material-ui/core';
 import React from 'react';
+import i18n from '../../../i18n';
 
 const useStyles = makeStyles({
   container: {
@@ -23,6 +24,7 @@ interface Props {
  */
 export function ProfilePopup(props: Props): JSX.Element {
   const node = React.useRef<HTMLDivElement>(null);
+  const { t } = i18n.useTranslation();
   const classes = useStyles();
 
   React.useEffect(() => {
@@ -42,12 +44,16 @@ export function ProfilePopup(props: Props): JSX.Element {
   }
   return (
     <div ref={node} className={classes.container}>
-      <Button onClick={() => props.handleClick('/profile')}>Profile</Button>
+      <Button onClick={() => props.handleClick('/profile')}>
+        {t('profile')}
+      </Button>
       <Button onClick={() => props.handleClick('/cart')}>
-        Cart
+        {t('cart')}
         {props.cartItems ? `(${props.cartItems})` : ''}
       </Button>
-      <Button onClick={() => props.handleClick('/logout')}>Logout</Button>
+      <Button onClick={() => props.handleClick('/logout')}>
+        {t('logout')}
+      </Button>
     </div>
   );
 }

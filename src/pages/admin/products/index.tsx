@@ -31,6 +31,7 @@ import moment from 'moment';
 import { Pagination } from '../../../components/Pagination';
 import { GetServerSideProps } from 'next';
 import { Tags } from '../../../components/tags';
+import i18n from '../../../../i18n';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -90,6 +91,7 @@ interface IProductData {
  */
 export default function Component(props: Props): JSX.Element {
   const classes = useStyles();
+  const { t } = i18n.useTranslation(['admin']);
   const [loading, setLoading] = React.useState(false);
   const [currentProductId, setCurrentProductId] = React.useState(-1);
   const [currentProductIndex, setCurrentProductIndex] = React.useState(-1);
@@ -302,13 +304,15 @@ export default function Component(props: Props): JSX.Element {
                 onClick={() => productHandler(false, item.product_id)}
                 disabled={!userState.me?.user?.admin.fullAccess}
               >
-                Edit
+                {t('admin:edit')}
               </Button>
             </div>
             <div className={classes.flexSpaceBetween}>
-              <div>Price - {item.price}</div>
               <div>
-                Created -{' '}
+                {t('admin:products-page.price')} - {item.price}
+              </div>
+              <div>
+                {t('admin:products-page.created')} -{' '}
                 {moment(new Date(+item.created_on).toString()).format('lll')}
               </div>
             </div>
@@ -326,8 +330,10 @@ export default function Component(props: Props): JSX.Element {
       >
         <DialogTitle>
           {currentProductId === -1
-            ? 'Add new product'
-            : `Edit product - ${productData.title}`}
+            ? t('admin:products-page.add-new-product')
+            : t('admin:products-page.edit-product', {
+                title: productData.title,
+              })}
         </DialogTitle>
         <DialogContent>
           <div>
@@ -337,7 +343,7 @@ export default function Component(props: Props): JSX.Element {
               onChange={(e) =>
                 productDataHandler(e.target.name, e.target.value)
               }
-              placeholder="Title"
+              placeholder={t('admin:products-page.form.title')}
             />
           </div>
           <div>
@@ -349,7 +355,7 @@ export default function Component(props: Props): JSX.Element {
               onChange={(e) =>
                 productDataHandler(e.target.name, e.target.value)
               }
-              placeholder="Description"
+              placeholder={t('admin:products-page.form.description')}
             />
           </div>
           <div>
@@ -361,11 +367,11 @@ export default function Component(props: Props): JSX.Element {
               onChange={(e) =>
                 productDataHandler(e.target.name, e.target.value)
               }
-              placeholder="Tech specs"
+              placeholder={t('admin:products-page.form.tech-specs')}
             />
           </div>
           <div>
-            <span>Price </span>
+            <span>{t('admin:products-page.form.price')} </span>
             <Input
               type="number"
               name="price"
@@ -373,11 +379,11 @@ export default function Component(props: Props): JSX.Element {
               onChange={(e) =>
                 productDataHandler(e.target.name, e.target.value)
               }
-              placeholder="Price"
+              placeholder={t('admin:products-page.form.price')}
             />
           </div>
           <div>
-            <span>Quantity </span>
+            <span>{t('admin:products-page.form.quantity')} </span>
             <Input
               type="number"
               name="quantity"
@@ -385,11 +391,11 @@ export default function Component(props: Props): JSX.Element {
               onChange={(e) =>
                 productDataHandler(e.target.name, e.target.value)
               }
-              placeholder="Quantity"
+              placeholder={t('admin:products-page.form.quantity')}
             />
           </div>
           <div>
-            <span>Subcategory id </span>
+            <span>{t('admin:products-page.form.subcategory-id')} </span>
             <Input
               type="number"
               name="subcategory_id"
@@ -399,7 +405,7 @@ export default function Component(props: Props): JSX.Element {
               onChange={(e) =>
                 productDataHandler(e.target.name, e.target.value)
               }
-              placeholder="Subcategory id"
+              placeholder={t('admin:products-page.form.subcategory-id')}
             />
           </div>
           {currentProductId === -1 && (
@@ -412,17 +418,17 @@ export default function Component(props: Props): JSX.Element {
         <DialogActions>
           {currentProductId !== -1 && (
             <>
-              <Button onClick={submitDelete}>Delete</Button>
+              <Button onClick={submitDelete}>{t('admin:remove')}</Button>
               <Button onClick={() => setOpenUploadPhoto(true)}>
-                Upload photo
+                {t('admin:products-page.upload-photo')}
               </Button>
             </>
           )}
-          <Button onClick={cleanProduct}>Cancel</Button>
+          <Button onClick={cleanProduct}>{t('admin:cancel')}</Button>
           {currentProductId !== -1 ? (
-            <Button onClick={submitEdit}>Submit</Button>
+            <Button onClick={submitEdit}>{t('admin:submit')}</Button>
           ) : (
-            <Button onClick={submitNew}>Next</Button>
+            <Button onClick={submitNew}>{t('admin:next')}</Button>
           )}
         </DialogActions>
       </Dialog>
@@ -436,12 +442,12 @@ export default function Component(props: Props): JSX.Element {
       />
       {/* Information */}
       <div className={classes.header}>
-        <Typography variant="h5">Products</Typography>
+        <Typography variant="h5">{t('admin:products')}</Typography>
         <Button
           onClick={() => productHandler(true)}
           disabled={!userState.me?.user?.admin.fullAccess}
         >
-          Add new product
+          {t('admin:products-page.add-new-product')}
         </Button>
       </div>
 

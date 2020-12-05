@@ -18,6 +18,7 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import i18n from '../../../../i18n';
 import { checkUser } from '../../../libs/withUser';
 import { categoryModel, ICategoryModel } from '../../../models/category';
 import {
@@ -64,6 +65,7 @@ interface Props {
  */
 export default function Component(props: Props): JSX.Element {
   const classes = useStyles();
+  const { t } = i18n.useTranslation(['admin']);
   const [categoryEdit, setCategoryEdit] = React.useState(-1);
   const [isCategory, setIsCategory] = React.useState(true);
   const [newCategory, setNewCategory] = React.useState(false);
@@ -174,7 +176,7 @@ export default function Component(props: Props): JSX.Element {
             onClick={() => editHandler(true, item.category_id)}
             disabled={!userState.me?.user?.admin.fullAccess}
           >
-            Edit
+            {t('admin:edit')}
           </Button>
         </div>
         <Divider />
@@ -194,7 +196,7 @@ export default function Component(props: Props): JSX.Element {
             onClick={() => editHandler(false, item.subcategory_id)}
             disabled={!userState?.me?.user?.admin?.fullAccess}
           >
-            Edit
+            {t('admin:edit')}
           </Button>
         </div>
         <Divider />
@@ -206,20 +208,20 @@ export default function Component(props: Props): JSX.Element {
       {/* Edit category/subcategory modal */}
       <Dialog open={categoryEdit !== -1} onClose={cleanHandler}>
         <DialogTitle>
-          Edit {isCategory ? 'category' : 'subcategory'}
+          {t('admin:edit')} {isCategory ? 'category' : 'subcategory'}
         </DialogTitle>
         <DialogContent>
           <Input
             value={currentValue}
             onChange={(e) => setCurrentValue(e.target.value)}
-            placeholder="Name"
+            placeholder={t('admin:categories.name')}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={deleteCategoryHandler}>Delete</Button>
+          <Button onClick={deleteCategoryHandler}>{t('admin:remove')}</Button>
           <div>
-            <Button onClick={cleanHandler}>Cancel</Button>
-            <Button onClick={submitEditHandler}>Apply</Button>
+            <Button onClick={cleanHandler}>{t('admin:cancel')}</Button>
+            <Button onClick={submitEditHandler}>{t('admin:apply')}</Button>
           </div>
         </DialogActions>
       </Dialog>
@@ -227,23 +229,24 @@ export default function Component(props: Props): JSX.Element {
       {/* Create category/subcategory modal */}
       <Dialog open={newCategory} onClose={cleanHandler}>
         <DialogTitle>
-          Create {isCategory ? 'category' : 'subcategory'}
+          {t('admin:categories.create')}{' '}
+          {isCategory ? 'category' : 'subcategory'}
         </DialogTitle>
         <DialogContent>
           <Input
             value={currentValue}
             onChange={(e) => setCurrentValue(e.target.value)}
-            placeholder="Name"
+            placeholder={t('admin:categories.name')}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={cleanHandler}>Cancel</Button>
-          <Button onClick={addCategoryHandler}>Apply</Button>
+          <Button onClick={cleanHandler}>{t('admin:cancel')}</Button>
+          <Button onClick={addCategoryHandler}>{t('admin:apply')}</Button>
         </DialogActions>
       </Dialog>
 
       {/* Main */}
-      <Typography variant={'h5'}>Categories</Typography>
+      <Typography variant={'h5'}>{t('admin:categories.categories')}</Typography>
       <div className={classes.content}>
         {/* Categories */}
         <Card>
@@ -253,12 +256,14 @@ export default function Component(props: Props): JSX.Element {
                 ' '
               )}
             >
-              <Typography variant={'h6'}>Categories</Typography>
+              <Typography variant={'h6'}>
+                {t('admin:categories.categories')}
+              </Typography>
               <Button
                 onClick={() => createHandler(true)}
                 disabled={!userState?.me?.user?.admin?.fullAccess}
               >
-                Add new category
+                {t('admin:categories.add-new-category')}
               </Button>
             </div>
             {props.categories && renderCategories()}
@@ -273,12 +278,14 @@ export default function Component(props: Props): JSX.Element {
                   ' '
                 )}
               >
-                <Typography variant={'h6'}>Subcategories</Typography>
+                <Typography variant={'h6'}>
+                  {t('admin:categories.subcategories')}
+                </Typography>
                 <Button
                   onClick={() => createHandler(false)}
                   disabled={!userState?.me?.user?.admin?.fullAccess}
                 >
-                  Add new subcategory
+                  {t('admin:categories.add-new-subcategory')}
                 </Button>
               </div>
               {(state.subCategories || [])?.length > 0 && renderSubcategories()}
@@ -287,7 +294,7 @@ export default function Component(props: Props): JSX.Element {
         ) : state.getSubcategoriesLoadingStatus === 'loading' ? (
           <CircularProgress />
         ) : state.getSubcategoriesLoadingStatus === 'error' ? (
-          <div>Something went wrong!</div>
+          <div>{t('admin:error')}</div>
         ) : (
           <div></div>
         )}

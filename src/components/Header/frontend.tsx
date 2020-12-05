@@ -18,6 +18,7 @@ import { Categories } from '../Modals/Categories';
 import Link from 'next/link';
 import { RouteBreadcrums } from './routeBreadcrums';
 import { Search } from '../Modals/Search';
+import i18n from '../../../i18n';
 
 const name = 'Online shop';
 const useStyles = makeStyles((theme) => ({
@@ -55,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
  */
 export default function Component(): JSX.Element {
   const classes = useStyles();
+  const { t } = i18n.useTranslation();
   const userState = useSelector((state: RootState) => state.user);
   const [categoriesOpen, setCategoriesOpen] = React.useState(false);
   const [searchOpen, setSearchOpen] = React.useState(false);
@@ -113,10 +115,10 @@ export default function Component(): JSX.Element {
             </Typography>
           </Link>
           <Divider orientation="vertical" />
-          <Button onClick={handleCategoryBtnClick}>Categories</Button>
+          <Button onClick={handleCategoryBtnClick}>{t('categories')}</Button>
           {userState.me?.user?.admin.isAdmin && (
             <Link href="/admin">
-              <Button>Admin dashboard</Button>
+              <Button>{t('admin-dashboard')}</Button>
             </Link>
           )}
         </div>
@@ -144,7 +146,7 @@ export default function Component(): JSX.Element {
               )}
             </div>
           ) : (
-            <Button onClick={() => router.push('/auth')}>Auth</Button>
+            <Button onClick={() => router.push('/auth')}>{t('auth')}</Button>
           )}
         </div>
       </div>

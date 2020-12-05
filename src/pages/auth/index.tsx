@@ -17,6 +17,7 @@ import { minLength, validateEmail } from '../../libs/validation';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, register } from '../../redux/reducers/user';
 import { RootState } from '../../redux/store';
+import i18n from '../../../i18n';
 
 const useStyles = makeStyles({
   auth: {
@@ -61,6 +62,7 @@ export interface IAuthData {
 export default function Component(): JSX.Element {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { t } = i18n.useTranslation();
   const state = useSelector((state: RootState) => state);
   const [isReg, setIsReg] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -143,12 +145,12 @@ export default function Component(): JSX.Element {
       <Card className={classes.auth}>
         <CardContent>
           <Typography variant={'h6'} align={'center'}>
-            Auth
+            {t('auth.auth')}
           </Typography>
           {state?.user?.authError && <span>{state?.user?.authError}</span>}
           <label>
             <Checkbox checked={isReg} onChange={() => setIsReg(!isReg)} />
-            <span>I will register</span>
+            <span>{t('auth.i-want-register')}</span>
           </label>
           {isReg ? (
             /* Reg form */
@@ -157,21 +159,21 @@ export default function Component(): JSX.Element {
                 <Input
                   value={authData.username?.value}
                   onChange={(e) => handleForm(e.target.name, e.target.value)}
-                  placeholder="Username"
+                  placeholder={t('auth.username')}
                   name="username"
                   className={classes.input}
                 />
                 <Input
                   value={authData.email?.value}
                   onChange={(e) => handleForm(e.target.name, e.target.value)}
-                  placeholder="Email"
+                  placeholder={t('auth.email')}
                   name="email"
                   className={classes.input}
                 />
                 <Input
                   value={authData.password?.value}
                   onChange={(e) => handleForm(e.target.name, e.target.value)}
-                  placeholder="Password"
+                  placeholder={t('auth.password')}
                   type="password"
                   name="password"
                   className={classes.input}
@@ -179,7 +181,7 @@ export default function Component(): JSX.Element {
               </div>
 
               <Button disabled={loading} onClick={submitForm}>
-                Register
+                {t('auth.register')}
               </Button>
             </form>
           ) : (
@@ -189,14 +191,14 @@ export default function Component(): JSX.Element {
                 <Input
                   value={authData.email?.value}
                   onChange={(e) => handleForm(e.target.name, e.target.value)}
-                  placeholder="Email"
+                  placeholder={t('auth.email')}
                   name="email"
                   className={classes.input}
                 />
                 <Input
                   value={authData.password?.value}
                   onChange={(e) => handleForm(e.target.name, e.target.value)}
-                  placeholder="Password"
+                  placeholder={t('auth.password')}
                   type="password"
                   name="password"
                   className={classes.input}
@@ -204,13 +206,13 @@ export default function Component(): JSX.Element {
               </div>
 
               <Button disabled={loading} onClick={submitForm}>
-                Login
+                {t('auth.login')}
               </Button>
             </form>
           )}
           <Divider />
           <Button onClick={oauthHandler} className={classes.googleBtn}>
-            Sign-in with Google
+            {t('auth.sign-in-with-google')}
           </Button>
         </CardContent>
       </Card>

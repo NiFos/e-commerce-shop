@@ -10,6 +10,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { createTag, getTags } from '../redux/reducers/tags';
+import i18n from '../../i18n';
 
 export interface ITag {
   tag_id: number;
@@ -26,6 +27,7 @@ interface Props {
  */
 export function Tags(props: Props): JSX.Element {
   const [value, setValue] = React.useState('');
+  const { t } = i18n.useTranslation('admin');
   const state = useSelector((state: RootState) => state.tags);
   const dispatch = useDispatch();
 
@@ -62,15 +64,15 @@ export function Tags(props: Props): JSX.Element {
   }
   return (
     <div>
-      <span>New tag </span>
+      <span>{t('admin:products-page.tags.new-tag')} </span>
       <Input value={value} onChange={(e) => setValue(e.target.value)} />{' '}
-      <Button onClick={submitHandler}>Create</Button>
+      <Button onClick={submitHandler}>{t('admin:create')}</Button>
       {state.getTagsLoadingStatus === 'loaded' ? (
         <List>{state.tags && renderAllTags()}</List>
       ) : state.getTagsLoadingStatus === 'loading' ? (
         <CircularProgress />
       ) : state.getTagsLoadingStatus === 'error' ? (
-        <div>Something went wrong!</div>
+        <div>{t('admin:error')}</div>
       ) : (
         <div></div>
       )}

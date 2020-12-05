@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getPublicCategories } from '../../../redux/reducers/categories';
 import { RootState } from '../../../redux/store';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import i18n from '../../../../i18n';
 
 interface Props {
   open: boolean;
@@ -28,6 +29,7 @@ interface Props {
 export function Categories(props: Props): JSX.Element {
   const state = useSelector((state: RootState) => state.categories);
   const dispatch = useDispatch();
+  const { t } = i18n.useTranslation();
   const router = useRouter();
 
   React.useEffect(() => {
@@ -78,13 +80,13 @@ export function Categories(props: Props): JSX.Element {
 
   return (
     <Dialog open={props.open} onClose={props.onClose}>
-      <DialogTitle>Catalog</DialogTitle>
+      <DialogTitle>{t('catalog')}</DialogTitle>
       {state.getPublicCategoriesLoadingStatus === 'loaded' ? (
         <DialogContent dividers>
           {state.publicCategories && renderCategories()}
         </DialogContent>
       ) : state.getPublicCategoriesLoadingStatus === 'error' ? (
-        <div>Something went wrong</div>
+        <div>{t('error')}</div>
       ) : (
         state.getPublicCategoriesLoadingStatus === 'loading' && (
           <CircularProgress />

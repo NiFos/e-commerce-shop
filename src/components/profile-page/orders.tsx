@@ -6,6 +6,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import React from 'react';
+import i18n from '../../../i18n';
 import { IUserOrderModel } from '../../models/order';
 
 const useStyles = makeStyles({
@@ -19,6 +20,9 @@ const useStyles = makeStyles({
   productHeader: {
     display: 'flex',
     justifyContent: 'space-between',
+    '& > *': {
+      marginLeft: '10px',
+    },
   },
 });
 
@@ -31,6 +35,7 @@ interface Props {
  */
 export function Orders(props: Props): JSX.Element {
   const classes = useStyles();
+  const { t } = i18n.useTranslation('orders');
   /**
    * Render orders
    */
@@ -40,12 +45,20 @@ export function Orders(props: Props): JSX.Element {
         <Card key={order.order_id} className={classes.order}>
           <CardContent className={classes.orderContent}>
             <div>
-              <Typography variant={'h6'}>Order id: {order.order_id}</Typography>
-              <Typography variant={'h6'}>Status: {order.status}</Typography>
               <Typography variant={'h6'}>
-                Delivery address: {order.delivery_address}
+                {t('order-id')}: {order.order_id}
               </Typography>
-              <div>Total price {order.totalPrice}</div>
+              <Typography variant={'h6'}>
+                {t('order-status.status')}
+                {': '}
+                {t('order-status.status', { context: '' + order.status })}
+              </Typography>
+              <Typography variant={'h6'}>
+                {t('delivery-address')}: {order.delivery_address}
+              </Typography>
+              <div>
+                {t('total-price')} {order.totalPrice}
+              </div>
             </div>
             <div>
               <Divider orientation={'vertical'} />
@@ -54,11 +67,17 @@ export function Orders(props: Props): JSX.Element {
               {order.products.map((product) => (
                 <div key={product.product_id}>
                   <div className={classes.productHeader}>
-                    <div>{product.title}</div>
-                    <div>Price: {product.price_one} USD</div>
-                    <div>Quantity: {product.quantity}</div>
+                    <div>{product.title} </div>
+                    <div>
+                      {t('price')}: {product.price_one} USD
+                    </div>
+                    <div>
+                      {t('quantity')}: {product.quantity}
+                    </div>
                   </div>
-                  <div>Total price: {product.quantity * product.price_one}</div>
+                  <div>
+                    {t('total-price')}: {product.quantity * product.price_one}
+                  </div>
                 </div>
               ))}
             </div>

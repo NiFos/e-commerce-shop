@@ -13,6 +13,7 @@ import { getPhotoUrl } from '../libs/storage';
 import { GetStaticProps } from 'next';
 import moment from 'moment';
 import { ProductLink } from '../components/ProductLink';
+import i18n from '../../i18n';
 
 const useStyles = makeStyles((theme) => ({
   top: {
@@ -96,6 +97,7 @@ interface Props {
  */
 export default function Component(props: Props): JSX.Element {
   const classes = useStyles();
+  const { t } = i18n.useTranslation();
 
   /**
    * Render popular section
@@ -147,9 +149,10 @@ export default function Component(props: Props): JSX.Element {
               </div>
               <div>
                 <Typography variant={'subtitle2'}>
-                  Promocode - {props.mainDiscount.promocode}
+                  {t('promocode')} - {props.mainDiscount.promocode}
                 </Typography>
                 <Typography variant={'subtitle2'}>
+                  {t('due-date')}
                   {moment(props.mainDiscount.to).format('lll')}
                 </Typography>
               </div>
@@ -177,7 +180,7 @@ export default function Component(props: Props): JSX.Element {
       <Card className={classes.block}>
         <CardContent>
           <Typography variant={'h5'} className={classes.title}>
-            Popular
+            {t('main.popular')}
           </Typography>
           <div className={classes.productList}>
             {props?.popular && renderPopular()}
@@ -187,7 +190,7 @@ export default function Component(props: Props): JSX.Element {
       <Card className={classes.block}>
         <CardContent>
           <Typography variant={'h5'} className={classes.title}>
-            Top 5 rated
+            {t('main.top-5-rated')}
           </Typography>
           <div>{props?.topRated && renderTopRated()}</div>
         </CardContent>

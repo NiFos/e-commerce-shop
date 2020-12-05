@@ -18,6 +18,7 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import i18n from '../../../../i18n';
 import { checkUser } from '../../../libs/withUser';
 import { adminModel, IAdmin } from '../../../models/admin';
 import {
@@ -77,6 +78,7 @@ interface Props {
  */
 export default function Component(props: Props): JSX.Element {
   const classes = useStyles();
+  const { t } = i18n.useTranslation();
   const state = useSelector((state: RootState) => state.admins);
   const userState = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
@@ -176,7 +178,9 @@ export default function Component(props: Props): JSX.Element {
               disabled={isAlreadyAdmin !== -1}
               onClick={() => submitNewAdmin(searchUser.user_id)}
             >
-              Add with {fullAccess ? 'full access' : 'view access'}
+              {t('add-with', {
+                context: fullAccess ? 'full' : 'view',
+              })}
             </Button>
           </div>
         );
@@ -195,12 +199,16 @@ export default function Component(props: Props): JSX.Element {
           <Card key={item.user_id}>
             <CardContent className={classes.flexSpaceBetween}>
               <div>{item.username}</div>
-              <div>{item.full_access ? 'Full access' : 'View access'}</div>
+              <div>
+                {item.full_access
+                  ? t('admin:admins.full-access')
+                  : t('admin:admins.view-access')}
+              </div>
               <Button
                 onClick={() => editHandler(item.user_id, item.full_access)}
                 disabled={!userState?.me?.user?.admin?.fullAccess}
               >
-                Edit
+                {t('admin:edit')}
               </Button>
             </CardContent>
           </Card>
@@ -213,7 +221,7 @@ export default function Component(props: Props): JSX.Element {
     <Container>
       {/* New admin modal */}
       <Dialog open={newOpen} onClose={cleanNew}>
-        <DialogTitle>Add new admin</DialogTitle>
+        <DialogTitle>{t('admin:admins.add-new-admin')}</DialogTitle>
         <DialogContent>
           <div>
             <Input
@@ -221,11 +229,11 @@ export default function Component(props: Props): JSX.Element {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Enter username"
             />
-            <Button onClick={searchHandler}>Search</Button>
+            <Button onClick={searchHandler}>{t('admin:search')}</Button>
           </div>
           <div>
             <div>
-              <div>Search</div>
+              <div>{t('admin:search')}</div>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -234,7 +242,7 @@ export default function Component(props: Props): JSX.Element {
                     name="fullAccess"
                   />
                 }
-                label="Set full access"
+                label={t('admin:admins.full-access')}
               />
             </div>
             <div>
@@ -252,7 +260,9 @@ export default function Component(props: Props): JSX.Element {
 
       {/* Edit admin modal */}
       <Dialog open={editOpen} onClose={cleanEdit}>
-        <DialogTitle>Edit admin - {currentAdmin}</DialogTitle>
+        <DialogTitle>
+          {t('admin:admins.edit-admin')} - {currentAdmin}
+        </DialogTitle>
         <DialogContent>
           <FormControlLabel
             control={
@@ -266,14 +276,14 @@ export default function Component(props: Props): JSX.Element {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={deleteAdminHandler}>Delete</Button>
-          <Button onClick={cleanEdit}>Cancel</Button>
-          <Button onClick={submitEditAdminHandler}>Submit</Button>
+          <Button onClick={deleteAdminHandler}>{t('admin:remove')}</Button>
+          <Button onClick={cleanEdit}>{t('admin:cancel')}</Button>
+          <Button onClick={submitEditAdminHandler}>{t('admin:submit')}</Button>
         </DialogActions>
       </Dialog>
       {/* Information */}
       <Typography variant={'h6'} className={classes.headerTitle}>
-        Admins
+        {t('admin:admins.admins')}
       </Typography>
       <div className={classes.header}>
         {/* Your access level */}
@@ -282,8 +292,8 @@ export default function Component(props: Props): JSX.Element {
             <Typography>
               Your access:{' '}
               {userState.me?.user?.admin.fullAccess
-                ? 'Full access'
-                : 'View access'}
+                ? t('admin:admins.full-access')
+                : t('admin:admins.view-access')}
             </Typography>
           </CardContent>
         </Card>
@@ -293,18 +303,18 @@ export default function Component(props: Props): JSX.Element {
           <CardContent className={classes.header}>
             <Typography>Total admins: {props.admins.length}</Typography>
             <Typography>
-              Admins with full access:{' '}
+              {t('admin:admins.admins-with-full')}:{' '}
               {props.admins.filter((item) => item.full_access).length}
             </Typography>
             <Typography>
-              Admins with view access:{' '}
+              {t('admin:admins.admins-with-view')}:{' '}
               {props.admins.filter((item) => !item.full_access).length}
             </Typography>
             <Button
               onClick={addNewHandler}
               disabled={!userState?.me?.user?.admin?.fullAccess}
             >
-              Add new admin
+              {t('admin:admins.add-new-admin')}
             </Button>
           </CardContent>
         </Card>
@@ -313,8 +323,8 @@ export default function Component(props: Props): JSX.Element {
       <div>
         {/* Table header */}
         <div className={classes.adminsListHeader}>
-          <div>Username</div>
-          <div>Access level</div>
+          <div>{t('admin:admins.username')}</div>
+          <div>{t('admin:admins.access-level')}</div>
           <div></div>
         </div>
         {/* List */}

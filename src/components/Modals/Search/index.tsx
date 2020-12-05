@@ -11,6 +11,7 @@ import {
 import CircularProgress from '@material-ui/core/CircularProgress';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import i18n from '../../../../i18n';
 import { searchProducts } from '../../../redux/reducers/search';
 import { RootState } from '../../../redux/store';
 
@@ -37,6 +38,7 @@ interface Props {
 export function Search(props: Props): JSX.Element {
   const [value, setValue] = React.useState('');
   const dispatch = useDispatch();
+  const { t } = i18n.useTranslation();
   const state = useSelector((state: RootState) => state.search);
   const classes = useStyles();
 
@@ -66,27 +68,27 @@ export function Search(props: Props): JSX.Element {
   }
   return (
     <Dialog open={props.open} onClose={props.onClose}>
-      <DialogTitle>Search</DialogTitle>
+      <DialogTitle>{t('search')}</DialogTitle>
       <DialogContent dividers>
         <div>
           <form onSubmit={searchHandler}>
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder="Enter product name"
+              placeholder={t('enter-name')}
             />
-            <Button onClick={searchHandler}>Search</Button>
+            <Button onClick={searchHandler}>{t('search')}</Button>
           </form>
         </div>
         {state.searchProductsLoadingStatus === 'loaded' ? (
           <div className={classes.list}>
-            <div className={classes.results}>Results</div>
+            <div className={classes.results}>{t('results')}</div>
             {renderProducts()}
           </div>
         ) : state.searchProductsLoadingStatus === 'loading' ? (
           <CircularProgress />
         ) : state.searchProductsLoadingStatus === 'error' ? (
-          <div>Something went wrong!</div>
+          <div>{t('error')}</div>
         ) : (
           <div></div>
         )}

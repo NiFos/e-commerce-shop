@@ -5,11 +5,13 @@ import {
   Divider,
   makeStyles,
   Typography,
+  useMediaQuery,
   useTheme,
 } from '@material-ui/core';
 import Link from 'next/link';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import i18n from '../../../i18n';
 import { RootState } from '../../redux/store';
 
 const name = 'Online shop';
@@ -22,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
   },
   headerTitle: {
-    cursor: 'pointer',
     [theme.breakpoints.down('md')]: {
       fontSize: '1.3rem',
     },
@@ -61,15 +62,10 @@ const useStyles = makeStyles((theme) => ({
 export default function Component(): JSX.Element {
   const classes = useStyles();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { t } = i18n.useTranslation('admin');
   const [isNavVisible, setIsNavVisible] = React.useState(true);
-  const [isMobile, setIsMobile] = React.useState(false);
   const userState = useSelector((state: RootState) => state.user);
-
-  React.useEffect(() => {
-    if (theme.breakpoints.down('md')) {
-      setIsMobile(true);
-    }
-  }, [theme.breakpoints]);
 
   /**
    * Handle navigation click
@@ -93,28 +89,28 @@ export default function Component(): JSX.Element {
               className={classes.burger}
               onClick={() => setIsNavVisible(!isNavVisible)}
             >
-              Menu
+              {t('header.menu')}
             </Button>
           )}
           {(isNavVisible || !isMobile) && (
             <nav className={classes.nav} onClick={handleNavClick}>
               <Link href="/">
-                <Button>Main page</Button>
+                <Button>{t('header.main-page')}</Button>
               </Link>
               <Link href="/admin/categories">
-                <Button>Categories</Button>
+                <Button>{t('header.categories')}</Button>
               </Link>
               <Link href="/admin/products">
-                <Button>Products</Button>
+                <Button>{t('header.products')}</Button>
               </Link>
               <Link href="/admin/orders">
-                <Button>Orders</Button>
+                <Button>{t('header.orders')}</Button>
               </Link>
               <Link href="/admin/admins">
-                <Button>Admins</Button>
+                <Button>{t('header.admins')}</Button>
               </Link>
               <Link href="/admin/discounts">
-                <Button>Discounts</Button>
+                <Button>{t('header.discounts')}</Button>
               </Link>
             </nav>
           )}

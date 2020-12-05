@@ -21,6 +21,7 @@ import { categoryModel } from '../../models/category';
 import { getProductsInCategory } from '../../redux/reducers/category';
 import { RootState } from '../../redux/store';
 import { ITag } from '../../components/tags';
+import i18n from '../../../i18n';
 
 const useStyles = makeStyles((theme) => ({
   productsList: {
@@ -39,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
     '& > *': {
       marginLeft: '20px',
     },
+  },
+  tags: {
+    marginBottom: '20px',
   },
   filtersPerPage: {
     display: 'flex',
@@ -76,6 +80,7 @@ export default function Component(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state.category);
   const [perPage, setPerPage] = React.useState(5);
+  const { t } = i18n.useTranslation();
   const [filtersOpen, setFiltersOpen] = React.useState(false);
   const classes = useStyles();
   const [prices, setPrices] = React.useState<[number, number]>(
@@ -173,7 +178,9 @@ export default function Component(props: Props): JSX.Element {
         </Typography>
         <div className={classes.filters}>
           <div className={classes.filtersPerPage}>
-            <Typography variant={'subtitle1'}>Products per page </Typography>
+            <Typography variant={'subtitle1'}>
+              {t('category.products-per-page')}{' '}
+            </Typography>
             <Select
               value={perPage}
               onChange={(e) => changePageSize(e.target.value as number)}
@@ -185,21 +192,21 @@ export default function Component(props: Props): JSX.Element {
           </div>
           <Button onClick={() => setFiltersOpen(!filtersOpen)}>
             <FilterListIcon />
-            {filtersOpen ? 'Close filters' : 'Filters'}
+            {filtersOpen ? t('category.close-filters') : t('category.filters')}
           </Button>
         </div>
       </div>
 
       {/* Filters */}
       {filtersOpen && (
-        <Card>
+        <Card className={classes.tags}>
           <CardContent>
-            <Typography variant={'h6'}>Tags</Typography>
+            <Typography variant={'h6'}>{t('category.tags')}</Typography>
             <div>{renderTags()}</div>
             <div>
               <div>
                 <div>
-                  <Typography variant={'h6'}>Prices</Typography>
+                  <Typography variant={'h6'}>{t('category.prices')}</Typography>
                   <Slider
                     valueLabelDisplay="auto"
                     value={prices}
@@ -213,7 +220,7 @@ export default function Component(props: Props): JSX.Element {
                 </div>
               </div>
               <Button onClick={() => getProductsHandler()}>
-                Apply filters
+                {t('category.apply-filters')}
               </Button>
             </div>
           </CardContent>
@@ -228,7 +235,7 @@ export default function Component(props: Props): JSX.Element {
         ) : state.getProductsLoadingStatus === 'loading' ? (
           <CircularProgress />
         ) : state.getProductsLoadingStatus === 'error' ? (
-          <div>Something went wrong!</div>
+          <div>{t('error')}</div>
         ) : (
           <div></div>
         )}

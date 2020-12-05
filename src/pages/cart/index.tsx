@@ -25,6 +25,7 @@ import { initializeStore, RootState } from '../../redux/store';
 import { loadStripe } from '@stripe/stripe-js';
 import { GetServerSideProps } from 'next';
 import { getPhotoUrl } from '../../libs/storage';
+import i18n from '../../../i18n';
 
 const useStyles = makeStyles({
   cart: {
@@ -74,6 +75,7 @@ export default function Component(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const router = useRouter();
   const classes = useStyles();
+  const { t } = i18n.useTranslation(['common', 'orders']);
   const userState = useSelector((state: RootState) => state.user);
   const [promoValue, setPromoValue] = React.useState('');
   const [totalPrice, setTotalPrice] = React.useState(0);
@@ -152,12 +154,16 @@ export default function Component(props: Props): JSX.Element {
             <div className={classes.productInfo}>
               <div className={classes.productText}>
                 <div>{item.title}</div>
-                <div>Quantity: {item.quantity}</div>
+                <div>
+                  {t('orders:quantity')}: {item.quantity}
+                </div>
               </div>
               <div className={classes.productText}>
-                <div>Total price: {item.quantity * item.price}</div>
+                <div>
+                  {t('orders:total-price')}: {item.quantity * item.price}
+                </div>
                 <Button onClick={() => removeHandler(item.product_id)}>
-                  Remove
+                  {t('common:remove')}
                 </Button>
               </div>
             </div>
@@ -168,38 +174,41 @@ export default function Component(props: Props): JSX.Element {
   }
   return (
     <Container>
-      <Typography variant="h5">Cart</Typography>
+      <Typography variant="h5">{t('common:cart')}</Typography>
       {(props?.cart?.length || []) > 0 ? (
         <div className={classes.cart}>
           <div className={classes.cartList}>{renderProducts()}</div>
           <Card>
             <CardContent className={classes.checkout}>
               <div>
-                Total price: {totalPrice}{' '}
+                {t('orders:total-price')}: {totalPrice}{' '}
                 {typeof userState?.promocode?.discount?.promocode !==
                 'undefined'
-                  ? `(Applied promocode: ${userState?.promocode?.discount?.promocode.toUpperCase()} - ${
+                  ? `(${t(
+                      'common:applied-promocode'
+                    )}: ${userState?.promocode?.discount?.promocode.toUpperCase()} - ${
                       userState?.promocode?.discount?.percentage
                     }% )`
                   : ''}
               </div>
               <div>
-                Delivery address: {userState.me?.profileInfo?.deliveryAddress}
+                {t('orders:delivery-address')}:{' '}
+                {userState.me?.profileInfo?.deliveryAddress}
               </div>
               <div>
-                <span>Promocode: </span>
+                <span>{t('common:promocode')}: </span>
                 <Input
                   value={promoValue}
                   onChange={(e) => setPromoValue(e.target.value)}
                 />
-                <Button onClick={applyPromoHandler}>Apply</Button>
+                <Button onClick={applyPromoHandler}>{t('common:apply')}</Button>
               </div>
-              <Button onClick={checkoutHandler}>Checkout</Button>
+              <Button onClick={checkoutHandler}>{t('common:checkout')}</Button>
             </CardContent>
           </Card>
         </div>
       ) : (
-        <div>There is nothing yet.</div>
+        <div>{t('common.nothing-yet')}</div>
       )}
     </Container>
   );

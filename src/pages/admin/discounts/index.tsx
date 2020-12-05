@@ -22,6 +22,7 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import i18n from '../../../../i18n';
 import { UploadPhotoModal } from '../../../components/Modals/uploadPhoto';
 import { getPhotoUrl } from '../../../libs/storage';
 import { checkUser } from '../../../libs/withUser';
@@ -90,6 +91,7 @@ interface IDiscountData {
  */
 export default function Component(props: Props): JSX.Element {
   const classes = useStyles();
+  const { t } = i18n.useTranslation();
   const state = useSelector((state: RootState) => state.discounts);
   const userState = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
@@ -241,14 +243,17 @@ export default function Component(props: Props): JSX.Element {
             <div className={classes.flexSpaceBetween}>
               <Typography>{item.title}</Typography>
               <Button onClick={() => editDiscountHandler(item.discount_id)}>
-                Edit
+                {t('admin:edit')}
               </Button>
             </div>
             <Typography>{item.description}</Typography>
             <div>
-              <Typography>To: {moment(item.date_to).format('lll')}</Typography>
               <Typography>
-                Created: {moment(item.created_on).format('lll')}
+                {t('admin:discounts.to')}: {moment(item.date_to).format('lll')}
+              </Typography>
+              <Typography>
+                {t('admin:discounts.created')}:{' '}
+                {moment(item.created_on).format('lll')}
               </Typography>
             </div>
           </div>
@@ -261,7 +266,7 @@ export default function Component(props: Props): JSX.Element {
     <Container>
       {/* New discount modal */}
       <Dialog open={newDiscountOpen} onClose={cleanNewDiscount}>
-        <DialogTitle>Add new discount</DialogTitle>
+        <DialogTitle>{t('admin:discounts.add-new-discount')}</DialogTitle>
         <DialogContent>
           <div>
             <Input
@@ -270,7 +275,7 @@ export default function Component(props: Props): JSX.Element {
               onChange={(e) =>
                 discountDataHandler(e.target.name, e.target.value)
               }
-              placeholder="Title"
+              placeholder={t('admin:discounts.title')}
             />
           </div>
           <div>
@@ -280,21 +285,21 @@ export default function Component(props: Props): JSX.Element {
               onChange={(e) =>
                 discountDataHandler(e.target.name, e.target.value)
               }
-              placeholder="Description"
+              placeholder={t('admin:discounts.description')}
             />
           </div>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
               variant="inline"
               format="dd/MM/yyyy"
-              label="Date to"
+              label={t('admin:discounts.date-to')}
               value={discountData.to}
               onChange={(value) =>
                 discountDataHandler('to', value?.toDateString())
               }
             />
             <KeyboardTimePicker
-              label="Time to"
+              label={t('admin:discounts.time-to')}
               value={discountData.to}
               onChange={(value) =>
                 discountDataHandler('to', value?.toDateString())
@@ -309,7 +314,7 @@ export default function Component(props: Props): JSX.Element {
               onChange={(e) =>
                 discountDataHandler(e.target.name, e.target.value)
               }
-              placeholder="Percentage"
+              placeholder={t('admin:discounts.percentage')}
             />{' '}
             <span>%</span>
           </div>
@@ -320,13 +325,13 @@ export default function Component(props: Props): JSX.Element {
               onChange={(e) =>
                 discountDataHandler(e.target.name, e.target.value)
               }
-              placeholder="Promocode"
+              placeholder={t('admin:discounts.promocode')}
             />
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={cleanNewDiscount}>Cancel</Button>
-          <Button onClick={submitNew}>Next</Button>
+          <Button onClick={cleanNewDiscount}>{t('admin:cancel')}</Button>
+          <Button onClick={submitNew}>{t('admin:next')}</Button>
         </DialogActions>
       </Dialog>
 
@@ -343,10 +348,10 @@ export default function Component(props: Props): JSX.Element {
         open={currentDiscountId !== -1 && !openUploadPhoto}
         onClose={cleanEditDiscount}
       >
-        <DialogTitle>Edit discount</DialogTitle>
+        <DialogTitle>{t('admin:discounts.edit-discount')}</DialogTitle>
         <DialogContent>
           <div>
-            <span>Title </span>
+            <span>{t('admin:discounts.title')} </span>
             <Input
               value={discountData.title}
               onChange={(e) =>
@@ -357,7 +362,7 @@ export default function Component(props: Props): JSX.Element {
             />
           </div>
           <div>
-            <span>Description </span>
+            <span>{t('admin:discounts.description')} </span>
             <Input
               value={discountData.description}
               onChange={(e) =>
@@ -369,24 +374,30 @@ export default function Component(props: Props): JSX.Element {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={deleteDiscountHandler}>Delete</Button>
-          <Button onClick={() => setOpenUploadPhoto(true)}>Upload photo</Button>
-          <Button onClick={cleanEditDiscount}>Cancel</Button>
-          <Button onClick={submitEdit}>Submit</Button>
+          <Button onClick={deleteDiscountHandler}>{t('admin:remove')}</Button>
+          <Button onClick={() => setOpenUploadPhoto(true)}>
+            {t('admin:products-page.upload-photo')}
+          </Button>
+          <Button onClick={cleanEditDiscount}>{t('admin:cancel')}</Button>
+          <Button onClick={submitEdit}>{t('admin:submit')}</Button>
         </DialogActions>
       </Dialog>
       {/* Information */}
       <Typography variant={'h6'} className={classes.headerTitle}>
-        Discounts
+        {t('admin:discounts.discounts')}
       </Typography>
       <Card className={classes.content}>
         <CardContent className={classes.flexSpaceBetween}>
-          <div>Total discounts - {props.discounts.length}</div>
+          <div>
+            {t('admin:discounts.total-discounts', {
+              value: props.discounts.length,
+            })}
+          </div>
           <Button
             onClick={addNewDiscountHandler}
             disabled={!userState.me?.user?.admin.fullAccess}
           >
-            Add new discount
+            {t('admin:discounts.add-new-discount')}
           </Button>
         </CardContent>
       </Card>

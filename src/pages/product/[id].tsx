@@ -19,6 +19,7 @@ import moment from 'moment';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import i18n from '../../../i18n';
 import { getPhotoUrl } from '../../libs/storage';
 import { IProductModel, productModel } from '../../models/product';
 import { IReviewModel, reviewModel } from '../../models/review';
@@ -71,6 +72,7 @@ interface Props {
 export default function Component(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { t } = i18n.useTranslation();
   const [quantity, setQuantity] = React.useState<number>(1);
   const [reviewOpen, setReviewOpen] = React.useState(false);
   const [reviewText, setReviewText] = React.useState('');
@@ -130,8 +132,12 @@ export default function Component(props: Props): JSX.Element {
           <CardContent>
             <div className={classes.header}>
               <div>{item.username}</div>
-              <div>{moment(item.created_on).fromNow()}</div>
-              <div>Rating: {item.rating}</div>
+              <div>
+                <div>{moment(item.created_on).format('l')}</div>
+              </div>
+              <div>
+                {t('product.review.rating')}: {item.rating}
+              </div>
             </div>
             <Divider />
             <div>{item.text}</div>
@@ -144,19 +150,19 @@ export default function Component(props: Props): JSX.Element {
     <Container>
       {/* New review modal */}
       <Dialog open={reviewOpen} onClose={reviewHandler}>
-        <DialogTitle>Send review</DialogTitle>
+        <DialogTitle>{t('product.review.send-review')}</DialogTitle>
         <DialogContent className={classes.modalContent}>
           <div>
-            <div>Review: </div>
+            <div>{t('product.review.review')}: </div>
             <Input
               multiline
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
-              placeholder="Please type the text"
+              placeholder={t('product.review.send-review-placeholder')}
             />
           </div>
           <div>
-            <span>Rating: </span>
+            <span>{t('product.review.rating')}: </span>
             <Select
               value={reviewRating}
               onChange={(e) => setReviewRating(e.target.value as number)}
@@ -170,8 +176,8 @@ export default function Component(props: Props): JSX.Element {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={reviewHandler}>Cancel</Button>
-          <Button onClick={submitReview}>Submit</Button>
+          <Button onClick={reviewHandler}>{t('cancel')}</Button>
+          <Button onClick={submitReview}>{t('submit')}</Button>
         </DialogActions>
       </Dialog>
       {/* Added to cart snackbar */}
@@ -194,7 +200,7 @@ export default function Component(props: Props): JSX.Element {
           horizontal: 'center',
           vertical: 'bottom',
         }}
-        message={'Review sent to cart!'}
+        message={t('product.review.review-sent')}
       />
       <Typography variant={'h5'}>{props.product.title}</Typography>
 
@@ -216,16 +222,16 @@ export default function Component(props: Props): JSX.Element {
         <Card className={classes.info}>
           <CardContent>
             <CardContent className={classes.header}>
-              <div>{props.product.price} RUB</div>
+              <div>{props.product.price} USD</div>
               <div>
-                Quantity:
+                {t('product.quantity')}:
                 <Input
                   type="number"
                   value={quantity}
                   onChange={(e) => setQuantity(+e.target.value)}
-                  placeholder="Enter quantity"
+                  placeholder={t('product.enter-quantity')}
                 />
-                <Button onClick={addToCart}>Add to cart</Button>
+                <Button onClick={addToCart}>{t('product.add-to-cart')}</Button>
               </div>
             </CardContent>
             <div>{props.product.rating}</div>
@@ -237,13 +243,17 @@ export default function Component(props: Props): JSX.Element {
       {/* Reviews */}
       <Card>
         <CardContent className={classes.header}>
-          <div>Count reviews: {props.reviews.length}</div>
-          <Button onClick={reviewHandler}>Send review</Button>
+          <div>
+            {t('product.review.count-reviews')}: {props.reviews.length}
+          </div>
+          <Button onClick={reviewHandler}>
+            {t('product.review.send-review')}
+          </Button>
         </CardContent>
       </Card>
       {/* Reviews list */}
       <div className={classes.reviewsList}>
-        {props.reviews ? renderReviews() : <div>There are no reviews yet</div>}
+        {props.reviews ? renderReviews() : <div>{t('nothing-yet')}</div>}
       </div>
     </Container>
   );

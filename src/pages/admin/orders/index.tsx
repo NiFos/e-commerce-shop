@@ -36,6 +36,7 @@ import {
 import { Pagination } from '../../../components/Pagination';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
+import i18n from '../../../../i18n';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -107,6 +108,7 @@ interface Props {
  */
 export default function Component(props: Props): JSX.Element {
   const classes = useStyles();
+  const { t } = i18n.useTranslation(['admin', 'orders']);
   const [currentOrder, setCurrentOrder] = React.useState(-1);
   const [currentOrderStatus, setCurrentOrderStatus] = React.useState(-1);
   const dispatch = useDispatch();
@@ -167,13 +169,15 @@ export default function Component(props: Props): JSX.Element {
       <Card key={order.order_id} className={classes.order}>
         <CardContent>
           <div>{order.order_id}</div>
-          <div>{order.status}</div>
+          <div>
+            {t('orders:order-status.status', { context: '' + order.status })}
+          </div>
           <div>{moment(order.created_on).format('lll')}</div>
           <Button
             onClick={() => editHandler(order.order_id)}
             disabled={!userState.me?.user?.admin.fullAccess}
           >
-            Edit
+            {t('admin:edit')}
           </Button>
         </CardContent>
       </Card>
@@ -187,7 +191,9 @@ export default function Component(props: Props): JSX.Element {
     return (state.currentOrder?.products || []).map((item) => (
       <div key={item.product_id}>
         <Typography>{item.title}</Typography>
-        <Typography>Quantity: {item.quantity}</Typography>
+        <Typography>
+          {t('admin:quantity')}: {item.quantity}
+        </Typography>
       </div>
     ));
   }
@@ -196,7 +202,9 @@ export default function Component(props: Props): JSX.Element {
     <Container>
       {/* Edit order modal */}
       <Dialog open={currentOrder !== -1} onClose={cleanCurrentOrder}>
-        <DialogTitle>Order id - {currentOrder}</DialogTitle>
+        <DialogTitle>
+          {t('orders:order-id')} - {currentOrder}
+        </DialogTitle>
         <DialogContent>
           {state?.currentOrderLoadingStatus === 'loaded' ? (
             <div>
@@ -207,44 +215,51 @@ export default function Component(props: Props): JSX.Element {
                   setCurrentOrderStatus(e.target.value as number)
                 }
               >
-                <MenuItem value={0}>0</MenuItem>
-                <MenuItem value={1}>1</MenuItem>
-                <MenuItem value={2}>2</MenuItem>
+                <MenuItem value={0}>
+                  {t('orders:order-status.status', { context: '0' })}
+                </MenuItem>
+                <MenuItem value={1}>
+                  {t('orders:order-status.status', { context: '1' })}
+                </MenuItem>
+                <MenuItem value={2}>
+                  {t('orders:order-status.status', { context: '2' })}
+                </MenuItem>
               </Select>
-              <Typography variant={'h6'}>Products</Typography>
+              <Typography variant={'h6'}>{t('admin:products')}</Typography>
               {renderProducts()}
               <Typography variant={'h6'}>
-                Total price: {state.currentOrder?.totalPrice}
+                {t('orders:total-price')}: {state.currentOrder?.totalPrice}
               </Typography>
             </div>
           ) : state?.currentOrderLoadingStatus === 'loading' ? (
-            <div>Loading...</div>
+            <div>{t('admin:loading')}</div>
           ) : (
-            <div>Something went wrong</div>
+            <div>{t('admin:error')}</div>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={cleanCurrentOrder}>Cancel</Button>
+          <Button onClick={cleanCurrentOrder}>{t('admin:cancel')}</Button>
           <Button
             onClick={editStatusHandler}
             disabled={state?.currentOrderLoadingStatus !== 'loaded'}
           >
-            Apply
+            {t('admin:apply')}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Component */}
-      <Typography variant={'h5'}>Orders</Typography>
+      <Typography variant={'h5'}>{t('admin:orders.orders')}</Typography>
       <div className={classes.header}>
         {/* Header */}
         <Card className={classes.feed}>
           <CardContent>
             {/* Feed */}
-            <Typography variant={'h6'}>Feed</Typography>
+            <Typography variant={'h6'}>{t('admin:feed')}</Typography>
             {(props.feed || []).map((item) => (
               <div key={item.status}>
-                {item.status} - {item.count}
+                {t('orders:order-status.status', { context: '' + item.status })}{' '}
+                - {item.count}
               </div>
             ))}
           </CardContent>
@@ -253,7 +268,9 @@ export default function Component(props: Props): JSX.Element {
         {/* Chart */}
         <Card className={classes.chart}>
           <CardContent>
-            <Typography variant={'h6'}>Last year data</Typography>
+            <Typography variant={'h6'}>
+              {t('admin:orders.last-year-chart')}
+            </Typography>
             <ResponsiveContainer
               height={150}
               minWidth={300}
@@ -274,9 +291,9 @@ export default function Component(props: Props): JSX.Element {
       <div>
         <Card>
           <CardContent className={classes.ordersHeader}>
-            <span>Order id</span>
-            <span>Status</span>
-            <span>Order date</span>
+            <span>{t('orders:order-id')}</span>
+            <span>{t('orders:order-status.status')}</span>
+            <span>{t('orders:order-date')}</span>
             <span></span>
           </CardContent>
         </Card>

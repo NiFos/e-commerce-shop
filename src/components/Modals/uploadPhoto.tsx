@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from '@material-ui/core';
 import React from 'react';
+import i18n from '../../../i18n';
 
 interface Props {
   children?: JSX.Element[];
@@ -19,9 +20,10 @@ interface Props {
  * Upload photo modal
  */
 export function UploadPhotoModal(props: Props): JSX.Element {
+  const { t } = i18n.useTranslation();
   return (
     <Dialog open={props.isOpen} onClose={props.submitHandler}>
-      <DialogTitle>Upload photo</DialogTitle>
+      <DialogTitle>{t('admin:products-page.upload-photo')}</DialogTitle>
       <DialogContent>
         <img src={props.imageSrc} alt="Photo" />
         <input
@@ -32,7 +34,7 @@ export function UploadPhotoModal(props: Props): JSX.Element {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.submitHandler}>Submit</Button>
+        <Button onClick={props.submitHandler}>{t('admin:submit')}</Button>
       </DialogActions>
     </Dialog>
   );

@@ -14,10 +14,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { changeLanguage } from '../../redux/reducers/settings';
+import { useDispatch } from 'react-redux';
+import i18n from '../../../i18n';
+import translation from '../../../i18n';
 import { editUserInfo } from '../../redux/reducers/user';
-import { RootState } from '../../redux/store';
 
 const useStyles = makeStyles({
   property: {
@@ -44,7 +44,7 @@ interface IUserData {
 export function Settings(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const settingsState = useSelector((state: RootState) => state.settings);
+  const { t } = i18n.useTranslation();
   const [userInfoOpen, setUserInfoOpen] = React.useState(false);
   const [userData, setUserData] = React.useState<IUserData>({});
 
@@ -78,42 +78,42 @@ export function Settings(props: Props): JSX.Element {
     <Card>
       <CardContent>
         <Dialog open={userInfoOpen} onClose={handleClose}>
-          <DialogTitle>Edit user information</DialogTitle>
+          <DialogTitle>{t('profile-page.edit-user-information')}</DialogTitle>
           <DialogContent>
             <div className={classes.property}>
-              <span>Phone</span>
+              <span>{t('profile-page.phone')}</span>
               <Input
                 name="phone"
                 defaultValue={props.phone}
-                placeholder="Phone"
+                placeholder={t('profile-page.phone')}
                 fullWidth
                 onChange={(e) => handleFormEdit(e.target.name, e.target.value)}
               />
             </div>
             <div className={classes.property}>
-              <span>Delivery address</span>
+              <span>{t('profile-page.delivery-address')}</span>
               <Input
                 name="deliveryAddress"
                 fullWidth
                 defaultValue={props.deliveryAddress}
-                placeholder="Delivery address"
+                placeholder={t('profile-page.delivery-address')}
                 onChange={(e) => handleFormEdit(e.target.name, e.target.value)}
               />
             </div>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={submitEdit}>Submit</Button>
+            <Button onClick={handleClose}>{t('cancel')}</Button>
+            <Button onClick={submitEdit}>{t('submit')}</Button>
           </DialogActions>
         </Dialog>
         <div>
-          <Typography variant={'h6'}>Settings</Typography>
+          <Typography variant={'h6'}>{t('settings.settings')}</Typography>
           <div className={classes.property}>
-            <span>Language</span>
+            <span>{t('settings.language')}</span>
             <Select
-              value={settingsState.language}
+              value={translation.i18n.language}
               onChange={(e) =>
-                dispatch(changeLanguage(e.target.value as 'ru' | 'en'))
+                translation.i18n.changeLanguage(e.target.value as 'ru' | 'en')
               }
             >
               <MenuItem value="ru">RU</MenuItem>
@@ -123,8 +123,8 @@ export function Settings(props: Props): JSX.Element {
           <Divider />
         </div>
         <div className={classes.property}>
-          <span>User information</span>
-          <Button onClick={() => setUserInfoOpen(true)}>Edit</Button>
+          <span>{t('profile-page.user-information')}</span>
+          <Button onClick={() => setUserInfoOpen(true)}>{t('edit')}</Button>
         </div>
         <Divider />
       </CardContent>
