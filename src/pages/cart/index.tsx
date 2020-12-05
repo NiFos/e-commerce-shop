@@ -13,7 +13,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { checkUser } from '../../libs/withUser';
 import { cartModel, IUserCart } from '../../models/cart';
 import { userModel } from '../../models/user';
-import { changeRoute } from '../../redux/reducers/settings';
 import {
   checkoutUser,
   getCart,
@@ -79,10 +78,6 @@ export default function Component(props: Props): JSX.Element {
   const userState = useSelector((state: RootState) => state.user);
   const [promoValue, setPromoValue] = React.useState('');
   const [totalPrice, setTotalPrice] = React.useState(0);
-
-  React.useEffect(() => {
-    dispatch(changeRoute('cart', {}));
-  }, []);
 
   React.useEffect(() => {
     if (userState.removeFromCartLoadingStatus === 'loaded') {

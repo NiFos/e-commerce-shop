@@ -16,7 +16,6 @@ import { logoutUser } from '../../redux/reducers/user';
 import { ProfilePopup } from './profilePopup';
 import { Categories } from '../Modals/Categories';
 import Link from 'next/link';
-import { RouteBreadcrums } from './routeBreadcrums';
 import { Search } from '../Modals/Search';
 import i18n from '../../../i18n';
 
@@ -121,9 +120,6 @@ export default function Component(): JSX.Element {
               <Button>{t('admin-dashboard')}</Button>
             </Link>
           )}
-        </div>
-        <div className={classes.items}>
-          <RouteBreadcrums />
         </div>
         <div className={classes.items}>
           <IconButton onClick={handleSearchBtnClick}>

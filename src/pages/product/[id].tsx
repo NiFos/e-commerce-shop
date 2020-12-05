@@ -20,6 +20,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import i18n from '../../../i18n';
+import { RouteBreadcrums } from '../../components/Header/routeBreadcrums';
 import { getPhotoUrl } from '../../libs/storage';
 import { IProductModel, productModel } from '../../models/product';
 import { IReviewModel, reviewModel } from '../../models/review';
@@ -92,7 +93,7 @@ export default function Component(props: Props): JSX.Element {
 
   React.useEffect(() => {
     dispatch(
-      changeRoute('product', {
+      changeRoute({
         productId: props.product.product_id,
         categoryId: props.product.subcategory_id,
         productTitle: props.product.title,
@@ -202,6 +203,7 @@ export default function Component(props: Props): JSX.Element {
         }}
         message={t('product.review.review-sent')}
       />
+      <RouteBreadcrums />
       <Typography variant={'h5'}>{props.product.title}</Typography>
 
       {/* Product */}

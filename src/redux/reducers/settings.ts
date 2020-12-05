@@ -70,47 +70,23 @@ interface ChangeRouteAction {
 /**
  * Change route action
  */
-export const changeRoute = (
-  type: 'product' | 'category' | 'cart',
-  info: {
-    categoryId?: number;
-    productId?: number;
-    productTitle?: string;
-    categoryTitle?: string;
-  }
-): ChangeRouteAction => {
+export const changeRoute = (info: {
+  categoryId?: number;
+  productId?: number;
+  productTitle?: string;
+  categoryTitle?: string;
+}): ChangeRouteAction => {
   const breadcrums: IBreadcrum[] = [];
   breadcrums.push({ title: 'HOME', route: '/' });
 
-  switch (type) {
-    case 'product':
-      breadcrums.push({
-        title: `${info.categoryTitle?.toUpperCase()}`,
-        route: `/category/${info.categoryId}`,
-      });
-      breadcrums.push({
-        title: `${info.productTitle?.toUpperCase()}`,
-        route: `/product/${info.productId}`,
-      });
-      break;
-
-    case 'category':
-      breadcrums.push({
-        title: `${info.categoryTitle?.toUpperCase()}`,
-        route: `${type}/${info.categoryId}`,
-      });
-      break;
-
-    case 'cart':
-      breadcrums.push({
-        title: 'CART',
-        route: '/cart',
-      });
-      break;
-
-    default:
-      break;
-  }
+  breadcrums.push({
+    title: `${info.categoryTitle?.toUpperCase()}`,
+    route: `/category/${info.categoryId}`,
+  });
+  breadcrums.push({
+    title: `${info.productTitle?.toUpperCase()}`,
+    route: `/product/${info.productId}`,
+  });
 
   return {
     type: settingsReducerTypes.currentRoute,
