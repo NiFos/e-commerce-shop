@@ -1,0 +1,14 @@
+{
+  "order-status": {
+    "status": "Order status",
+    "status_0": "Payment confirmed",
+    "status_1": "Delivering",
+    "status_2": "Delivered"
+  },
+  "order-id": "Order id",
+  "order-date": "Order date",
+  "delivery-address": "Delivery address",
+  "total-price": "Total price",
+  "price": "Price",
+  "quantity": "Quantity"
+}

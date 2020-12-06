@@ -1,0 +1,84 @@
+{
+  "header": {
+    "main-page": "Главная",
+    "categories": "Категории",
+    "products": "Продукты",
+    "orders": "Заказы",
+    "admins": "Админы",
+    "discounts": "Скидки",
+    "menu": "Меню"
+  },
+  "orders": {
+    "orders": "Заказы",
+    "last-year-chart": "Заказы за последний год"
+  },
+  "categories": {
+    "name": "Название",
+    "create": "Создать",
+    "categories": "Категории",
+    "subcategories": "Подкатегории",
+    "add-new-category": "Добавить новую категорию",
+    "add-new-subcategory": "Добавить новую подкатегорию"
+  },
+  "products-page": {
+    "price": "Цена",
+    "created": "Создан",
+    "add-new-product": "Новый продукт",
+    "edit-product": "Изменить продукт - {{title}}",
+    "form": {
+      "title": "Название",
+      "description": "Описание",
+      "tech-specs": "Тех. описание",
+      "price": "Цена",
+      "quantity": "Кол-во",
+      "subcategory-id": "Подкатегория"
+    },
+    "upload-photo": "Загрузить фото",
+    "tags": {
+      "new-tag": "Новый тег"
+    }
+  },
+  "admins": {
+    "admins": "Админы",
+    "add-new-admin": "Добавить нового админа",
+    "full-access": "Полный доступ",
+    "view-access": "Только просмотр",
+    "edit-admin": "Изменить",
+    "admins-with-full": "Админы с полным доступом",
+    "admins-with-view": "Админы с только просмотром",
+    "add-with": {
+      "add-with": "Добавить с",
+      "add-with_full": "Добавить с полным доступом",
+      "add-with_view": "Добавить с только просмотром"
+    },
+    "username": "Логин",
+    "access-level": "Уровень доступа"
+  },
+  "discounts": {
+    "discounts": "Скидки",
+    "total-discounts": "Всего скидок - {{value}}",
+    "to": "До",
+    "created": "Создан",
+    "add-new-discount": "Новая скидка",
+    "edit-discount": "Изменить",
+    "title": "Название",
+    "description": "Описание",
+    "date-to": "До даты",
+    "time-to": "До времени",
+    "percentage": "Процент скидки",
+    "promocode": "Промокод"
+  },
+  "loading": "Секунду...",
+  "cancel": "Отмена",
+  "search": "Поиск",
+  "create": "Создать",
+  "submit": "Отправить",
+  "edit": "Изменить",
+  "remove": "Удалить",
+  "next": "Далее",
+  "apply": "Применить",
+  "error": "Что-то пошло не так",
+  "products": "Продукты",
+  "feed": "Отчёт",
+  "quantity": "Кол-во"
+}

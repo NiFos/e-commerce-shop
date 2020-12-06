@@ -1,0 +1,84 @@
+{
+  "header": {
+    "main-page": "Main page",
+    "categories": "Categories",
+    "products": "Products",
+    "orders": "Orders",
+    "admins": "Admins",
+    "discounts": "Discounts",
+    "menu": "Menu"
+  },
+  "orders": {
+    "orders": "Orders",
+    "last-year-chart": "Last year chart"
+  },
+  "categories": {
+    "name": "Name",
+    "create": "Create",
+    "categories": "Categories",
+    "subcategories": "Subcategories",
+    "add-new-category": "Add new category",
+    "add-new-subcategory": "Add new subcategory"
+  },
+  "products-page": {
+    "price": "Price",
+    "created": "Created",
+    "add-new-product": "Add new product",
+    "edit-product": "Edit product - {{title}}",
+    "form": {
+      "title": "Title",
+      "description": "Description",
+      "tech-specs": "Tech specs",
+      "price": "Price",
+      "quantity": "Quantity",
+      "subcategory-id": "Subcategory id"
+    },
+    "upload-photo": "Upload photo",
+    "tags": {
+      "new-tag": "New tag"
+    }
+  },
+  "admins": {
+    "admins": "Admins",
+    "add-new-admin": "Add new admin",
+    "full-access": "Full access",
+    "view-access": "View access",
+    "edit-admin": "Edit admin",
+    "admins-with-full": "Admins with full access",
+    "admins-with-view": "Admins with view access",
+    "add-with": {
+      "add-with": "Add with",
+      "add-with_full": "Add with full access",
+      "add-with_view": "Add with view access"
+    },
+    "username": "Username",
+    "access-level": "Access level"
+  },
+  "discounts": {
+    "discounts": "Discounts",
+    "total-discounts": "Total discounts - {{value}}",
+    "to": "To",
+    "created": "Created",
+    "add-new-discount": "Add new discount",
+    "edit-discount": "Edit discount",
+    "title": "Title",
+    "description": "Description",
+    "date-to": "Date to",
+    "time-to": "Time to",
+    "percentage": "Percentage",
+    "promocode": "Promocode"
+  },
+  "loading": "Loading...",
+  "cancel": "Cancel",
+  "search": "Search",
+  "create": "Create",
+  "submit": "Submit",
+  "edit": "Edit",
+  "remove": "Remove",
+  "next": "Next",
+  "apply": "Apply",
+  "error": "Something went wrong",
+  "products": "Products",
+  "feed": "Feed",
+  "quantity": "Quantity"
+}

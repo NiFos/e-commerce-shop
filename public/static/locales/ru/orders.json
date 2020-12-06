@@ -1,0 +1,14 @@
+{
+  "order-status": {
+    "status": "Статус",
+    "status_0": "Платёж подтверждён",
+    "status_1": "Доставляется",
+    "status_2": "Доставлен"
+  },
+  "order-id": "Номер заказа",
+  "order-date": "Дата заказа",
+  "delivery-address": "Адрес доставки",
+  "total-price": "Общая цена",
+  "price": "Цена",
+  "quantity": "Количество"
+}

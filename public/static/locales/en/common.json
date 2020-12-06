@@ -1,0 +1,72 @@
+{
+  "categories": "Categories",
+  "catalog": "Catalog",
+  "admin-dashboard": "Admin dashboard",
+  "search": "Search",
+  "enter-name": "Enter name",
+  "profile": "Profile",
+  "cart": "Cart",
+  "logout": "Logout",
+  "auth": {
+    "auth": "Auth",
+    "login": "Login",
+    "register": "Register",
+    "sign-in-with-google": "Sign in with google",
+    "i-want-register": "I want to register",
+    "username": "Username",
+    "password": "Password",
+    "email": "Email"
+  },
+  "profile-page": {
+    "hello": "Hello, {{username}}",
+    "registered": "You have been registered: {{date}}",
+    "help": "Need help?",
+    "contact-us": "Contact us in",
+    "phone": "Phone",
+    "delivery-address": "Delivery address",
+    "user-information": "User information",
+    "edit-user-information": "Edit user information"
+  },
+  "settings": {
+    "settings": "Settings",
+    "language": "Language"
+  },
+  "category": {
+    "products-per-page": "Products per page",
+    "filters": "Filters",
+    "close-filters": "Close filters",
+    "tags": "Tags",
+    "prices": "Prices",
+    "apply-filters": "Apply filters"
+  },
+  "main": {
+    "popular": "Popular",
+    "top-5-rated": "Top 5 rated"
+  },
+  "product": {
+    "review": {
+      "review": "Review",
+      "rating": "Rating",
+      "count-reviews": "Count reviews",
+      "send-review": "Send review",
+      "send-review-placeholder": "Please type the text",
+      "review-sent": "Review sent!"
+    },
+    "add-to-cart": "Add to cart",
+    "enter-quantity": "Enter quantity",
+    "quantity": "Quantity"
+  },
+  "loading": "Loading...",
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "edit": "Edit",
+  "remove": "Remove",
+  "apply": "Apply",
+  "promocode": "Promocode",
+  "applied-promocode": "Applied promocode",
+  "nothing-yet": "There is nothing yet.",
+  "due-date": "Due date",
+  "checkout": "Checkout",
+  "error": "Something went wrong",
+  "results": "Results"
+}

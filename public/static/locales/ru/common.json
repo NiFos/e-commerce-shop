@@ -1,0 +1,72 @@
+{
+  "categories": "Категории",
+  "catalog": "Каталог",
+  "admin-dashboard": "Панель управления",
+  "search": "Поиск",
+  "enter-name": "Введите название",
+  "profile": "Профиль",
+  "cart": "Корзина",
+  "logout": "Выход",
+  "auth": {
+    "auth": "Аутентификация",
+    "login": "Войти",
+    "register": "Зарегистрироваться",
+    "sign-in-with-google": "Войти через Google",
+    "i-want-register": "Я хочу зарегистрироваться",
+    "username": "Логин",
+    "password": "Пароль",
+    "email": "Email"
+  },
+  "profile-page": {
+    "hello": "Привет, {{username}}",
+    "registered": "Ты зарегистриров: {{date}}",
+    "help": "Нужна помощь?",
+    "contact-us": "Свяжитесь с нами",
+    "phone": "Телефон",
+    "delivery-address": "Адрес доставки",
+    "user-information": "Информация",
+    "edit-user-information": "Изменить информацию"
+  },
+  "settings": {
+    "settings": "Настройки",
+    "language": "Язык"
+  },
+  "category": {
+    "products-per-page": "Кол-во продуктов на страницу",
+    "filters": "Фильтры",
+    "close-filters": "Закрыть фильтры",
+    "tags": "Теги",
+    "prices": "Цены",
+    "apply-filters": "Применить фильтры"
+  },
+  "main": {
+    "popular": "Популярное",
+    "top-5-rated": "Топ 5 продуктов"
+  },
+  "product": {
+    "review": {
+      "review": "Отзыв",
+      "rating": "Оценка",
+      "count-reviews": "Отзывов",
+      "send-review": "Написать отзыв",
+      "send-review-placeholder": "Ваш отзыв",
+      "review-sent": "Отзыв отправлен!"
+    },
+    "add-to-cart": "Добавить в корзину",
+    "enter-quantity": "Введите кол-во",
+    "quantity": "Кол-во"
+  },
+  "loading": "Секунду...",
+  "cancel": "Отмена",
+  "submit": "Отправить",
+  "edit": "Изменить",
+  "remove": "Удалить",
+  "apply": "Применить",
+  "promocode": "Промокод",
+  "applied-promocode": "Примененный промокод",
+  "nothing-yet": "Здесь пока ничего нет.",
+  "due-date": "Действует до",
+  "checkout": "Оплатить",
+  "error": "Что-то пошло не так",
+  "results": "Результаты"
+}
