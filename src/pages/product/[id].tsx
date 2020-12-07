@@ -2,6 +2,7 @@ import {
   Button,
   Card,
   CardContent,
+  CircularProgress,
   Container,
   Dialog,
   DialogActions,
@@ -17,6 +18,7 @@ import {
 } from '@material-ui/core';
 import moment from 'moment';
 import { GetStaticPaths, GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import i18n from '../../../i18n';
@@ -73,6 +75,7 @@ interface Props {
 export default function Component(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const router = useRouter();
   const { t } = i18n.useTranslation();
   const [quantity, setQuantity] = React.useState<number>(1);
   const [reviewOpen, setReviewOpen] = React.useState(false);
@@ -146,6 +149,10 @@ export default function Component(props: Props): JSX.Element {
         </Card>
       );
     });
+  }
+
+  if (router.isFallback) {
+    return <CircularProgress />;
   }
   return (
     <Container>
