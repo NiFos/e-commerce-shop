@@ -279,7 +279,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
     created_on: new Date(item.created_on).toString(),
   }));
 
-  return { props: { product: productData, reviews: reviewsData } };
+  return {
+    props: { product: productData, reviews: reviewsData, revalidate: 600 },
+  };
 };
 
 /**
@@ -293,6 +295,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 };

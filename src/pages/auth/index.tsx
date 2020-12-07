@@ -149,7 +149,11 @@ export default function Component(): JSX.Element {
           </Typography>
           {state?.user?.authError && <span>{state?.user?.authError}</span>}
           <label>
-            <Checkbox checked={isReg} onChange={() => setIsReg(!isReg)} />
+            <Checkbox
+              name={'register'}
+              checked={isReg}
+              onChange={() => setIsReg(!isReg)}
+            />
             <span>{t('auth.i-want-register')}</span>
           </label>
           {isReg ? (
@@ -180,7 +184,11 @@ export default function Component(): JSX.Element {
                 />
               </div>
 
-              <Button disabled={loading} onClick={submitForm}>
+              <Button
+                disabled={loading}
+                onClick={submitForm}
+                name="registerBtn"
+              >
                 {t('auth.register')}
               </Button>
             </form>
@@ -205,7 +213,7 @@ export default function Component(): JSX.Element {
                 />
               </div>
 
-              <Button disabled={loading} onClick={submitForm}>
+              <Button disabled={loading} onClick={submitForm} name="loginBtn">
                 {t('auth.login')}
               </Button>
             </form>
