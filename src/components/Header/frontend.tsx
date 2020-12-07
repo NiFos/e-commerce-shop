@@ -142,7 +142,9 @@ export default function Component(): JSX.Element {
               )}
             </div>
           ) : (
-            <Button onClick={() => router.push('/auth')}>{t('auth')}</Button>
+            <Button onClick={() => router.push('/auth')}>
+              {t('auth.auth')}
+            </Button>
           )}
         </div>
       </div>
