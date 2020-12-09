@@ -131,6 +131,7 @@ export const productModel = {
           `${productsTable}.product_id`
         )
         .whereIn(`${productsTagsTable}.tag_id`, tags)
+        .where('subcategory_id', '=', subcategoryId)
         .limit(pageSize + 1)
         .offset(offSet);
     }
@@ -138,6 +139,7 @@ export const productModel = {
       .select('*')
       .from(productsTable)
       .whereBetween('price', prices)
+      .where('subcategory_id', '=', subcategoryId)
       .limit(pageSize + 1)
       .offset(offSet);
   },

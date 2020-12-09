@@ -208,6 +208,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const popular = await productModel.getPopularProducts();
   const topRated = await productModel.getTopRated();
   return {
+    revalidate: 600,
     props: {
       mainDiscount: {
         discountId: mainDiscount[0]?.discount_id,

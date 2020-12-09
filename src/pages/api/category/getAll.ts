@@ -10,7 +10,7 @@ export interface ICategory {
 export interface IPublicCategory {
   title: string;
   id: number;
-  subcategories: { title: string; id: number }[];
+  subcategories: { title: string; subcategory_id: number }[];
 }
 export interface ISubcategory {
   title: string;
@@ -28,13 +28,9 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
       return {
         title: category.title,
         id: category.category_id,
-        subcategories: subCategories.map((subcategory) => {
-          if (subcategory.category_id === category.category_id)
-            return {
-              title: subcategory.title,
-              id: subcategory.subcategory_id,
-            };
-        }),
+        subcategories: subCategories.filter(
+          (subcategory) => subcategory.category_id === category.category_id
+        ),
       };
     });
     return res.json({

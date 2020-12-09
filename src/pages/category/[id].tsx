@@ -22,6 +22,7 @@ import { getProductsInCategory } from '../../redux/reducers/category';
 import { RootState } from '../../redux/store';
 import { ITag } from '../../components/tags';
 import i18n from '../../../i18n';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
   productsList: {
@@ -78,6 +79,7 @@ interface Props {
  */
 export default function Component(props: Props): JSX.Element {
   const dispatch = useDispatch();
+  const router = useRouter();
   const state = useSelector((state: RootState) => state.category);
   const [perPage, setPerPage] = React.useState(5);
   const { t } = i18n.useTranslation();
@@ -89,6 +91,12 @@ export default function Component(props: Props): JSX.Element {
   const [tags, setTags] = React.useState<number[]>([]);
 
   React.useEffect(() => {
+    setTags([]);
+    setPrices(props.data.prices);
+    getProductsHandler({ isNew: true });
+  }, [router.query.id]);
+
+  React.useEffect(() => {
     getProductsHandler();
   }, []);
 
@@ -98,7 +106,7 @@ export default function Component(props: Props): JSX.Element {
    */
   function changePageSize(value: number) {
     setPerPage(value);
-    getProductsHandler(undefined, value);
+    getProductsHandler({ value });
   }
 
   /**
@@ -119,14 +127,26 @@ export default function Component(props: Props): JSX.Element {
   /**
    * Get products
    */
-  function getProductsHandler(page?: number, value?: number) {
+  function getProductsHandler(data?: {
+    page?: number;
+    value?: number;
+    isNew?: boolean;
+  }) {
+    console.log(
+      props.data.subcategoryData.id,
+      data?.isNew ? props.data.prices : prices,
+      data?.isNew ? [] : tags,
+      data?.value || perPage || 5,
+      data?.page || state?.category?.page || 1
+    );
+
     dispatch(
       getProductsInCategory(
         props.data.subcategoryData.id,
-        prices,
-        tags,
-        value || perPage || 5,
-        page || state?.category?.page || 1
+        data?.isNew ? props.data.prices : prices,
+        data?.isNew ? [] : tags,
+        data?.value || perPage || 5,
+        data?.page || state?.category?.page || 1
       )
     );
   }
@@ -244,14 +264,14 @@ export default function Component(props: Props): JSX.Element {
           currentPage={state.category?.page || 1}
           hasMore={state.category?.hasMore || false}
           next={() =>
-            getProductsHandler(
-              state?.category?.page && state?.category?.page + 1
-            )
+            getProductsHandler({
+              page: state?.category?.page && state?.category?.page + 1,
+            })
           }
           prev={() =>
-            getProductsHandler(
-              state?.category?.page && state?.category?.page - 1
-            )
+            getProductsHandler({
+              page: state?.category?.page && state?.category?.page - 1,
+            })
           }
         />
       </div>
@@ -280,6 +300,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const subcategoryData = await categoryModel.getSubcategoryData(id);
 
   return {
+    revalidate: 600,
     props: {
       data: {
         subcategoryData: {

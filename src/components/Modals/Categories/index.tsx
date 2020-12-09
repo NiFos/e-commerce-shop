@@ -10,13 +10,14 @@ import {
   Typography,
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPublicCategories } from '../../../redux/reducers/categories';
 import { RootState } from '../../../redux/store';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import i18n from '../../../../i18n';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 interface Props {
   open: boolean;
@@ -29,8 +30,8 @@ interface Props {
 export function Categories(props: Props): JSX.Element {
   const state = useSelector((state: RootState) => state.categories);
   const dispatch = useDispatch();
-  const { t } = i18n.useTranslation();
   const router = useRouter();
+  const { t } = i18n.useTranslation();
 
   React.useEffect(() => {
     dispatch(getPublicCategories());
@@ -59,18 +60,23 @@ export function Categories(props: Props): JSX.Element {
    * @param id - Category id
    */
   function clickHandler(id: number) {
-    router.push(`/category/${id}`);
+    router.push('/category/[id]', `/category/${id}`);
     props.onClose();
   }
 
   /**
    * Render subcategories
    */
-  function renderSubcategories(subcategories: { title: string; id: number }[]) {
+  function renderSubcategories(
+    subcategories: { title: string; subcategory_id: number }[]
+  ) {
     return subcategories.map((item) => {
       return (
-        <ButtonGroup key={item.id}>
-          <Button onClick={() => clickHandler(item.id)} key={item.id}>
+        <ButtonGroup key={item.subcategory_id}>
+          <Button
+            key={item.subcategory_id}
+            onClick={() => clickHandler(item.subcategory_id)}
+          >
             {item.title}
           </Button>
         </ButtonGroup>

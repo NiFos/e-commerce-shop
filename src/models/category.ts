@@ -74,6 +74,7 @@ export const categoryModel = {
         `${productsTable}.product_id`,
         `${productsTagsTable}.product_id`
       )
+      .where(`${productsTable}.subcategory_id`, '=', subcategoryId)
       .innerJoin(
         tagsTable,
         `${productsTagsTable}.tag_id`,

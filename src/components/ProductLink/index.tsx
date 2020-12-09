@@ -41,9 +41,11 @@ export function ProductLink(props: Props): JSX.Element {
           <div className={classes.img}>
             <img width={300} height={300} src={props.photo} alt="" />
           </div>
-          <span>{props.title}</span>
-          <span>{props.description}</span>
-          <span>{props.price}</span>
+          <div>
+            <div>{props.title}</div>
+            <div>{props.description}</div>
+            <div>{props.price} USD</div>
+          </div>
         </CardContent>
       </Card>
     </Link>

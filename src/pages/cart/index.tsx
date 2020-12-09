@@ -203,7 +203,7 @@ export default function Component(props: Props): JSX.Element {
           </Card>
         </div>
       ) : (
-        <div>{t('common.nothing-yet')}</div>
+        <div>{t('common:nothing-yet')}</div>
       )}
     </Container>
   );

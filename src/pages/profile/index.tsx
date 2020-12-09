@@ -20,7 +20,7 @@ import { userModel } from '../../models/user';
 import { getProfileInfo } from '../../redux/reducers/user';
 import { initializeStore, RootState } from '../../redux/store';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   header: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -33,14 +33,24 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'space-between',
     marginTop: '20px',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column-reverse',
+    },
   },
   orders: {
     width: '71%',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+    },
   },
   settings: {
     width: '27%',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+      marginBottom: '20px',
+    },
   },
-});
+}));
 
 interface Props {
   children?: JSX.Element[];
