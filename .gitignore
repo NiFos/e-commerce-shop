@@ -8,5 +8,4 @@
 .env.production
 .env.local
 
-database.sql
 next-env.d.ts
