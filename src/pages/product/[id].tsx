@@ -240,7 +240,14 @@ export default function Component(props: Props): JSX.Element {
                   onChange={(e) => setQuantity(+e.target.value)}
                   placeholder={t('product.enter-quantity')}
                 />
-                <Button onClick={addToCart}>{t('product.add-to-cart')}</Button>
+                <Button
+                  onClick={addToCart}
+                  disabled={typeof userState.me?.user?.id === 'undefined'}
+                >
+                  {typeof userState.me?.user?.id === 'undefined'
+                    ? t('auth.need-login-to-add')
+                    : t('product.add-to-cart')}
+                </Button>
               </div>
             </CardContent>
             <div>{props.product.rating}</div>
@@ -255,8 +262,13 @@ export default function Component(props: Props): JSX.Element {
           <div>
             {t('product.review.count-reviews')}: {props.reviews.length}
           </div>
-          <Button onClick={reviewHandler}>
-            {t('product.review.send-review')}
+          <Button
+            onClick={reviewHandler}
+            disabled={typeof userState.me?.user?.id === 'undefined'}
+          >
+            {typeof userState.me?.user?.id === undefined
+              ? t('auth.need-login-to-add')
+              : t('product.review.send-review')}
           </Button>
         </CardContent>
       </Card>

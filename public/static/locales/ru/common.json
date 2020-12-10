@@ -15,7 +15,8 @@
     "i-want-register": "Я хочу зарегистрироваться",
     "username": "Логин",
     "password": "Пароль",
-    "email": "Email"
+    "email": "Email",
+    "need-login-to-add": "Авторизируйтесь чтобы добавить в корзину"
   },
   "profile-page": {
     "hello": "Привет, {{username}}",

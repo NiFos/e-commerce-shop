@@ -22,6 +22,7 @@ export const userReducerTypes = {
   addToCartLoadingStatus: 'user/ADD_TO_CART_LOADING_STATUS',
   removeFromCartLoadingStatus: 'user/REMOVE_FROM_CART_LOADING_STATUS',
   editLoadingStatus: 'user/ME_LOADING_STATUS',
+  logoutLoadingStatus: 'user/LOGOUT_LOADING_STATUS',
   authSetError: 'user/SET_ERROR',
 };
 
@@ -48,7 +49,7 @@ export interface IMeData {
 }
 
 interface IUserData {
-  userid: number;
+  id: number;
   username: string;
   admin: {
     isAdmin: boolean;
@@ -67,6 +68,7 @@ export interface IUserReducer {
   removeFromCartLoadingStatus?: 'loading' | 'loaded' | 'error';
   meLoadingStatus?: 'loading' | 'loaded' | 'error';
   editLoadingStatus?: 'loading' | 'loaded' | 'error';
+  logoutLoadingStatus?: 'loading' | 'loaded' | 'error';
 }
 const initialState: IUserReducer = {};
 
@@ -173,6 +175,13 @@ export const userReducer = (
       };
     }
 
+    case userReducerTypes.logoutLoadingStatus: {
+      return {
+        ...state,
+        logoutLoadingStatus: payload as 'loading' | 'loaded' | 'error',
+      };
+    }
+
     case userReducerTypes.authSetError: {
       return {
         ...state,
@@ -215,7 +224,7 @@ export const login = (data: {
   }
   dispatch({
     type: userReducerTypes.auth,
-    payload: response.data,
+    payload: response.data.user,
   });
 };
 
@@ -482,8 +491,20 @@ export const logoutUser = (): ThunkAction<
   UserAction
 > => async (dispatch) => {
   try {
+    dispatch({
+      type: userReducerTypes.logoutLoadingStatus,
+      payload: 'loading',
+    });
     await axiosInstance.delete('/api/logout');
+    dispatch({
+      type: userReducerTypes.logoutLoadingStatus,
+      payload: 'loaded',
+    });
   } catch (error) {
+    dispatch({
+      type: userReducerTypes.logoutLoadingStatus,
+      payload: 'error',
+    });
     console.log(error);
   } finally {
     dispatch({

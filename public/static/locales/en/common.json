@@ -15,7 +15,8 @@
     "i-want-register": "I want to register",
     "username": "Username",
     "password": "Password",
-    "email": "Email"
+    "email": "Email",
+    "need-login-to-add": "You must be logged in"
   },
   "profile-page": {
     "hello": "Hello, {{username}}",

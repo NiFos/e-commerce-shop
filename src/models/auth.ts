@@ -11,13 +11,12 @@ export const authModel = {
    * Check is user exist
    * @param email - User email
    */
-  async isUserExist(email: string): Promise<string> {
+  async isUserExist(email: string): Promise<string | undefined> {
     const response = await database()
       .select('*')
       .from(usersCredentialsTable)
       .where({ email });
-    if (!response[0]?.user_id) return '';
-    return response[0].user_id;
+    return response[0]?.user_id;
   },
 
   /**
@@ -54,7 +53,7 @@ export const authModel = {
     password: string
   ): Promise<IUserModel[]> {
     const isExist = await authModel.isUserExist(email);
-    if (typeof isExist === 'undefined') return [];
+    if (typeof isExist !== 'undefined') return [];
 
     const regResponse = await database()
       .insert({ username })

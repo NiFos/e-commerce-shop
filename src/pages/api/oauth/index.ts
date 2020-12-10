@@ -27,7 +27,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
       if (register[0]?.user_id) throw 'Not registered';
       userId = '' + register[0]?.user_id;
     }
-    const user = await userModel.findUserById(+userId);
+    const user = await userModel.findUserById(+(userId || -1));
     if (!user[0]?.user_id) throw 'User not exist!';
 
     const payload = {
@@ -41,7 +41,11 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
       },
     };
     const cookie = authUtil.genCookie(payload);
-    const tokenInDb = await authModel.setCookieInDb(+userId, false, cookie);
+    const tokenInDb = await authModel.setCookieInDb(
+      +(userId || -1),
+      false,
+      cookie
+    );
     if (tokenInDb) {
       authUtil.setAuthCookie(res, cookie);
     }

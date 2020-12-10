@@ -11,7 +11,7 @@ async function handler(req: NextApiRequestWithUser, res: NextApiResponse) {
   const cart = await cartModel.getUserCart(user?.id);
   return res.json({
     user: {
-      userid: user?.id,
+      id: user?.id,
       username: user?.username,
       admin: {
         isAdmin: user?.admin?.isAdmin,

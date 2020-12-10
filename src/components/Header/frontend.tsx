@@ -64,6 +64,12 @@ export default function Component(): JSX.Element {
   const dispatch = useDispatch();
 
   React.useEffect(() => {
+    if (userState.logoutLoadingStatus === 'loaded') {
+      router.reload();
+    }
+  }, [userState]);
+
+  React.useEffect(() => {
     if (JSON.stringify(userState.me) === '{}') {
       router.reload();
     }
@@ -125,7 +131,7 @@ export default function Component(): JSX.Element {
           <IconButton onClick={handleSearchBtnClick}>
             <SearchIcon />
           </IconButton>
-          {userState.me?.user?.userid ? (
+          {userState.me?.user?.id ? (
             <div className={classes.profile}>
               <Avatar
                 onClick={handleProfileBtnClick}

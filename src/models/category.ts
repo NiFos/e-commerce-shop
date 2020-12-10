@@ -68,6 +68,7 @@ export const categoryModel = {
       .where('subcategory_id', '=', subcategoryId);
     const tags = await database()
       .select(`${tagsTable}.tag_id`, `${tagsTable}.title`)
+      .distinct()
       .from(productsTable)
       .innerJoin(
         productsTagsTable,

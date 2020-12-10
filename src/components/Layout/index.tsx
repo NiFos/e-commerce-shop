@@ -19,6 +19,13 @@ export default function Component(props: Props): JSX.Element {
   const router = useRouter();
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state.user);
+
+  React.useEffect(() => {
+    if (router.query.auth) {
+      dispatch(meUser());
+    }
+  }, [router.pathname]);
+
   React.useEffect(() => {
     dispatch(meUser());
     const language = localStorage.getItem('language');
@@ -26,6 +33,7 @@ export default function Component(props: Props): JSX.Element {
       dispatch(changeLanguage(language as 'ru' | 'en'));
     }
   }, []);
+
   return (
     <div>
       {state.meLoadingStatus !== 'loading' ? (
