@@ -65,6 +65,11 @@ interface Props {
   children?: JSX.Element[];
   cart: IUserCart[];
   stripeKey: string;
+  user: {
+    username: string;
+    phone: string;
+    deliveryAddress: string;
+  };
 }
 
 /**
@@ -187,8 +192,7 @@ export default function Component(props: Props): JSX.Element {
                   : ''}
               </div>
               <div>
-                {t('orders:delivery-address')}:{' '}
-                {userState.me?.profileInfo?.deliveryAddress}
+                {t('orders:delivery-address')}: {props.user.deliveryAddress}
               </div>
               <div>
                 <span>{t('common:promocode')}: </span>
@@ -238,6 +242,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       cart: cartData,
       stripeKey: process.env.STRIPE_PUBLIC_KEY || '',
+      user: {
+        username: userInformation[0].username,
+        phone: userInformation[0].phone || '',
+        deliveryAddress: userInformation[0].delivery_address || '',
+      },
     },
   };
 };
