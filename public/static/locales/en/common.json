@@ -68,6 +68,8 @@
   "nothing-yet": "There is nothing yet.",
   "due-date": "Due date",
   "checkout": "Checkout",
+  "checkout-success": "Success!",
+  "go-to-profile": "Go to profile",
   "error": "Something went wrong",
   "results": "Results"
 }
