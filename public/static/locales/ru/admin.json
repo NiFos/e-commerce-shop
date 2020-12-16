@@ -39,6 +39,8 @@
     }
   },
   "admins": {
+    "your-access": "Ваш доступ",
+    "total-admins": "Всего админов",
     "admins": "Админы",
     "add-new-admin": "Добавить нового админа",
     "full-access": "Полный доступ",

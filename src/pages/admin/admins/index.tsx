@@ -66,6 +66,9 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
     },
   },
+  adminCard: {
+    marginBottom: '20px',
+  },
 }));
 
 interface Props {
@@ -78,7 +81,7 @@ interface Props {
  */
 export default function Component(props: Props): JSX.Element {
   const classes = useStyles();
-  const { t } = i18n.useTranslation();
+  const { t } = i18n.useTranslation(['admin']);
   const state = useSelector((state: RootState) => state.admins);
   const userState = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
@@ -178,7 +181,7 @@ export default function Component(props: Props): JSX.Element {
               disabled={isAlreadyAdmin !== -1}
               onClick={() => submitNewAdmin(searchUser.user_id)}
             >
-              {t('add-with', {
+              {t('admin:admins.add-with.add-with', {
                 context: fullAccess ? 'full' : 'view',
               })}
             </Button>
@@ -196,7 +199,7 @@ export default function Component(props: Props): JSX.Element {
       props.admins &&
       props.admins.map((item) => {
         return (
-          <Card key={item.user_id}>
+          <Card key={item.user_id} className={classes.adminCard}>
             <CardContent className={classes.flexSpaceBetween}>
               <div>{item.username}</div>
               <div>
@@ -290,7 +293,7 @@ export default function Component(props: Props): JSX.Element {
         <Card>
           <CardContent>
             <Typography>
-              Your access:{' '}
+              {t('admin:admins.your-access')}:{' '}
               {userState.me?.user?.admin.fullAccess
                 ? t('admin:admins.full-access')
                 : t('admin:admins.view-access')}
@@ -301,7 +304,9 @@ export default function Component(props: Props): JSX.Element {
         {/* All admins information */}
         <Card className={classes.adminsInfo}>
           <CardContent className={classes.header}>
-            <Typography>Total admins: {props.admins.length}</Typography>
+            <Typography>
+              {t('admin:admins.total-admins')}: {props?.admins?.length || 0}
+            </Typography>
             <Typography>
               {t('admin:admins.admins-with-full')}:{' '}
               {props.admins.filter((item) => item.full_access).length}
@@ -355,7 +360,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      admins: reduxStore.getState().admins.admins,
+      admins: reduxStore.getState().admins.admins || [],
     },
   };
 };

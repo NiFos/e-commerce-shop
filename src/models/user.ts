@@ -40,7 +40,7 @@ export const userModel = {
       .from(usersTable)
       .where('user_id', '=', userId)
       .limit(1);
-    if (!user[0]?.user_id) return [];
+    if (user.length <= 0) return [];
 
     const admin = await database()
       .select('*')

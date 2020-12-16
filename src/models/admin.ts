@@ -35,7 +35,7 @@ export const adminModel = {
       .from(adminsTable)
       .where('user_id', '=', userId)
       .limit(1);
-    return !!response[0].user_id;
+    return !!response[0]?.user_id;
   },
 
   /**

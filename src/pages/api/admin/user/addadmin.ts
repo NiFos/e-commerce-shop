@@ -20,23 +20,22 @@ async function addAdminHandler(
     )
       throw 'Unauthorized';
 
-    const { userId, fullaccess } = req.body;
+    const { userId, fullAccess } = req.body;
 
     const adminExist = await adminModel.checkIfAdminExist(+userId);
     if (adminExist) throw 'Admin exist';
 
     const userInfo = await userModel.findUserById(+userId);
-    if (!userInfo[0]?.user_id) throw 'Cannot find user';
+    if (userInfo.length <= 0) throw 'Cannot find user';
 
-    const response = await adminModel.addUserToAdmins(+userId, fullaccess);
-    if (!response[0]?.user_id) throw 'Something went wrong!';
-
+    const response = await adminModel.addUserToAdmins(+userId, fullAccess);
+    if (response.length <= 0) throw 'Something went wrong!';
     return res.json({
       user: {
         userId: userInfo[0].user_id,
         username: userInfo[0].username,
       },
-      fullAccess: fullaccess,
+      fullAccess,
     });
   } catch (error) {
     return res.status(400).json({

@@ -39,6 +39,8 @@
     }
   },
   "admins": {
+    "your-access": "Your access",
+    "total-admins": "Total admins",
     "admins": "Admins",
     "add-new-admin": "Add new admin",
     "full-access": "Full access",
