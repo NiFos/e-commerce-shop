@@ -78,7 +78,7 @@ interface Props {
  */
 export default function Component(props: Props): JSX.Element {
   const classes = useStyles();
-  const { t } = i18n.useTranslation();
+  const { t } = i18n.useTranslation(['admin']);
   const state = useSelector((state: RootState) => state.admins);
   const userState = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
@@ -178,7 +178,7 @@ export default function Component(props: Props): JSX.Element {
               disabled={isAlreadyAdmin !== -1}
               onClick={() => submitNewAdmin(searchUser.user_id)}
             >
-              {t('add-with', {
+              {t('admin:admins.add-with', {
                 context: fullAccess ? 'full' : 'view',
               })}
             </Button>

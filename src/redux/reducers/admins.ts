@@ -158,7 +158,7 @@ export const deleteAdmin = (
  * @param fullAccess - Only view access or full access
  */
 export const addAdmin = (
-  id: number,
+  userId: number,
   fullAccess: boolean
 ): ThunkAction<void, RootState, unknown, AdminsAction> => async (dispatch) => {
   try {
@@ -167,7 +167,7 @@ export const addAdmin = (
       payload: 'loading',
     });
     await axiosInstance.post('/api/admin/user/addadmin', {
-      userid: id,
+      userId,
       fullAccess,
     });
     dispatch({
